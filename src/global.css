@@ -16,6 +16,4 @@ main {
   flex-direction: column;
   width: 450px;
   height: 550px;
-  align-items: center;
-  justify-content: center;
 }
