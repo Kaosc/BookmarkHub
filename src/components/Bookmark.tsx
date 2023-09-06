@@ -1,9 +1,22 @@
+import React from "react"
+import { useSortable } from "@dnd-kit/sortable"
+import { CSS } from "@dnd-kit/utilities"
+
 export default function Bookmark({ bookmark }: { bookmark: Bookmark }) {
 	const { id, title, url, favicon } = bookmark
+	const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: id })
+
+	const style = {
+		transform: CSS.Transform.toString(transform),
+		transition,
+	}
 
 	return (
 		<div
-			key={id}
+			ref={setNodeRef}
+			style={style}
+			{...listeners}
+			{...attributes}
 			className="flex flex-col items-center justify-center w-16 p-1 mx-2 mt-2"
 		>
 			<a

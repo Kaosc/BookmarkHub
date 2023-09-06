@@ -85,7 +85,7 @@ export default function Home() {
 
 	return (
 		<main>
-			<DragDropContext onDragEnd={onDragEnd}>
+			{/* <DragDropContext onDragEnd={onDragEnd}>
 				{bookmarkGroups.map((bookmarkData, index) => (
 					<BookmarkGroupList
 						key={bookmarkData.id}
@@ -128,7 +128,7 @@ export default function Home() {
 						</Droppable>
 					</BookmarkGroupList>
 				))}
-			</DragDropContext>
+			</DragDropContext> */}
 		</main>
 	)
 }

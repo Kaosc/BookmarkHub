@@ -1,18 +1,16 @@
-import React from "react"
 import BookmarkForm from "../components/BookmarkForm"
 import { useState } from "react"
 import { IoIosAdd } from "react-icons/io"
+import { useDroppable } from "@dnd-kit/core"
+import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
+import Bookmark from "./Bookmark"
 
-export default function BookmarkGroupList({
-	children,
-	initGroupId,
-	title,
-}: {
-	children: React.ReactNode
-	initGroupId: string
-	title: string
-}) {
+export default function BookmarkGroupList({ bookmarkData }: { bookmarkData: BookmarkData }) {
 	const [formVisible, setFormVisible] = useState(false)
+
+	const { setNodeRef } = useDroppable({
+		id: bookmarkData.id,
+	})
 
 	const formVisibleHandler = () => {
 		setFormVisible((prev) => !prev)
@@ -23,19 +21,39 @@ export default function BookmarkGroupList({
 			{formVisible && (
 				<BookmarkForm
 					handleAddButtonClick={formVisibleHandler}
-					initGroupId={initGroupId}
+					initGroupId={bookmarkData.id}
 				/>
 			)}
 			<section className="flex flex-col items-center justify-center w-full">
 				<div className="flex w-full items-center justify-between px-2 bg-gradient-to-r from-zinc-800 to-zinc-700">
-					<h1 className="py-2 text-base font-bold text-center text-white">{title}</h1>
+					<h1 className="py-2 text-base font-bold text-center text-white">{bookmarkData.title}</h1>
 					<button
 						className="flex items-center justify-center hover:opacity-50 hover:animate-pulse"
-						onClick={() => formVisibleHandler()}>
-						<IoIosAdd size={30} className="text-white" />
+						onClick={() => formVisibleHandler()}
+					>
+						<IoIosAdd
+							size={30}
+							className="text-white"
+						/>
 					</button>
 				</div>
-				<div className="flex w-full flex-wrap justify-start p-3">{children}</div>
+				<SortableContext
+					id={bookmarkData.id}
+					items={bookmarkData.bookmarks}
+					strategy={verticalListSortingStrategy}
+				>
+					<div
+						ref={setNodeRef}
+						className="flex flex-wrap items-center justify-center w-full"
+					>
+						{bookmarkData.bookmarks.map((bookmark) => (
+							<Bookmark
+								key={bookmark.id}
+								bookmark={bookmark}
+							/>
+						))}
+					</div>
+				</SortableContext>
 			</section>
 		</>
 	)
