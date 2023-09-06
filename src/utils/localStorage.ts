@@ -3,7 +3,7 @@ export const getBookmarks = () => {
 	if (bookmarks) {
 		return JSON.parse(bookmarks)
 	}
-	return []
+	return null
 }
 
 export const storeBookmarks = (bookmarks: Bookmarks) => {
