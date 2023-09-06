@@ -3,7 +3,7 @@ import BookmarkForm from "../components/BookmarkForm"
 import { useState } from "react"
 import { IoIosAdd } from "react-icons/io"
 
-export default function BookmarkGroup({
+export default function BookmarkGroupList({
 	children,
 	initGroupId,
 	title,

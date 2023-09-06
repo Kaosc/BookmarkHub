@@ -1,6 +1,6 @@
-type Bookmarks = BookmarkGroup[]
+type BookmarkGroups = BookmarkData[]
 
-interface BookmarkGroup {
+interface BookmarkData {
 	id: string
 	title: string
 	bookmarks: Bookmark[]
@@ -14,5 +14,5 @@ type Bookmark = {
 }
 
 interface StoreRootState {
-	bookmarks: Bookmarks
+	bookmarks: BookmarkGroups
 }

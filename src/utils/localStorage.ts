@@ -6,6 +6,6 @@ export const getBookmarks = () => {
 	return null
 }
 
-export const storeBookmarks = (bookmarks: Bookmarks) => {
+export const storeBookmarks = (bookmarks: BookmarkGroups) => {
 	localStorage.setItem("bookmarks", JSON.stringify(bookmarks))
 }

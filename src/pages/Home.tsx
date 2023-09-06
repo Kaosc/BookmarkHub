@@ -1,24 +1,28 @@
-import { useSelector } from "react-redux"
-import BookmarkGroup from "../components/BookmarkGroup"
+import { useSelector, useDispatch } from "react-redux"
+import { editGroup } from "../redux/features/bookmarkSlice"
+
 import Bookmark from "../components/Bookmark"
+import BookmarkGroupList from "../components/BookmarkGroupList"
 
 export default function Home() {
-	const bookmarks = useSelector((state: StoreRootState) => state.bookmarks)
+	const bookmarkGroups = useSelector((state: StoreRootState) => state.bookmarks)
+	const dispatch = useDispatch()
+
 	return (
 		<main>
-			{bookmarks.map((bookmarkGroup, index) => (
-				<BookmarkGroup
-					key={index}
-					title={bookmarkGroup.title}
-					initGroupId={bookmarkGroup.id}
+			{bookmarkGroups.map((bookmarkData) => (
+				<BookmarkGroupList
+					key={bookmarkData.id}
+					title={bookmarkData.title}
+					initGroupId={bookmarkData.id}
 				>
-					{bookmarkGroup.bookmarks.map((bookmark) => (
+					{bookmarkData.bookmarks.map((bookmark) => (
 						<Bookmark
 							key={bookmark.id}
 							bookmark={bookmark}
 						/>
 					))}
-				</BookmarkGroup>
+				</BookmarkGroupList>
 			))}
 		</main>
 	)

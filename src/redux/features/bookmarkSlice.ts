@@ -2,58 +2,52 @@ import { createSlice } from "@reduxjs/toolkit"
 import { getBookmarks } from "../../utils/localStorage"
 
 const setInitialState = () => {
-	const initialState: Bookmarks = [
+	const initialState: BookmarkGroups = [
 		{
-			id: "pinned",
+			id: "pinned-group",
 			title: "Pinned",
 			bookmarks: [
 				{
-					id: "1",
+					id: "pinned-1",
 					title: "Google",
 					url: "https://google.com",
 					favicon: "https://www.google.com/favicon.ico",
 				},
 				{
-					id: "2",
+					id: "pinned-2",
 					title: "Google Translate",
 					url: "https://translate.google.com",
 					favicon: "https://translate.google.com/favicon.ico",
 				},
 				{
-					id: "3",
-					title: "Canva",
-					url: "https://canva.com/projects",
-					favicon: "https://www.canva.com/favicon.ico",
-				},
-				{
-					id: "4",
+					id: "pinned-3",
 					title: "Kaosc",
 					url: "https://kaosc.vercel.app",
 					favicon: "https://kaosc.vercel.app/favicon.ico",
 				},
-				{
-					id: "5",
-					title: "Kavaklakerda",
-					url: "https://kavaklakerda.vercel.app",
-					favicon: "https://kavaklakerda.vercel.app/favicon.ico",
-				},
 			],
 		},
 		{
-			id: "default",
+			id: "default-group",
 			title: "Default",
 			bookmarks: [
 				{
-					id: "1",
+					id: "default-1",
 					title: "Material UI",
 					url: "https://material-ui.com",
 					favicon: "https://material-ui.com/static/favicon.ico",
 				},
 				{
-					id: "2",
+					id: "default-2",
 					title: "React",
 					url: "https://reactjs.org",
 					favicon: "https://reactjs.org/favicon.ico",
+				},
+				{
+					id: "default-3",
+					title: "Kavaklakerda",
+					url: "https://kavaklakerda.vercel.app",
+					favicon: "https://kavaklakerda.vercel.app/favicon.ico",
 				},
 			],
 		},
@@ -83,7 +77,7 @@ export const bookmarksSlice = createSlice({
 		) => {
 			const { bookmark, groupId } = action.payload
 
-			return state.map((group: BookmarkGroup) => {
+			return state.map((group: BookmarkData) => {
 				if (group.id === groupId) {
 					return {
 						...group,
@@ -104,7 +98,7 @@ export const bookmarksSlice = createSlice({
 		) => {
 			const { bookmarkId, groupId } = action.payload
 
-			return state.map((group: BookmarkGroup) => {
+			return state.map((group: BookmarkData) => {
 				if (group.id === groupId) {
 					return {
 						...group,
@@ -125,7 +119,7 @@ export const bookmarksSlice = createSlice({
 		) => {
 			const { bookmark, groupId } = action.payload
 
-			return state.map((group: BookmarkGroup) => {
+			return state.map((group: BookmarkData) => {
 				if (group.id === groupId) {
 					return {
 						...group,
@@ -140,7 +134,7 @@ export const bookmarksSlice = createSlice({
 				return group
 			})
 		},
-		addGroup: (state, action: { payload: BookmarkGroup }) => {
+		addGroup: (state, action: { payload: BookmarkData }) => {
 			const { payload } = action
 
 			return [...state, payload]
@@ -148,12 +142,12 @@ export const bookmarksSlice = createSlice({
 		deleteGroup: (state, action: { payload: string }) => {
 			const { payload } = action
 
-			return state.filter((group: BookmarkGroup) => group.id !== payload)
+			return state.filter((group: BookmarkData) => group.id !== payload)
 		},
-		editGroup: (state, action: { payload: BookmarkGroup }) => {
+		editGroup: (state, action: { payload: BookmarkData }) => {
 			const { payload } = action
 
-			return state.map((group: BookmarkGroup) => {
+			return state.map((group: BookmarkData) => {
 				if (group.id === payload.id) {
 					return payload
 				}
@@ -163,4 +157,5 @@ export const bookmarksSlice = createSlice({
 	},
 })
 
-export const { addBookmark } = bookmarksSlice.actions
+export const { addBookmark, removeBookmark, editBookmark, addGroup, deleteGroup, editGroup } =
+	bookmarksSlice.actions
