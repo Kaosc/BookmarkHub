@@ -4,7 +4,7 @@ export default function Bookmark({ bookmark }: { bookmark: Bookmark }) {
 	return (
 		<div
 			key={id}
-			className="flex flex-col items-center justify-center w-16 p-1 mx-2 "
+			className="flex flex-col items-center justify-center w-16 p-1 mx-2 mt-2"
 		>
 			<a
 				href={url}

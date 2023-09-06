@@ -37,7 +37,7 @@ export default function BookmarkForm({
 
 		let bookmark: Bookmark = {
 			id: nanoid(),
-			favicon: "https://icons-for-free.com/iconfiles/png/512/placeholder-1324760545462884964.png",
+			favicon: require("../assets/placeholder-favicon.png"),
 			title: title,
 			url: url,
 		}
@@ -46,14 +46,14 @@ export default function BookmarkForm({
 		try {
 			await getLinkPreview(url, {
 				headers: {
-					"user-agent": "Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)",
+					"user-agent": "Slackbot-LinkExpanding 1.0 (+https://api.slack.com/robots)",
 					"Access-Control-Allow-Origin": "*",
 				},
+				proxyUrl: "https://cors-anywhere.herokuapp.com/",
 				imagesPropertyType: "og",
 				followRedirects: "follow",
 				timeout: 10000,
 			}).then((data) => {
-				console.log(data)
 				if (data.favicons.length > 1) {
 					bookmark.favicon = data.favicons[-1]
 				} else {
