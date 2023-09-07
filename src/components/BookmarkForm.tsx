@@ -1,23 +1,21 @@
 import React from "react"
-import { useDispatch, useSelector } from "react-redux"
-import { addBookmark } from "../redux/features/bookmarkSlice"
+import Select from "react-select"
 import { nanoid } from "nanoid"
 import { getLinkPreview } from "link-preview-js"
-import Select from "react-select"
 
-export default function BookmarkForm({
-	handleAddButtonClick,
-	initGroupId,
-}: {
-	handleAddButtonClick: () => void
-	initGroupId?: string
-}) {
+import { useDispatch, useSelector } from "react-redux"
+import { addBookmark, editBookmark } from "../redux/features/bookmarkSlice"
+
+import { iconPlaceHolder } from "../utils/constants"
+import { setGroupId, toggleForm } from "../redux/features/formSlice"
+
+export default function BookmarkForm() {
+	const { visible, groupId, prevBookmark } = useSelector((state: StoreRootState) => state.form)
 	const bookmarks = useSelector((state: StoreRootState) => state.bookmarks)
 	const dispatch = useDispatch()
-	
-	const [title, setTitle] = React.useState("")
-	const [url, setUrl] = React.useState("")
-	const [groupID, setGroupID] = React.useState(initGroupId || "default")
+
+	const [title, setTitle] = React.useState(prevBookmark?.title || "")
+	const [url, setUrl] = React.useState(prevBookmark?.url || "")
 	const [loading, setLoading] = React.useState(false)
 
 	const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,21 +27,14 @@ export default function BookmarkForm({
 	}
 
 	const handleGroupChange = (option: any) => {
-		setGroupID(option.value)
+		dispatch(setGroupId({ groupId: option.value }))
 	}
 
-	const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
-		e.preventDefault()
-		setLoading(true)
+	const fetchFavicon = async (url: string): Promise<string> => {
+		let favicon = require("../assets/placeholder-favicon.png")
 
-		let bookmark: Bookmark = {
-			id: nanoid(),
-			favicon: require("../assets/placeholder-favicon.png"),
-			title: title,
-			url: url,
-		}
+		if (!url.startsWith("http") || !url.startsWith("https")) return favicon
 
-		// get link favicon
 		try {
 			await getLinkPreview(url, {
 				headers: {
@@ -56,29 +47,67 @@ export default function BookmarkForm({
 				timeout: 10000,
 			}).then((data) => {
 				if (data.favicons.length > 1) {
-					bookmark.favicon = data.favicons[-1]
+					favicon = data.favicons[-1]
 				} else {
-					bookmark.favicon = data.favicons[0]
+					favicon = data.favicons[0]
 				}
 			})
 		} catch (error) {
 			console.log(error)
 		}
 
-		dispatch(addBookmark({ bookmark: bookmark, groupId: groupID }))
-		handleAddButtonClick()
-		clearForm()
+		return favicon
+	}
+
+	const handleEdit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault()
+		setLoading(true)
+
+		let bookmark: Bookmark = {
+			id: prevBookmark?.id || nanoid(),
+			favicon: prevBookmark?.favicon || iconPlaceHolder,
+			title: title,
+			url: url,
+		}
+
+		if (prevBookmark?.url !== url) {
+			bookmark.favicon = await fetchFavicon(url)
+		}
+
+		dispatch(editBookmark({ bookmark: bookmark, groupId: groupId }))
+		quitFrom()
+	}
+
+	const handleSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault()
+		setLoading(true)
+
+		let bookmark: Bookmark = {
+			id: nanoid(),
+			favicon: iconPlaceHolder,
+			title: title,
+			url: url,
+		}
+
+		bookmark.favicon = await fetchFavicon(url)
+
+		dispatch(addBookmark({ bookmark: bookmark, groupId: groupId }))
+		quitFrom()
+	}
+
+	const quitFrom = () => {
+		setTitle("")
+		setUrl("")
+		dispatch(toggleForm({ groupId: "default-group" }))
 		setLoading(false)
 	}
 
-	const clearForm = () => {
-		setTitle("")
-		setUrl("")
-		setGroupID("default")
-	}
-
 	return (
-		<div className="absolute flex flex-col bg-[#000000af] items-center justify-center w-[450px] h-[550px]">
+		<div
+			className={`absolute flex-col bg-[#000000af] items-center justify-center w-[430px] h-[550px] z-20 ${
+				visible ? "flex" : "hidden"
+			}`}
+		>
 			<div className="flex flex-col w-3/4 bg-gradient-to-b from-zinc-700 to-zinc-800 p-5 rounded-lg">
 				<h1 className="text-2xl text-white font-bold mb-4">
 					{loading ? "Hold on a sec..." : "Add Bookmark"}
@@ -90,6 +119,7 @@ export default function BookmarkForm({
 				) : (
 					<form className="flex flex-col items-center justify-center">
 						<input
+							value={title}
 							className="w-full h-11 mb-4 bg-transparent transition-all duration-300 ease-in-out text-white
                         border-[0.5px] border-[#757575] outline-none pl-2 
                         hover:border-white
@@ -99,6 +129,7 @@ export default function BookmarkForm({
 							onChange={handleTitleChange}
 						/>
 						<input
+							value={url}
 							className="w-full h-11  mb-4 bg-transparent transition-all duration-300 ease-in-out text-white
                         border-[0.5px] border-[#757575] outline-none pl-2 
                         hover:border-white
@@ -172,16 +203,16 @@ export default function BookmarkForm({
 							<button
 								className="ring-1 ring-[#a5a5a5] rounded-md px-4 py-1 text-[#a5a5a5] hover:bg-[#cecece] hover:text-black transition-all duration-100 ease-in-out mr-3"
 								type="reset"
-								onClick={handleAddButtonClick}
+								onClick={quitFrom}
 							>
 								Cancel
 							</button>
 							<button
 								className="ring-1 ring-white rounded-md px-4 py-1 text-white hover:bg-[#cecece] hover:text-black transition-all duration-100 ease-in-out"
 								type="submit"
-								onClick={handleSubmit}
+								onClick={prevBookmark ? handleEdit : handleSubmit}
 							>
-								Add
+								{prevBookmark ? "Save" : "Add"}
 							</button>
 						</div>
 					</form>

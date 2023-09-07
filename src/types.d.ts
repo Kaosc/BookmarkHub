@@ -13,6 +13,13 @@ type Bookmark = {
 	favicon: string
 }
 
+type Form = {
+	visible?: boolean
+	groupId: string
+	prevBookmark?: Bookmark
+}
+
 interface StoreRootState {
 	bookmarks: BookmarkGroups
+	form: Form
 }

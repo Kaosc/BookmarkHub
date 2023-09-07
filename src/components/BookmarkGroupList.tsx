@@ -1,29 +1,23 @@
-import BookmarkForm from "../components/BookmarkForm"
-import { useState } from "react"
 import { IoIosAdd } from "react-icons/io"
 import { useDroppable } from "@dnd-kit/core"
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable"
 import Bookmark from "./Bookmark"
+import { useDispatch } from "react-redux"
+import { toggleForm } from "../redux/features/formSlice"
 
 export default function BookmarkGroupList({ bookmarkData }: { bookmarkData: BookmarkData }) {
-	const [formVisible, setFormVisible] = useState(false)
+	const dispatch = useDispatch()
 
 	const { setNodeRef } = useDroppable({
 		id: bookmarkData.id,
 	})
 
-	const formVisibleHandler = () => {
-		setFormVisible((prev) => !prev)
+	const openForm = () => {
+		dispatch(toggleForm({ groupId: bookmarkData.id }))
 	}
 
 	return (
 		<>
-			{formVisible && (
-				<BookmarkForm
-					handleAddButtonClick={formVisibleHandler}
-					initGroupId={bookmarkData.id}
-				/>
-			)}
 			<SortableContext
 				id={bookmarkData.id}
 				items={bookmarkData.bookmarks}
@@ -33,7 +27,7 @@ export default function BookmarkGroupList({ bookmarkData }: { bookmarkData: Book
 					<h1 className="py-2 text-base font-bold text-center text-white">{bookmarkData.title}</h1>
 					<button
 						className="flex items-center justify-center hover:opacity-50 hover:animate-pulse"
-						onClick={() => formVisibleHandler()}
+						onClick={openForm}
 					>
 						<IoIosAdd
 							size={30}
@@ -48,6 +42,7 @@ export default function BookmarkGroupList({ bookmarkData }: { bookmarkData: Book
 					{bookmarkData.bookmarks.map((bookmark) => (
 						<Bookmark
 							key={bookmark.id}
+							groupId={bookmarkData.id}
 							bookmark={bookmark}
 						/>
 					))}

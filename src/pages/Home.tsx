@@ -2,20 +2,19 @@ import { useSelector, useDispatch } from "react-redux"
 import {
 	DndContext,
 	DragOverlay,
-	closestCorners,
 	KeyboardSensor,
 	PointerSensor,
 	useSensor,
 	useSensors,
 	DragEndEvent,
 	DragOverEvent,
+	TouchSensor,
 } from "@dnd-kit/core"
 import BookmarkGroupList from "../components/BookmarkGroupList"
 import { useState } from "react"
 import { editGroup } from "../redux/features/bookmarkSlice"
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 import Bookmark from "../components/Bookmark"
-import { measureMemory } from "vm"
 
 export default function Home() {
 	const bookmarkGroups = useSelector((state: StoreRootState) => state.bookmarks)
@@ -23,9 +22,20 @@ export default function Home() {
 	const [activeBookmark, setActiveBookmark] = useState<Bookmark>()
 
 	const sensors = useSensors(
-		useSensor(PointerSensor),
+		useSensor(PointerSensor, {
+			activationConstraint: {
+				delay: 100,
+				tolerance: 5,
+			},
+		}),
 		useSensor(KeyboardSensor, {
 			coordinateGetter: sortableKeyboardCoordinates,
+		}),
+		useSensor(TouchSensor, {
+			activationConstraint: {
+				delay: 100,
+				tolerance: 5,
+			},
 		}),
 	)
 
@@ -43,9 +53,6 @@ export default function Home() {
 
 	const handleDragOver = (event: DragOverEvent) => {
 		const { active, over } = event
-
-		console.log(active)
-		console.log(over)
 
 		const activeBookmarkId = active.id
 		const activeBookmarkGroupId = active.data.current?.sortable.containerId || activeBookmarkId
@@ -149,7 +156,14 @@ export default function Home() {
 						bookmarkData={bookmarkData}
 					/>
 				))}
-				<DragOverlay>{activeBookmark ? <Bookmark bookmark={activeBookmark} /> : null}</DragOverlay>
+				<DragOverlay>
+					{activeBookmark ? (
+						<Bookmark
+							opacity="opacity-50"
+							bookmark={activeBookmark}
+						/>
+					) : null}
+				</DragOverlay>
 			</DndContext>
 		</main>
 	)
