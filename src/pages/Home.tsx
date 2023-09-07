@@ -15,6 +15,7 @@ import { useState } from "react"
 import { editGroup } from "../redux/features/bookmarkSlice"
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 import Bookmark from "../components/Bookmark"
+import { measureMemory } from "vm"
 
 export default function Home() {
 	const bookmarkGroups = useSelector((state: StoreRootState) => state.bookmarks)
@@ -43,11 +44,16 @@ export default function Home() {
 	const handleDragOver = (event: DragOverEvent) => {
 		const { active, over } = event
 
+		console.log(active)
+		console.log(over)
+
 		const activeBookmarkId = active.id
-		const activeBookmarkGroupId = active.data.current?.sortable.containerId
+		const activeBookmarkGroupId = active.data.current?.sortable.containerId || activeBookmarkId
 
 		const overBookmarkId = over?.id
-		const overBookmarkGroupId = over?.data.current?.sortable.containerId
+		const overBookmarkGroupId = over?.data.current?.sortable.containerId || overBookmarkId
+
+		console.log(activeBookmarkGroupId, overBookmarkGroupId)
 
 		if (!activeBookmarkId || !overBookmarkId || activeBookmarkGroupId === overBookmarkGroupId) {
 			return
@@ -98,24 +104,24 @@ export default function Home() {
 
 	const handleDragEnd = (event: DragEndEvent) => {
 		const { active, over } = event
-		console.log(active)
-		console.log(over)
+
 		const activeBookmarkIndex = active.data.current?.sortable.index
 
 		const overBookmarkIndex = over?.data.current?.sortable.index
 		const overBookmarkGroupId = over?.data.current?.sortable.containerId
 		const overBookmarkGroup = bookmarkGroups.find((group) => group.id === overBookmarkGroupId)
 
-		console.log(overBookmarkIndex)
-
-		if (!activeBookmarkIndex || !overBookmarkIndex || activeBookmarkIndex === overBookmarkIndex) {
+		if (
+			!activeBookmarkIndex !== undefined &&
+			overBookmarkIndex === undefined &&
+			activeBookmarkIndex === overBookmarkIndex
+		) {
 			return
 		}
 
 		if (overBookmarkGroup) {
-			console.log(overBookmarkGroup.bookmarks)
 			const newGroup = arrayMove(overBookmarkGroup.bookmarks, activeBookmarkIndex, overBookmarkIndex)
-			console.log(newGroup)
+
 			dispatch(
 				editGroup({
 					id: overBookmarkGroupId,
