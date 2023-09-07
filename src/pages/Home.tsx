@@ -138,7 +138,6 @@ export default function Home() {
 		<main className="overflow-y-auto">
 			<DndContext
 				sensors={sensors}
-				collisionDetection={closestCorners}
 				onDragStart={handleDragStart}
 				onDragEnd={handleDragEnd}
 				onDragOver={handleDragOver}

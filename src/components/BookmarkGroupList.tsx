@@ -24,37 +24,35 @@ export default function BookmarkGroupList({ bookmarkData }: { bookmarkData: Book
 					initGroupId={bookmarkData.id}
 				/>
 			)}
-			<section className="flex flex-col items-center justify-center w-full">
-				<SortableContext
-					id={bookmarkData.id}
-					items={bookmarkData.bookmarks}
-					strategy={rectSortingStrategy}
-				>
-					<div
-						ref={setNodeRef}
-						className="flex flex-wrap w-full min-h-[100px] bg-[#353535]"
+			<SortableContext
+				id={bookmarkData.id}
+				items={bookmarkData.bookmarks}
+				strategy={rectSortingStrategy}
+			>
+				<div className="flex w-full items-center justify-between px-2 bg-gradient-to-r from-zinc-900 to-zinc-950 transition-all ease-in-out">
+					<h1 className="py-2 text-base font-bold text-center text-white">{bookmarkData.title}</h1>
+					<button
+						className="flex items-center justify-center hover:opacity-50 hover:animate-pulse"
+						onClick={() => formVisibleHandler()}
 					>
-						<div className="flex w-full items-center justify-between px-2 bg-gradient-to-r from-zinc-800 to-zinc-700 transition-all ease-in-out">
-							<h1 className="py-2 text-base font-bold text-center text-white">{bookmarkData.title}</h1>
-							<button
-								className="flex items-center justify-center hover:opacity-50 hover:animate-pulse"
-								onClick={() => formVisibleHandler()}
-							>
-								<IoIosAdd
-									size={30}
-									className="text-white"
-								/>
-							</button>
-						</div>
-						{bookmarkData.bookmarks.map((bookmark) => (
-							<Bookmark
-								key={bookmark.id}
-								bookmark={bookmark}
-							/>
-						))}
-					</div>
-				</SortableContext>
-			</section>
+						<IoIosAdd
+							size={30}
+							className="text-white"
+						/>
+					</button>
+				</div>
+				<div
+					ref={setNodeRef}
+					className="flex flex-wrap w-full min-h-[100px]"
+				>
+					{bookmarkData.bookmarks.map((bookmark) => (
+						<Bookmark
+							key={bookmark.id}
+							bookmark={bookmark}
+						/>
+					))}
+				</div>
+			</SortableContext>
 		</>
 	)
 }

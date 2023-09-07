@@ -12,7 +12,7 @@ export default function App() {
 	}, [bookmarks])
 
 	return (
-		<main className="flex bg-gradient-to-r from-zinc-950 to-zinc-900">
+		<main className="flex bg-gradient-to-r from-zinc-950 to-black">
 			<Navbar />
 			<Home />
 		</main>
