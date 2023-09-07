@@ -17,7 +17,7 @@ export default function Bookmark({ bookmark }: { bookmark: Bookmark }) {
 			style={style}
 			{...listeners}
 			{...attributes}
-			className="flex flex-col items-center justify-center w-16 p-1 mx-2 mt-2"
+			className="flex flex-col items-center justify-center w-16 p-1 mx-2 mt-2 transition-all duration-300"
 		>
 			<a
 				href={url}

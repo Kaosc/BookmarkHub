@@ -2,7 +2,7 @@ import BookmarkForm from "../components/BookmarkForm"
 import { useState } from "react"
 import { IoIosAdd } from "react-icons/io"
 import { useDroppable } from "@dnd-kit/core"
-import { SortableContext, verticalListSortingStrategy } from "@dnd-kit/sortable"
+import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable"
 import Bookmark from "./Bookmark"
 
 export default function BookmarkGroupList({ bookmarkData }: { bookmarkData: BookmarkData }) {
@@ -40,11 +40,11 @@ export default function BookmarkGroupList({ bookmarkData }: { bookmarkData: Book
 				<SortableContext
 					id={bookmarkData.id}
 					items={bookmarkData.bookmarks}
-					strategy={verticalListSortingStrategy}
+					strategy={rectSortingStrategy}
 				>
 					<div
 						ref={setNodeRef}
-						className="flex flex-wrap items-center justify-center w-full"
+						className="flex flex-wrap w-full h-44 bg-white"
 					>
 						{bookmarkData.bookmarks.map((bookmark) => (
 							<Bookmark

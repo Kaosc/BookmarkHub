@@ -154,8 +154,18 @@ export const bookmarksSlice = createSlice({
 				return group
 			})
 		},
+		setBookmarkGroups: (_, action: { payload: BookmarkGroups }) => {
+			return action.payload
+		},
 	},
 })
 
-export const { addBookmark, removeBookmark, editBookmark, addGroup, deleteGroup, editGroup } =
-	bookmarksSlice.actions
+export const {
+	addBookmark,
+	removeBookmark,
+	editBookmark,
+	addGroup,
+	deleteGroup,
+	editGroup,
+	setBookmarkGroups,
+} = bookmarksSlice.actions

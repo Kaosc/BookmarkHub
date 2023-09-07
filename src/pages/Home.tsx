@@ -8,23 +8,18 @@ import {
 	useSensor,
 	useSensors,
 	DragEndEvent,
+	DragOverEvent,
 } from "@dnd-kit/core"
 import BookmarkGroupList from "../components/BookmarkGroupList"
 import { useState } from "react"
 import { editGroup } from "../redux/features/bookmarkSlice"
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
+import Bookmark from "../components/Bookmark"
 
 export default function Home() {
 	const bookmarkGroups = useSelector((state: StoreRootState) => state.bookmarks)
 	const dispatch = useDispatch()
-	const [activeId, setActiveId] = useState()
-
-	function handleDragStart(event: any) {
-		const { active } = event
-		const { id } = active
-
-		setActiveId(id)
-	}
+	const [activeBookmark, setActiveBookmark] = useState<Bookmark>()
 
 	const sensors = useSensors(
 		useSensor(PointerSensor),
@@ -33,80 +28,115 @@ export default function Home() {
 		}),
 	)
 
+	const handleDragStart = (event: DragEndEvent) => {
+		const { active } = event
+		const { id } = active
+
+		setActiveBookmark(
+			bookmarkGroups
+				.map((group) => group.bookmarks)
+				.flat()
+				.find((bookmark) => bookmark.id === id),
+		)
+	}
+
+	const handleDragOver = (event: DragOverEvent) => {
+		const { active, over } = event
+
+		const activeBookmarkId = active.id
+		const activeBookmarkGroupId = active.data.current?.sortable.containerId
+
+		const overBookmarkId = over?.id
+		const overBookmarkGroupId = over?.data.current?.sortable.containerId
+
+		if (!activeBookmarkId || !overBookmarkId || activeBookmarkGroupId === overBookmarkGroupId) {
+			return
+		}
+
+		const activeBookmarkGroup = bookmarkGroups.find((group) => group.id === activeBookmarkGroupId)
+		const overBookmarkGroup = bookmarkGroups.find((group) => group.id === overBookmarkGroupId)
+
+		if (!overBookmarkGroup || !activeBookmarkGroup) return
+
+		const activeBookmarkIndex = activeBookmarkGroup.bookmarks.findIndex(
+			(bookmark) => bookmark.id === activeBookmarkId,
+		)
+
+		if (activeBookmarkIndex === -1) {
+			return
+		}
+
+		const updatedActiveGroup = {
+			...activeBookmarkGroup,
+			bookmarks: [
+				...activeBookmarkGroup.bookmarks.slice(0, activeBookmarkIndex),
+				...activeBookmarkGroup.bookmarks.slice(activeBookmarkIndex + 1),
+			],
+		}
+
+		const updatedOverGroup = {
+			...overBookmarkGroup,
+			bookmarks: [...overBookmarkGroup.bookmarks, activeBookmarkGroup.bookmarks[activeBookmarkIndex]],
+		}
+
+		dispatch(
+			editGroup({
+				id: activeBookmarkGroupId,
+				title: updatedActiveGroup.title,
+				bookmarks: updatedActiveGroup.bookmarks,
+			}),
+		)
+
+		dispatch(
+			editGroup({
+				id: overBookmarkGroupId,
+				title: updatedOverGroup.title,
+				bookmarks: updatedOverGroup.bookmarks,
+			}),
+		)
+	}
+
+	const handleDragEnd = (event: DragEndEvent) => {
+		const { active, over } = event
+		console.log(active)
+		console.log(over)
+		const activeBookmarkIndex = active.data.current?.sortable.index
+
+		const overBookmarkIndex = over?.data.current?.sortable.index
+		const overBookmarkGroupId = over?.data.current?.sortable.containerId
+		const overBookmarkGroup = bookmarkGroups.find((group) => group.id === overBookmarkGroupId)
+
+		console.log(overBookmarkIndex)
+
+		if (!activeBookmarkIndex || !overBookmarkIndex || activeBookmarkIndex === overBookmarkIndex) {
+			return
+		}
+
+		if (overBookmarkGroup) {
+			console.log(overBookmarkGroup.bookmarks)
+			const newGroup = arrayMove(overBookmarkGroup.bookmarks, activeBookmarkIndex, overBookmarkIndex)
+			console.log(newGroup)
+			dispatch(
+				editGroup({
+					id: overBookmarkGroupId,
+					title: overBookmarkGroup.title,
+					bookmarks: newGroup,
+				}),
+			)
+		}
+
+		setActiveBookmark(undefined)
+	}
+
 	return (
-		<main>
+		<main className="overflow-y-auto">
 			<DndContext
 				sensors={sensors}
 				collisionDetection={closestCorners}
 				onDragStart={handleDragStart}
-				onDragEnd={(event: DragEndEvent) => {
-					const { active, over } = event
-
-					// active output
-					// {
-					// 	id: 'default-2',
-					// 	data: {
-					// 	  current: {
-					// 		 sortable: {
-					// 			containerId: 'default-group',
-					// 			index: 1,
-					// 			items: [ 'default-1', 'default-2', 'default-3' ]
-					// 		 }
-					// 	  }
-					// 	},
-					// 	rect: {
-					// 	  current: {
-					// 		 initial: {
-					// 			top: 185,
-					// 			left: 193,
-					// 			width: 64,
-					// 			height: 0,
-					// 			bottom: 185,
-					// 			right: 257
-					// 		 },
-					// 		 translated: {
-					// 			top: 66,
-					// 			left: 139,
-					// 			width: 64,
-					// 			height: 0,
-					// 			bottom: 66,
-					// 			right: 203
-					// 		 }
-					// 	  }
-					// 	}
-					//  }
-
-					// over output
-					// {
-					// 	id: 'pinned-1',
-					// 	rect: Rect {
-					// 	  width: 64,
-					// 	  height: 65,
-					// 	  top: 72,
-					// 	  bottom: 137,
-					// 	  right: 177,
-					// 	  left: 113,
-					// 	  rect: {
-					// 		 top: 72,
-					// 		 left: 113,
-					// 		 width: 64,
-					// 		 height: 65,
-					// 		 bottom: 137,
-					// 		 right: 177
-					// 	  }
-					// 	},
-					// 	data: {
-					// 	  current: {
-					// 		 sortable: {
-					// 			containerId: 'pinned-group',
-					// 			index: 0,
-					// 			items: [ 'pinned-1', 'pinned-2', 'pinned-3' ]
-					// 		 }
-					// 	  }
-					// 	},
-					// 	disabled: false
-					//  }
-				}}
+				onDragEnd={handleDragEnd}
+				onDragOver={handleDragOver}
+				autoScroll
 			>
 				{bookmarkGroups.map((bookmarkData) => (
 					<BookmarkGroupList
@@ -114,7 +144,7 @@ export default function Home() {
 						bookmarkData={bookmarkData}
 					/>
 				))}
-				<DragOverlay>{activeId ? <div></div> : null}</DragOverlay>
+				<DragOverlay>{activeBookmark ? <Bookmark bookmark={activeBookmark} /> : null}</DragOverlay>
 			</DndContext>
 		</main>
 	)
