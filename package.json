@@ -33,7 +33,6 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "@types/react-beautiful-dnd": "^13.1.4",
     "tailwindcss": "^3.3.3",
     "tailwindcss-animate": "^1.0.7"
   },

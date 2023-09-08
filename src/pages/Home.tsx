@@ -1,4 +1,5 @@
-import { useSelector, useDispatch } from "react-redux"
+import { useState } from "react"
+
 import {
 	DndContext,
 	DragOverlay,
@@ -10,10 +11,12 @@ import {
 	DragOverEvent,
 	TouchSensor,
 } from "@dnd-kit/core"
-import BookmarkGroupList from "../components/BookmarkGroupList"
-import { useState } from "react"
-import { editGroup } from "../redux/features/bookmarkSlice"
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
+
+import { useSelector, useDispatch } from "react-redux"
+import { editGroup } from "../redux/features/bookmarkSlice"
+
+import BookmarkGroupList from "../components/BookmarkGroupList"
 import Bookmark from "../components/Bookmark"
 
 export default function Home() {
@@ -42,7 +45,7 @@ export default function Home() {
 	const handleDragStart = (event: DragEndEvent) => {
 		const { active } = event
 		const { id } = active
-
+		console.log(id)
 		setActiveBookmark(
 			bookmarkGroups
 				.map((group) => group.bookmarks)
@@ -156,7 +159,12 @@ export default function Home() {
 						bookmarkData={bookmarkData}
 					/>
 				))}
-				<DragOverlay>
+				<DragOverlay
+					transition={undefined}
+					style={{ pointerEvents: "none" }}
+					className={"absolute z-50"}
+					adjustScale={false}
+				>
 					{activeBookmark ? (
 						<Bookmark
 							opacity="opacity-50"

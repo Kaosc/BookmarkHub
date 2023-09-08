@@ -1,29 +1,55 @@
 import { createSlice } from "@reduxjs/toolkit"
 
-const initialState = {
+const defaultFormState: Form = {
 	visible: false,
-	groupId: "",
-	prevBookmark: null,
+	mode: "addBookmark",
+	group: {
+		id: "default",
+		title: "Bookmark Hub",
+	},
+	prevBookmark: undefined,
 }
 
 export const formSlice = createSlice({
 	name: "bookmarks",
-	initialState: initialState,
+	initialState: defaultFormState,
 	reducers: {
-		toggleForm: (state, action) => {
+		toggleForm: (
+			state,
+			action: {
+				payload: {
+					mode: FormMode
+					group?: GroupInfo
+				}
+			},
+		) => {
 			return {
 				...state,
 				visible: !state.visible,
-				groupId: action.payload.groupId,
+				mode: action.payload.mode,
+				group: {
+					id: action.payload.group?.id || "default",
+					title: action.payload.group?.title || "Default",
+				},
 			}
 		},
-		setGroupId: (state, action) => {
-			state.groupId = action.payload
+		setFormGroup: (state, action) => {
+			return {
+				...state,
+				group: {
+					id: action.payload.id,
+					title: action.payload.title,
+				},
+			}
 		},
-		setPrevBookmark: (state, action) => {
-			state.prevBookmark = action.payload
+		setFormBookmark: (state, action) => {
+			return {
+				...state,
+				prevBookmark: action.payload,
+			}
 		},
+		resetFrom: () => defaultFormState,
 	},
 })
 
-export const { toggleForm, setGroupId, setPrevBookmark } = formSlice.actions
+export const { toggleForm, setFormGroup, setFormBookmark, resetFrom } = formSlice.actions

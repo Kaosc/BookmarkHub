@@ -1,57 +1,10 @@
 import { createSlice } from "@reduxjs/toolkit"
+
 import { getBookmarks } from "../../utils/localStorage"
+import { InitialBookmarks } from "../../data/InitialBookmarks"
 
 const setInitialState = () => {
-	const initialState: BookmarkGroups = [
-		{
-			id: "pinned-group",
-			title: "Pinned",
-			bookmarks: [
-				{
-					id: "pinned-1",
-					title: "Google",
-					url: "https://google.com",
-					favicon: "https://www.google.com/favicon.ico",
-				},
-				{
-					id: "pinned-2",
-					title: "Google Translate",
-					url: "https://translate.google.com",
-					favicon: "https://translate.google.com/favicon.ico",
-				},
-				{
-					id: "pinned-3",
-					title: "Kaosc",
-					url: "https://kaosc.vercel.app",
-					favicon: "https://kaosc.vercel.app/favicon.ico",
-				},
-			],
-		},
-		{
-			id: "default-group",
-			title: "Default",
-			bookmarks: [
-				{
-					id: "default-1",
-					title: "Material UI",
-					url: "https://material-ui.com",
-					favicon: "https://material-ui.com/static/favicon.ico",
-				},
-				{
-					id: "default-2",
-					title: "React",
-					url: "https://reactjs.org",
-					favicon: "https://reactjs.org/favicon.ico",
-				},
-				{
-					id: "default-3",
-					title: "Kavaklakerda",
-					url: "https://kavaklakerda.vercel.app",
-					favicon: "https://kavaklakerda.vercel.app/favicon.ico",
-				},
-			],
-		},
-	]
+	const initialState: BookmarkGroups = InitialBookmarks
 
 	const localBookmarks = getBookmarks()
 
@@ -87,7 +40,7 @@ export const bookmarksSlice = createSlice({
 				return group
 			})
 		},
-		removeBookmark: (
+		deleteBookmark: (
 			state,
 			action: {
 				payload: {
@@ -154,6 +107,18 @@ export const bookmarksSlice = createSlice({
 				return group
 			})
 		},
+		editGroupTitle: (state, action: { payload: { id: string; title: string } }) => {
+			const { payload } = action
+			return state.map((group: BookmarkData) => {
+				if (group.id === payload.id) {
+					return {
+						...group,
+						title: payload.title,
+					}
+				}
+				return group
+			})
+		},
 		setBookmarkGroups: (_, action: { payload: BookmarkGroups }) => {
 			return action.payload
 		},
@@ -162,10 +127,11 @@ export const bookmarksSlice = createSlice({
 
 export const {
 	addBookmark,
-	removeBookmark,
+	deleteBookmark,
 	editBookmark,
 	addGroup,
 	deleteGroup,
 	editGroup,
+	editGroupTitle,
 	setBookmarkGroups,
 } = bookmarksSlice.actions

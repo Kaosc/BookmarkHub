@@ -1,3 +1,8 @@
+interface StoreRootState {
+	bookmarks: BookmarkGroups
+	form: Form
+}
+
 type BookmarkGroups = BookmarkData[]
 
 interface BookmarkData {
@@ -15,11 +20,14 @@ type Bookmark = {
 
 type Form = {
 	visible?: boolean
-	groupId: string
-	prevBookmark?: Bookmark
+	group?: GroupInfo
+	mode: FormMode
+	prevBookmark?: Bookmark | undefined
 }
 
-interface StoreRootState {
-	bookmarks: BookmarkGroups
-	form: Form
+type GroupInfo = {
+	id: string
+	title: string
 }
+
+type FormMode = "addBookmark" | "editBookmark" | "addGroup" | "editGroup"
