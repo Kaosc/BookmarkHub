@@ -1,10 +1,13 @@
-import { IoIosAdd } from "react-icons/io"
-import { useDroppable } from "@dnd-kit/core"
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable"
-import Bookmark from "./Bookmark"
+import { useDroppable } from "@dnd-kit/core"
+
+import { IoIosAdd } from "react-icons/io"
+import { AiFillEdit } from "react-icons/ai"
+
 import { useDispatch } from "react-redux"
 import { toggleForm } from "../redux/features/formSlice"
-import { AiFillEdit } from "react-icons/ai"
+
+import Bookmark from "./Bookmark"
 
 export default function BookmarkGroupList({ bookmarkData }: { bookmarkData: BookmarkData }) {
 	const isGroupDefault = bookmarkData.id === "default"
@@ -23,14 +26,19 @@ export default function BookmarkGroupList({ bookmarkData }: { bookmarkData: Book
 	}
 
 	return (
-		<>
-			<SortableContext
-				id={bookmarkData.id}
-				items={bookmarkData.bookmarks}
-				strategy={rectSortingStrategy}
+		<SortableContext
+			id={bookmarkData.id}
+			items={bookmarkData.bookmarks}
+			strategy={rectSortingStrategy}
+		>
+			<div
+				ref={setNodeRef}
+				className="flex flex-wrap w-full "
 			>
 				<div className="flex w-full items-center justify-between px-2 bg-gradient-to-r from-zinc-900 to-zinc-950 transition-all ease-in-out">
-					<h1 className="py-2 text-base font-bold text-center text-white">{bookmarkData.title === "default" ? "Bookmark Hub" : bookmarkData.title}</h1>
+					<h1 className="py-2 text-base font-bold text-center text-white">
+						{bookmarkData.title === "default" ? "Bookmark Hub" : bookmarkData.title}
+					</h1>
 					<div className="flex">
 						{!isGroupDefault && (
 							<button
@@ -54,22 +62,17 @@ export default function BookmarkGroupList({ bookmarkData }: { bookmarkData: Book
 						</button>
 					</div>
 				</div>
-				<div
-					ref={setNodeRef}
-					className="flex flex-wrap w-full min-h-[100px]"
-				>
-					{bookmarkData.bookmarks.map((bookmark) => (
-						<Bookmark
-							key={bookmark.id}
-							group={{
-								id: bookmarkData.id,
-								title: bookmarkData.title,
-							}}
-							bookmark={bookmark}
-						/>
-					))}
-				</div>
-			</SortableContext>
-		</>
+				{bookmarkData.bookmarks.map((bookmark) => (
+					<Bookmark
+						key={bookmark.id}
+						group={{
+							id: bookmarkData.id,
+							title: bookmarkData.title,
+						}}
+						bookmark={bookmark}
+					/>
+				))}
+			</div>
+		</SortableContext>
 	)
 }

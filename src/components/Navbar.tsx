@@ -17,48 +17,49 @@ export default function Navbar() {
 		dispatch(toggleForm({ mode: "addGroup" }))
 	}
 
-
 	const texts = {
 		addBookmark: "Add Bookmark",
 		addGroup: "Add Group",
 	}
 
 	return (
-		<div className="sticky flex items-center justify-between w-full h-16 px-4 bg-gradient-to-r from-zinc-900 to-zinc-950">
+		<div className="z-20 sticky flex items-center justify-between w-full h-16 px-4 bg-gradient-to-r from-zinc-900 to-zinc-950">
 			<div className="flex items-center">
 				<BsFillBookmarkFill
 					size={20}
-					className="text-white"
+					className="text-white mt-[7px]"
 				/>
-				<h1 className="text-2xl font-bold text-white ml-3">Search</h1>
+				<h1 className="text-2xl font-bold text-white ml-3">[Search]</h1>
 			</div>
 
-			<div className="group flex items-center justify-center">
-				<button className="flex items-center justify-center hover:opacity-50 hover:animate-pulse mr-3">
-					<IoMdMenu
-						size={30}
-						className="text-white"
-					/>
-				</button>
+			<div className="flex items-center justify-center">
+				<div className="group">
+					<button className="flex items-center justify-center hover:opacity-50 hover:animate-pulse mr-3">
+						<IoMdMenu
+							size={30}
+							className="text-white"
+						/>
+					</button>
 
-				{/* //dropdown */}
-				<div
-					className="z-10 absolute right-10 top-10 flex flex-col items-center w-[130px] rounded-lg p-2 bg-zinc-700 opacity-0
+					{/* dropdown */}
+					<div
+						className="absolute right-10 top-10 flex flex-col items-center w-[130px] rounded-lg p-2 bg-gradient-to-tr from-zinc-900 to-zinc-800 opacity-0
 					transition-all duration-300 invisible group-hover:visible group-hover:opacity-100"
-				>
-					<button
-						onClick={addBookmark}
-						className="flex w-full items-center hover:opacity-50 m-1"
 					>
-						<p className="text-base text-left text-white">{texts.addBookmark}</p>
-					</button>
-					<Divider />
-					<button
-						onClick={addGroup}
-						className="flex w-full items-center hover:opacity-50 m-1"
-					>
-						<p className="text-base text-left text-white">{texts.addGroup}</p>
-					</button>
+						<button
+							onClick={addBookmark}
+							className="flex w-full items-center hover:opacity-50 m-1"
+						>
+							<p className="text-base text-left text-white">{texts.addBookmark}</p>
+						</button>
+						<Divider />
+						<button
+							onClick={addGroup}
+							className="flex w-full items-center hover:opacity-50 m-1"
+						>
+							<p className="text-base text-left text-white">{texts.addGroup}</p>
+						</button>
+					</div>
 				</div>
 
 				<button className="flex items-center justify-center hover:opacity-50 hover:animate-pulse">

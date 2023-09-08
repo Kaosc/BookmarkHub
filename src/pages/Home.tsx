@@ -161,8 +161,8 @@ export default function Home() {
 				))}
 				<DragOverlay
 					transition={undefined}
-					style={{ pointerEvents: "none" }}
-					className={"absolute z-50"}
+					style={{ pointerEvents: "none", animation: "ease-in-out" }}
+					className={"absolute"}
 					adjustScale={false}
 				>
 					{activeBookmark ? (

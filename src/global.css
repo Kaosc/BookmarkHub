@@ -2,6 +2,14 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .input {
+    @apply w-full h-11 mb-4 bg-transparent transition-all duration-300 ease-in-out 
+    text-white border-[0.5px] border-[#757575] outline-none pl-2 
+    hover:border-white focus:scale-[1.02] focus:border-white
+  }
+}
+
 body {
   margin: 0;
   padding: 0;
@@ -16,4 +24,41 @@ main {
   flex-direction: column;
   width: 435px;
   height: 550px;
+}
+
+/* Scrollbar */
+
+* {
+  scroll-behavior: smooth;
+}
+
+* {
+  --scroll-bg: #09090b;
+  --scroll-fg: #18181b;
+  --scroll-fg-hover: #202024;
+}
+
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(#0096C7) var(--scroll-bg);
+}
+
+/* Chrome, Edge, and Safari */
+*::-webkit-scrollbar {
+  width: 13px;
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--scroll-bg);
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--scroll-fg);
+  border-radius: 20px;
+  border: 3px solid var(--scroll-bg);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--scroll-fg-hover);
 }

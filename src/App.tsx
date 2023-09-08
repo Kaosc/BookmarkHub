@@ -1,9 +1,11 @@
 import { useEffect } from "react"
 import { useSelector } from "react-redux"
-import Navbar from "./components/Navbar"
+
 import Home from "./pages/Home"
-import { storeBookmarks } from "./utils/localStorage"
+import Navbar from "./components/Navbar"
 import BookmarkForm from "./components/BookmarkForm"
+
+import { storeBookmarks } from "./utils/localStorage"
 
 export default function App() {
 	const bookmarks = useSelector((state: StoreRootState) => state.bookmarks)

@@ -16,6 +16,7 @@ import {
 
 import { iconPlaceHolder } from "../utils/constants"
 import { resetFrom, setFormGroup } from "../redux/features/formSlice"
+import Button from "./ui/Button"
 
 export default function BookmarkForm() {
 	const bookmarks = useSelector((state: StoreRootState) => state.bookmarks)
@@ -26,6 +27,7 @@ export default function BookmarkForm() {
 	const [url, setUrl] = useState("")
 
 	const [loading, setLoading] = useState(false)
+	const [isSelectInputFocused, setIsSelectInputFocused] = useState(false)
 
 	const dispatch = useDispatch()
 
@@ -203,147 +205,152 @@ export default function BookmarkForm() {
 
 	return (
 		<div
-			className={`absolute flex-col bg-[#000000af] items-center justify-center w-[430px] h-[550px] z-20 ${
+			className={`absolute items-center justify-center flex-col w-[430px] h-[550px] z-20 transition-al ease-in-out bg-[#000000af]  ${
 				visible ? "flex" : "hidden"
-			}`}
+			} `}
 		>
-			<div className="flex flex-col w-3/4 bg-gradient-to-b from-zinc-700 to-zinc-800 p-5 rounded-lg">
-				<FromTitle />
-				{loading ? (
-					<div className="flex flex-col items-center justify-center my-7">
-						<div className="animate-spin rounded-full h-14 w-14 border-b-4 border-gray"></div>
-					</div>
-				) : (
-					<form className="flex flex-col items-center justify-center">
-						{(mode === "editGroup" || mode === "addGroup") && (
-							<input
-								value={groupTitle}
-								className="w-full h-11 mb-4 bg-transparent transition-all duration-300 ease-in-out text-white
-									border-[0.5px] border-[#757575] outline-none pl-2 
-									hover:border-white
-									focus:scale-[1.02] focus:border-white"
-								type="text"
-								placeholder={"Group Title"}
-								onChange={handleGroupGroupNameChange}
-							/>
-						)}
-						{(mode === "addBookmark" || mode === "editBookmark") && (
-							<>
-								<input
-									value={title}
-									className="w-full h-11 mb-4 bg-transparent transition-all duration-300 ease-in-out text-white
-									border-[0.5px] border-[#757575] outline-none pl-2 
-									hover:border-white
-									focus:scale-[1.02] focus:border-white"
-									type="text"
-									placeholder={"Title"}
-									onChange={handleTitleChange}
-								/>
-								<input
-									value={url}
-									className="w-full h-11  mb-4 bg-transparent transition-all duration-300 ease-in-out text-white
-									border-[0.5px] border-[#757575] outline-none pl-2 
-									hover:border-white
-									focus:scale-[1.02] focus:border-white"
-									type="url"
-									placeholder="URL"
-									onChange={handleUrlChange}
-								/>
-								<Select
-									className="w-full mb-4"
-									placeholder="Group"
-									value={group?.id ? { value: group.id, label: group.title } : null}
-									onChange={handleGroupChange}
-									options={bookmarks.map((bookmarkGroup) => ({
-										value: bookmarkGroup.id,
-										label: bookmarkGroup.title,
-									}))}
-									theme={(theme: any) => ({
-										...theme,
-										colors: {
-											...theme.colors,
-											primary25: "#6b6b6b",
-											primary: "#a5a5a5",
-										},
-									})}
-									styles={{
-										control: (provided: any) => ({
-											...provided,
-											backgroundColor: "#3f3f46",
-											borderRadius: 0,
-											borderWidth: 0,
-										}),
-										placeholder: (provided: any) => ({
-											...provided,
-											color: "#ffffff",
-											borderColor: "#3f3f46",
-										}),
-										menu: (provided: any) => ({
-											...provided,
-											backgroundColor: "#3f3f46",
-											color: "#ffffff",
-										}),
-										input: (provided: any) => ({
-											...provided,
-											borderColor: "#3f3f46",
-											borderWidth: 0,
-										}),
-										singleValue: (provided: any) => ({
-											...provided,
-											color: "#ffffff",
-											borderColor: "#3f3f46",
-										}),
-										valueContainer: (provided: any) => ({
-											...provided,
-											backgroundColor: "#3f3f46",
-											color: "#ffffff",
-											borderWidth: 0,
-										}),
-										container: (provided: any) => ({
-											...provided,
-											backgroundColor: "#3f3f46",
-											color: "#ffffff",
-											borderColor: "#3f3f46",
-										}),
-										indicatorsContainer: (provided: any) => ({
-											...provided,
-											backgroundColor: "#3f3f46",
-											color: "#ffffff",
-										}),
-									}}
-								/>
-							</>
-						)}
-						<div className="flex justify-between w-full mt-2">
-							{mode.includes("edit") && (
-								<button
-									className="ring-1 ring-[#fa3737] rounded-md px-2 py-1 text-[#fa3737] hover:bg-[#ee3333] hover:text-black transition-all duration-100 ease-in-out"
-									type="submit"
-									onClick={remove}
-								>
-									Delete
-								</button>
-							)}
-
-							<div className="flex w-full items-center justify-end">
-								<button
-									className="ring-1 ring-[#a5a5a5] rounded-md px-4 py-1 text-[#a5a5a5] hover:bg-[#cecece] hover:text-black transition-all duration-100 ease-in-out mr-3"
-									type="reset"
-									onClick={quitFrom}
-								>
-									Cancel
-								</button>
-								<button
-									className="ring-1 ring-white rounded-md px-4 py-1 text-white hover:bg-[#cecece] hover:text-black transition-all duration-100 ease-in-out"
-									type="submit"
-									onClick={submit}
-								>
-									{mode.includes("edit") ? "Save" : "Add"}
-								</button>
-							</div>
+			<div
+				className={`flex w-full items-center justify-center transition-all ease-in-out ${
+					isSelectInputFocused ? "translate-y-[-40%] duration-300" : "translate-y-0 duration-300"
+				}`}
+			>
+				<div
+					className={`animate-in fade-in-0 slide-in-from-top-20 duration-300 flex-col w-3/4 bg-gradient-to-tr from-zinc-900 to-zinc-800 p-5 rounded-lg`}
+				>
+					<FromTitle />
+					{loading ? (
+						<div className="flex flex-col items-center justify-center my-7">
+							<div className="animate-spin rounded-full h-14 w-14 border-b-4 border-gray"></div>
 						</div>
-					</form>
-				)}
+					) : (
+						<form className="flex flex-col items-center justify-center">
+							{(mode === "editGroup" || mode === "addGroup") && (
+								<input
+									value={groupTitle}
+									className="input"
+									type="text"
+									placeholder={"Group Title"}
+									onChange={handleGroupGroupNameChange}
+								/>
+							)}
+							{(mode === "addBookmark" || mode === "editBookmark") && (
+								<>
+									<input
+										value={title}
+										className="input"
+										type="text"
+										placeholder={"Title"}
+										onChange={handleTitleChange}
+									/>
+									<input
+										value={url}
+										className="input"
+										type="url"
+										placeholder="URL"
+										onChange={handleUrlChange}
+									/>
+									<Select
+										className="w-full mb-4"
+										placeholder="Group"
+										onMenuOpen={() => setIsSelectInputFocused(true)}
+										onMenuClose={() => setIsSelectInputFocused(false)}
+										isSearchable={true}
+										value={group?.id ? { value: group.id, label: group.title } : null}
+										onChange={handleGroupChange}
+										options={bookmarks.map((bookmarkGroup) => ({
+											value: bookmarkGroup.id,
+											label: bookmarkGroup.title,
+										}))}
+										theme={(theme: any) => ({
+											...theme,
+											colors: {
+												...theme.colors,
+												primary25: "#6b6b6b",
+												primary: "#a5a5a5",
+											},
+										})}
+										styles={{
+											control: (provided: any) => ({
+												...provided,
+												backgroundColor: "#3f3f46",
+												borderRadius: 0,
+												borderWidth: 0,
+											}),
+											placeholder: (provided: any) => ({
+												...provided,
+												color: "#9c9c9c",
+												borderColor: "#3f3f46",
+											}),
+											menu: (provided: any) => ({
+												...provided,
+												backgroundColor: "#3f3f46",
+												color: "#ffffff",
+											}),
+											input: (provided: any) => ({
+												...provided,
+												borderColor: "#3f3f46",
+												borderWidth: 0,
+												color: "#ffffff",
+											}),
+											singleValue: (provided: any) => ({
+												...provided,
+												color: "#b9b9b9",
+												borderColor: "#3f3f46",
+											}),
+											valueContainer: (provided: any) => ({
+												...provided,
+												backgroundColor: "#3f3f46",
+												color: "#ffffff",
+												borderWidth: 0,
+											}),
+											container: (provided: any) => ({
+												...provided,
+												backgroundColor: "#3f3f46",
+												color: "#ffffff",
+												borderColor: "#3f3f46",
+											}),
+											indicatorsContainer: (provided: any) => ({
+												...provided,
+												backgroundColor: "#3f3f46",
+												color: "#ffffff",
+											}),
+										}}
+									/>
+								</>
+							)}
+							<div className="flex justify-between w-full mt-2">
+								{/* DELETE */}
+								{mode.includes("edit") && (
+									<Button
+										onClick={remove}
+										{...{ type: "button" }}
+									>
+										Delete
+									</Button>
+								)}
+
+								<div className="flex w-full items-center justify-end">
+									{/* CANCEL */}
+									<Button
+										style={`mr-3`}
+										onClick={quitFrom}
+										{...{ type: "reset" }}
+									>
+										<p>Cancel</p>
+									</Button>
+
+									{/* EDIT & ADD */}
+									<Button
+										onClick={submit}
+										props={{ type: "submit" }}
+									>
+										<p>{mode.includes("edit") ? "Save" : "Add"}</p>
+									</Button>
+								</div>
+							</div>
+						</form>
+					)}
+				</div>
 			</div>
 		</div>
 	)
