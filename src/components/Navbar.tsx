@@ -24,6 +24,16 @@ export default function Navbar() {
 
 	return (
 		<div className="z-20 sticky flex items-center justify-between w-full h-16 px-4 bg-gradient-to-r from-zinc-900 to-zinc-950">
+			<button
+				onClick={() => {
+					localStorage.clear()
+					window.location.reload()
+				}}
+				className="text-white"
+			>
+				clean
+			</button>
+
 			<div className="flex items-center">
 				<BsFillBookmarkFill
 					size={20}

@@ -1,1 +1,1 @@
-export const iconPlaceHolder = require("../assets/placeholder-favicon.png")
+export const faviconPlaceHolder = require("../assets/placeholder-favicon.png")

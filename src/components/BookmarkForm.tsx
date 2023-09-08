@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useCallback } from "react"
 import Select from "react-select"
 import { nanoid } from "nanoid"
-import { getLinkPreview } from "link-preview-js"
-// import { MdDeleteForever } from "react-icons/md"
+import { MdDeleteForever } from "react-icons/md"
 
 import { useDispatch, useSelector } from "react-redux"
 import {
@@ -14,9 +13,10 @@ import {
 	editGroupTitle,
 } from "../redux/features/bookmarkSlice"
 
-import { iconPlaceHolder } from "../utils/constants"
+import { faviconPlaceHolder } from "../utils/constants"
 import { resetFrom, setFormGroup } from "../redux/features/formSlice"
 import Button from "./ui/Button"
+import { fetchFaviconGrabber } from "../api/fetchFaviconGrabber"
 
 export default function BookmarkForm() {
 	const bookmarks = useSelector((state: StoreRootState) => state.bookmarks)
@@ -64,49 +64,18 @@ export default function BookmarkForm() {
 		setUrl(e.target.value)
 	}
 
-	const handleGroupChange = (option: any) => {
-		dispatch(setFormGroup({ id: option.value, title: option.label }))
-	}
-
-	const fetchFavicon = async (url: string): Promise<string> => {
-		let favicon = require("../assets/placeholder-favicon.png")
-
-		if (!url.startsWith("http") || !url.startsWith("https")) return favicon
-
-		try {
-			await getLinkPreview(url, {
-				headers: {
-					"user-agent": "Slackbot-LinkExpanding 1.0 (+https://api.slack.com/robots)",
-					"Access-Control-Allow-Origin": "*",
-				},
-				proxyUrl: "https://cors-anywhere.herokuapp.com/",
-				imagesPropertyType: "og",
-				followRedirects: "follow",
-				timeout: 10000,
-			}).then((data) => {
-				if (data.favicons.length > 1) {
-					favicon = data.favicons[-1]
-				} else {
-					favicon = data.favicons[0]
-				}
-			})
-		} catch (error) {
-			console.log(error)
-		}
-
-		return favicon
-	}
-
 	const handleGroupSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
 		dispatch(addGroup({ id: nanoid(), title: groupTitle, bookmarks: [] }))
 		quitFrom()
 	}
+
 	const handleGroupEdit = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
 		dispatch(editGroupTitle({ id: group?.id ?? "default", title: groupTitle }))
 		quitFrom()
 	}
+
 	const handleGroupDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
 		if (group?.id) dispatch(deleteGroup(group?.id))
@@ -119,30 +88,31 @@ export default function BookmarkForm() {
 
 		let bookmark: Bookmark = {
 			id: prevBookmark?.id || nanoid(),
-			favicon: prevBookmark?.favicon || iconPlaceHolder,
+			favicon: prevBookmark?.favicon || faviconPlaceHolder,
 			title: title,
 			url: url,
 		}
 
 		if (prevBookmark?.url !== url) {
-			bookmark.favicon = await fetchFavicon(url)
+			bookmark.favicon = await fetchFaviconGrabber(url)
 		}
 
 		dispatch(editBookmark({ bookmark: bookmark, groupId: group?.id ?? "default" }))
 		quitFrom()
 	}
+
 	const handleBookmarkSubmit = async (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
 		setLoading(true)
 
 		let bookmark: Bookmark = {
 			id: nanoid(),
-			favicon: iconPlaceHolder,
+			favicon: faviconPlaceHolder,
 			title: title,
 			url: url,
 		}
 
-		bookmark.favicon = await fetchFavicon(url)
+		bookmark.favicon = await fetchFaviconGrabber(url)
 
 		dispatch(addBookmark({ bookmark: bookmark, groupId: group?.id ?? "default" }))
 		quitFrom()
@@ -190,6 +160,15 @@ export default function BookmarkForm() {
 		setLoading(false)
 	}
 
+	const Loading = useCallback(
+		() => (
+			<div className="flex flex-col items-center justify-center my-7">
+				<div className="animate-spin rounded-full h-14 w-14 border-b-4 border-gray"></div>
+			</div>
+		),
+		[],
+	)
+
 	const FromTitle = useCallback(() => {
 		let formTitle = ""
 
@@ -198,10 +177,86 @@ export default function BookmarkForm() {
 		if (mode === "addGroup") formTitle = "Add Group"
 		if (mode === "editGroup") formTitle = "Edit Group"
 
-		if (loading) formTitle = "Hold on a sec..."
+		if (loading) formTitle = "Retrieving favicon..."
 
 		return <h1 className="text-2xl text-white font-bold mb-4">{formTitle}</h1>
 	}, [mode, loading])
+
+	const SelectDropDown = useCallback(() => {
+		const handleGroupChange = (option: any) => {
+			dispatch(setFormGroup({ id: option.value, title: option.label }))
+		}
+
+		return (
+			<Select
+				className="w-full mb-4"
+				placeholder="Group"
+				onMenuOpen={() => setIsSelectInputFocused(true)}
+				onMenuClose={() => setIsSelectInputFocused(false)}
+				isSearchable={true}
+				value={group?.id ? { value: group.id, label: group.title } : null}
+				onChange={handleGroupChange}
+				options={bookmarks.map((bookmarkGroup) => ({
+					value: bookmarkGroup.id,
+					label: bookmarkGroup.title,
+				}))}
+				theme={(theme: any) => ({
+					...theme,
+					colors: {
+						...theme.colors,
+						primary25: "#6b6b6b",
+						primary: "#a5a5a5",
+					},
+				})}
+				styles={{
+					control: (provided: any) => ({
+						...provided,
+						backgroundColor: "#3f3f46",
+						borderRadius: 0,
+						borderWidth: 0,
+					}),
+					placeholder: (provided: any) => ({
+						...provided,
+						color: "#9c9c9c",
+						borderColor: "#3f3f46",
+					}),
+					menu: (provided: any) => ({
+						...provided,
+						backgroundColor: "#3f3f46",
+						color: "#ffffff",
+					}),
+					input: (provided: any) => ({
+						...provided,
+						borderColor: "#3f3f46",
+						borderWidth: 0,
+						color: "#ffffff",
+					}),
+					singleValue: (provided: any) => ({
+						...provided,
+						color: "#b9b9b9",
+						borderColor: "#3f3f46",
+					}),
+					valueContainer: (provided: any) => ({
+						...provided,
+						backgroundColor: "#3f3f46",
+						color: "#ffffff",
+						borderWidth: 0,
+					}),
+					container: (provided: any) => ({
+						...provided,
+						backgroundColor: "#3f3f46",
+						color: "#ffffff",
+						borderColor: "#3f3f46",
+					}),
+					indicatorsContainer: (provided: any) => ({
+						...provided,
+						backgroundColor: "#3f3f46",
+						color: "#ffffff",
+					}),
+				}}
+			/>
+		)
+	}, [group, bookmarks, dispatch])
 
 	return (
 		<div
@@ -219,10 +274,14 @@ export default function BookmarkForm() {
 				>
 					<FromTitle />
 					{loading ? (
-						<div className="flex flex-col items-center justify-center my-7">
-							<div className="animate-spin rounded-full h-14 w-14 border-b-4 border-gray"></div>
-						</div>
+						<Loading />
 					) : (
+
+						// UPLOAD IMAGE
+						// UPLOAD IMAGE
+						// UPLOAD IMAGE
+						// UPLOAD IMAGE
+
 						<form className="flex flex-col items-center justify-center">
 							{(mode === "editGroup" || mode === "addGroup") && (
 								<input
@@ -249,86 +308,20 @@ export default function BookmarkForm() {
 										placeholder="URL"
 										onChange={handleUrlChange}
 									/>
-									<Select
-										className="w-full mb-4"
-										placeholder="Group"
-										onMenuOpen={() => setIsSelectInputFocused(true)}
-										onMenuClose={() => setIsSelectInputFocused(false)}
-										isSearchable={true}
-										value={group?.id ? { value: group.id, label: group.title } : null}
-										onChange={handleGroupChange}
-										options={bookmarks.map((bookmarkGroup) => ({
-											value: bookmarkGroup.id,
-											label: bookmarkGroup.title,
-										}))}
-										theme={(theme: any) => ({
-											...theme,
-											colors: {
-												...theme.colors,
-												primary25: "#6b6b6b",
-												primary: "#a5a5a5",
-											},
-										})}
-										styles={{
-											control: (provided: any) => ({
-												...provided,
-												backgroundColor: "#3f3f46",
-												borderRadius: 0,
-												borderWidth: 0,
-											}),
-											placeholder: (provided: any) => ({
-												...provided,
-												color: "#9c9c9c",
-												borderColor: "#3f3f46",
-											}),
-											menu: (provided: any) => ({
-												...provided,
-												backgroundColor: "#3f3f46",
-												color: "#ffffff",
-											}),
-											input: (provided: any) => ({
-												...provided,
-												borderColor: "#3f3f46",
-												borderWidth: 0,
-												color: "#ffffff",
-											}),
-											singleValue: (provided: any) => ({
-												...provided,
-												color: "#b9b9b9",
-												borderColor: "#3f3f46",
-											}),
-											valueContainer: (provided: any) => ({
-												...provided,
-												backgroundColor: "#3f3f46",
-												color: "#ffffff",
-												borderWidth: 0,
-											}),
-											container: (provided: any) => ({
-												...provided,
-												backgroundColor: "#3f3f46",
-												color: "#ffffff",
-												borderColor: "#3f3f46",
-											}),
-											indicatorsContainer: (provided: any) => ({
-												...provided,
-												backgroundColor: "#3f3f46",
-												color: "#ffffff",
-											}),
-										}}
-									/>
+									<SelectDropDown />
 								</>
 							)}
 							<div className="flex justify-between w-full mt-2">
 								{/* DELETE */}
 								{mode.includes("edit") && (
 									<Button
+										style={`px-[10px] text-red-600 rin-1 ring-red-600 rounded-md hover:bg-red-600 hover:text-white`}
 										onClick={remove}
 										{...{ type: "button" }}
 									>
-										Delete
+										<MdDeleteForever />
 									</Button>
 								)}
-
 								<div className="flex w-full items-center justify-end">
 									{/* CANCEL */}
 									<Button
