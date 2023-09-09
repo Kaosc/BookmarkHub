@@ -1,10 +1,11 @@
-export default function ActivityIndicator({ size, color }: { size?: string, color?: string }) {
-	const sizeStyle = size ? size : "h-14 w-14"
-	const colorStyle = color ? `border-[${color}]` : "border-gray"
-	
+export default function ActivityIndicator({
+	className,
+}: {
+	className?: React.HTMLAttributes<HTMLButtonElement>["className"]
+}) {
 	return (
-		<div className="flex flex-col items-center justify-center my-7">
-			<div className={`animate-spin rounded-full border-b-4 ${colorStyle} ${sizeStyle}`}></div>
+		<div className="flex flex-col items-center justify-center">
+			<div className={`animate-spin rounded-full border-b-4 h-14 w-14 border-gray ${className}`}></div>
 		</div>
 	)
 }

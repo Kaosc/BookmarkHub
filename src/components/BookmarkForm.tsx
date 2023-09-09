@@ -21,7 +21,7 @@ import { resetFrom } from "../redux/features/formSlice"
 import Button from "./ui/Button"
 import { fetchFavicon } from "../api/fetchFavicon"
 import { IoMdAdd } from "react-icons/io"
-import ActivityIndicator from './ui/ActivityIndicator';
+import ActivityIndicator from "./ui/ActivityIndicator"
 export default function BookmarkForm() {
 	const bookmarks = useSelector((state: StoreRootState) => state.bookmarks)
 	const { visible, initGroup, prevBookmark, mode } = useSelector((state: StoreRootState) => state.form)
@@ -347,7 +347,7 @@ export default function BookmarkForm() {
 				>
 					<FromTitle />
 					{loading ? (
-						<ActivityIndicator />
+						<ActivityIndicator className={"my-7"} />
 					) : (
 						<>
 							{(mode === "addBookmark" || mode === "editBookmark") && (

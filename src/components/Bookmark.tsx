@@ -130,12 +130,7 @@ function Bookmark({
 				onClick={redirect}
 				className="flex flex-col justify-center items-center hover:scale-[1.04] transition-all hover:animate-pulse"
 			>
-				{imageLoading && (
-					<ActivityIndicator
-						size={"w-5 h-5"}
-						color={"#fff"}
-					/>
-				)}
+				{imageLoading && <ActivityIndicator className={"w-[29px] h-[29px] text-white mb-[5px]"} />}
 
 				<img
 					src={favicon}
