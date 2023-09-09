@@ -8,22 +8,15 @@ export const fetchFavicon = async (url: string): Promise<string> => {
 	let domain = cleanURL(url)
 	// const sz = 128
 
-	if (!domain) return favicon
-
-	if (domain.endsWith("google.com")) {
-		return ICON_HORSE_API + domain
-	}
+	if (domain.endsWith("google.com")) return ICON_HORSE_API + domain
 
 	await axios
 		.get(domain, { baseURL: "https://favicongrabber.com/api/grab/" })
 		.then((res) => {
-			if (res) {
-				favicon = res.data.icons[0]?.src
-			}
+			if (res.data.icons.length > 0) favicon = res.data.icons[0]?.src
+			else favicon = DUCK_FAVICON_API + domain + ".ico"
 		})
-		.catch((e) => {
-			console.error("Cannot fetch favicon", e)
-			// favicon = GOOGLE_FAVICON_API + domain + "&sz=" + sz
+		.catch((_) => {
 			favicon = DUCK_FAVICON_API + domain + ".ico"
 		})
 

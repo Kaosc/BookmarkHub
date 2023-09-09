@@ -51,7 +51,6 @@ function Bookmark({
 	])
 
 	const handleOnImageLoadError = (e: any | undefined) => {
-		console.log("ERROReeeeeeeeeeeeeeeeeee", e.currentTarget.src)
 		if (!e) return
 
 		const domain = cleanURL(e.currentTarget.src)

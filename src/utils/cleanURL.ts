@@ -1,4 +1,4 @@
-export const cleanURL = (url: string): string | null => {
+export const cleanURL = (url: string): string => {
 	let domain = url
 
 	// Get the domain

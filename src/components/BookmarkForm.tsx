@@ -83,7 +83,6 @@ export default function BookmarkForm() {
 	////////////////////////// FAVICON CHANGE ////////////////////////
 
 	const handleFaviconChange = (imageList: ImageType[]) => {
-		console.log(imageList[0]?.dataURL)
 		setUploadedFavicon(imageList[0]?.dataURL || "")
 	}
 
@@ -158,7 +157,7 @@ export default function BookmarkForm() {
 			url: url,
 		}
 
-		bookmark.favicon = favicon || (await fetchFavicon(url)) || faviconPlaceHolder
+		bookmark.favicon = favicon || (await fetchFavicon(url))
 
 		dispatch(addBookmark({ bookmark: bookmark, groupId: group?.id ?? "default" }))
 		quitFrom()
