@@ -19,15 +19,15 @@ import {
 import { faviconPlaceHolder } from "../utils/constants"
 import { resetFrom } from "../redux/features/formSlice"
 import Button from "./ui/Button"
-import { fetchFaviconGrabber } from "../api/fetchFaviconGrabber"
+import { fetchFavicon } from "../api/fetchFavicon"
 import { IoMdAdd } from "react-icons/io"
 export default function BookmarkForm() {
 	const bookmarks = useSelector((state: StoreRootState) => state.bookmarks)
 	const { visible, initGroup, prevBookmark, mode } = useSelector((state: StoreRootState) => state.form)
 
 	// FORM STATES
-	const [uploadedFavicon, setUploadedFavicon] = useState<ImageType[]>([])
-	const maxFileSize = 10 * 1024 * 1024
+	const [favicon, setUploadedFavicon] = useState("")
+	const maxFileSize = 1024 * 1024 * 3
 
 	const [group, setGroup] = useState({ id: "", title: "" })
 
@@ -40,10 +40,15 @@ export default function BookmarkForm() {
 	const dispatch = useDispatch()
 
 	useEffect(() => {
-		setUploadedFavicon([{ dataURL: prevBookmark?.favicon || "" }])
+		setUploadedFavicon(prevBookmark?.favicon || "")
 		setGroup({
-			id: initGroup?.id || "default",
-			title: initGroup?.id === "default" ? initGroup?.id : initGroup?.title || "default",
+			id: mode === "addGroup" ? "" : initGroup?.id || "default",
+			title:
+				mode === "addGroup"
+					? ""
+					: initGroup?.id === "default"
+					? initGroup?.id
+					: initGroup?.title || "default",
 		})
 		setTitle(prevBookmark?.title || "")
 		setUrl(prevBookmark?.url || "")
@@ -52,13 +57,9 @@ export default function BookmarkForm() {
 			setGroup({ id: "", title: "" })
 			setTitle("")
 			setUrl("")
-			setUploadedFavicon([])
+			setUploadedFavicon("")
 		}
 	}, [visible, initGroup, prevBookmark, mode])
-
-	useEffect(() => {
-		console.log("uploadedFavicon", uploadedFavicon)
-	}, [uploadedFavicon])
 
 	////////////////////////// FORM CHANGE //////////////////////////
 
@@ -81,7 +82,8 @@ export default function BookmarkForm() {
 	////////////////////////// FAVICON CHANGE ////////////////////////
 
 	const handleFaviconChange = (imageList: ImageType[]) => {
-		setUploadedFavicon(imageList)
+		console.log(imageList[0]?.dataURL)
+		setUploadedFavicon(imageList[0]?.dataURL || "")
 	}
 
 	////////////////////////// FORM SUBMIT //////////////////////////
@@ -117,9 +119,14 @@ export default function BookmarkForm() {
 			url: url,
 		}
 
-		// Update favicon if url or favicon changed
-		if (prevBookmark?.url !== url || prevBookmark.favicon !== uploadedFavicon[0]?.dataURL) {
-			bookmark.favicon = uploadedFavicon[0]?.dataURL || (await fetchFaviconGrabber(url)) || faviconPlaceHolder
+		// If user uploaded a favicon, check for changes & update favicon
+		if (favicon.startsWith("data:image")) {
+			if (favicon !== prevBookmark?.favicon) {
+				bookmark.favicon = favicon
+			}
+			// If user didn't upload a favicon, check for url changes & update favicon
+		} else if ((!favicon?.startsWith("data:image") && url !== prevBookmark?.url) || !favicon) {
+			bookmark.favicon = await fetchFavicon(url)
 		}
 
 		// Update bookmark
@@ -150,7 +157,7 @@ export default function BookmarkForm() {
 			url: url,
 		}
 
-		bookmark.favicon = uploadedFavicon[0]?.dataURL || (await fetchFaviconGrabber(url)) || faviconPlaceHolder
+		bookmark.favicon = favicon || (await fetchFavicon(url)) || faviconPlaceHolder
 
 		dispatch(addBookmark({ bookmark: bookmark, groupId: group?.id ?? "default" }))
 		quitFrom()
@@ -354,84 +361,86 @@ export default function BookmarkForm() {
 							{(mode === "addBookmark" || mode === "editBookmark") && (
 								<div className="flex w-full items-center mb-4">
 									<ImageUploading
-										value={uploadedFavicon}
+										value={[{ dataURL: favicon }]}
 										maxFileSize={maxFileSize}
 										onChange={handleFaviconChange}
 									>
 										{({ imageList, onImageUpload, onImageRemoveAll, errors }) => (
-											<div className="flex w-full items-center justify-between h-16 border-[0.5px] border-[#757575] px-3">
-												<div className="flex">
+											<div className="flex flex-col w-full items-center justify-between p-2 border-[0.5px] border-[#757575] px-3">
+												<div className="flex w-full items-center justify-between">
+													<div className="flex">
+														{imageList[0]?.dataURL && (
+															<div className="flex items-center justify-center">
+																<img
+																	src={imageList[0]?.dataURL}
+																	alt="favicon-preview"
+																	className="w-12 h-12 rounded-full"
+																/>
+															</div>
+														)}
+														{!imageList[0]?.dataURL && (
+															<div className="flex items-center">
+																<Button
+																	onClick={onImageUpload}
+																	className={`outline-dashed ring-0  h-9 w-9`}
+																	{...{ type: "button" }}
+																>
+																	<IoMdAdd size={20} />
+																</Button>
+																{!errors && (
+																	<p className="text-sm text-gray-400 ml-3">Upload Favicon (optional)</p>
+																)}
+															</div>
+														)}
+													</div>
+
 													{imageList[0]?.dataURL && (
-														<div className="flex items-center justify-center">
-															<img
-																src={imageList[0]?.dataURL}
-																alt=""
-																className="w-12 h-10 rounded-full"
-															/>
-														</div>
-													)}
-													{!imageList[0]?.dataURL && (
 														<div className="flex items-center">
 															<Button
+																className={`px-1 z-50 mr-2`}
 																onClick={onImageUpload}
-																className={`outline-dashed ring-0  h-9 w-9`}
 																{...{ type: "button" }}
 															>
-																<IoMdAdd size={20} />
+																<BiUpload
+																	size={20}
+																	className="text-white hover:text-black"
+																/>
 															</Button>
-															{!errors && (
-																<p className="text-sm text-gray-400 ml-3">Upload Favicon (optional)</p>
-															)}
-															{errors && (
-																<div className="ml-5">
-																	{errors.maxNumber && (
-																		<span className="text-red-500 text-sm">
-																			Number of selected images exceed maxNumber
-																		</span>
-																	)}
-																	{errors.acceptType && (
-																		<span className="text-red-500 text-sm">
-																			Your selected file type is not allow
-																		</span>
-																	)}
-																	{errors.maxFileSize && (
-																		<span className="text-red-500 text-sm">
-																			Selected file size exceed {maxFileSize / 1024 / 1024} MB
-																		</span>
-																	)}
-																	{errors.resolution && (
-																		<span className="text-red-500 text-sm">
-																			Selected file is not match your desired resolution
-																		</span>
-																	)}
-																</div>
-															)}
+															<Button
+																className={`px-1 z-50`}
+																onClick={onImageRemoveAll}
+																{...{ type: "button" }}
+															>
+																<MdDeleteForever
+																	size={20}
+																	className="text-white hover:text-black"
+																/>
+															</Button>
 														</div>
 													)}
 												</div>
-
-												{imageList[0]?.dataURL && (
-													<div className="flex items-center">
-														<Button
-															className={`px-1 z-50 mr-2`}
-															onClick={onImageUpload}
-															{...{ type: "button" }}
-														>
-															<BiUpload
-																size={20}
-																className="text-white hover:text-black"
-															/>
-														</Button>
-														<Button
-															className={`px-1 z-50`}
-															onClick={onImageRemoveAll}
-															{...{ type: "button" }}
-														>
-															<MdDeleteForever
-																size={20}
-																className="text-white hover:text-black"
-															/>
-														</Button>
+												{errors && (
+													<div className="ml-5">
+														{errors.maxNumber && (
+															<span className="text-red-500 text-sm">
+																Number of selected images exceed maxNumber
+															</span>
+														)}
+														{errors.acceptType && (
+															<span className="text-red-500 text-sm">
+																Your selected file type is not allow
+															</span>
+														)}
+														{errors.maxFileSize && (
+															<span className="text-red-500 text-sm">
+																Selected file size exceed {maxFileSize / 1024 / 1024} MB
+															</span>
+														)}
+														{errors.resolution && (
+															<span className="text-red-500 text-sm">
+																Selected file is not match your desired resolution
+															</span>
+														)}
 													</div>
 												)}
 											</div>

@@ -45,7 +45,7 @@ export default function Home() {
 	const handleDragStart = (event: DragEndEvent) => {
 		const { active } = event
 		const { id } = active
-		console.log(id)
+
 		setActiveBookmark(
 			bookmarkGroups
 				.map((group) => group.bookmarks)
@@ -62,8 +62,6 @@ export default function Home() {
 
 		const overBookmarkId = over?.id
 		const overBookmarkGroupId = over?.data.current?.sortable.containerId || overBookmarkId
-
-		console.log(activeBookmarkGroupId, overBookmarkGroupId)
 
 		if (!activeBookmarkId || !overBookmarkId || activeBookmarkGroupId === overBookmarkGroupId) {
 			return
