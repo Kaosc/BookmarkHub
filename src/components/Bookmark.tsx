@@ -28,7 +28,7 @@ function Bookmark({
 
 	const editBookmark = () => {
 		dispatch(setFormBookmark(bookmark))
-		if (group) dispatch(toggleForm({ group: { id: group?.id, title: group?.title }, mode: "editBookmark" }))
+		if (group) dispatch(toggleForm({ initGroup: { id: group?.id, title: group?.title }, mode: "editBookmark" }))
 	}
 
 	const redirect = () => {

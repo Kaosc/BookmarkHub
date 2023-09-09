@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit"
 const defaultFormState: Form = {
 	visible: false,
 	mode: "addBookmark",
-	group: {
+	initGroup: {
 		id: "default",
 		title: "Bookmark Hub",
 	},
@@ -19,7 +19,7 @@ export const formSlice = createSlice({
 			action: {
 				payload: {
 					mode: FormMode
-					group?: GroupInfo
+					initGroup?: GroupInfo
 				}
 			},
 		) => {
@@ -27,16 +27,16 @@ export const formSlice = createSlice({
 				...state,
 				visible: !state.visible,
 				mode: action.payload.mode,
-				group: {
-					id: action.payload.group?.id || "default",
-					title: action.payload.group?.title || "Default",
+				initGroup: {
+					id: action.payload.initGroup?.id || "default",
+					title: action.payload.initGroup?.title || "Default",
 				},
 			}
 		},
 		setFormGroup: (state, action) => {
 			return {
 				...state,
-				group: {
+				initGroup: {
 					id: action.payload.id,
 					title: action.payload.title,
 				},

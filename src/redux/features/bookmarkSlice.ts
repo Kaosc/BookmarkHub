@@ -87,6 +87,41 @@ export const bookmarksSlice = createSlice({
 				return group
 			})
 		},
+		moveBookmark: (
+			state,
+			action: {
+				payload: {
+					bookmarkId: string
+					groupId: string
+					toGroupId: string
+				}
+			},
+		) => {
+			const { bookmarkId, groupId, toGroupId } = action.payload
+
+			const bookmarkToMove = state
+				.find((group: BookmarkData) => group.id === groupId)
+				?.bookmarks.find((bookmark: Bookmark) => bookmark.id === bookmarkId)
+
+			if (bookmarkToMove) {
+				return state.map((group: BookmarkData) => {
+					if (group.id === groupId) {
+						return {
+							...group,
+							bookmarks: group.bookmarks.filter((bookmark: Bookmark) => bookmark.id !== bookmarkId),
+						}
+					}
+					if (group.id === toGroupId) {
+						return {
+							...group,
+							bookmarks: [...group.bookmarks, bookmarkToMove],
+						}
+					}
+					return group
+				})
+			}
+			return state
+		},
 		addGroup: (state, action: { payload: BookmarkData }) => {
 			const { payload } = action
 
@@ -131,6 +166,7 @@ export const {
 	editBookmark,
 	addGroup,
 	deleteGroup,
+	moveBookmark,
 	editGroup,
 	editGroupTitle,
 	setBookmarkGroups,

@@ -20,7 +20,7 @@ type Bookmark = {
 
 type Form = {
 	visible?: boolean
-	group?: GroupInfo
+	initGroup?: GroupInfo
 	mode: FormMode
 	prevBookmark?: Bookmark | undefined
 }

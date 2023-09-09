@@ -10,7 +10,7 @@ export default function Navbar() {
 	const dispatch = useDispatch()
 
 	const addBookmark = () => {
-		dispatch(toggleForm({ group: { id: "default", title: "default" }, mode: "addBookmark" }))
+		dispatch(toggleForm({ initGroup: { id: "default", title: "default" }, mode: "addBookmark" }))
 	}
 
 	const addGroup = () => {

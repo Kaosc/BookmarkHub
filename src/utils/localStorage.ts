@@ -7,5 +7,9 @@ export const getBookmarks = () => {
 }
 
 export const storeBookmarks = (bookmarks: BookmarkGroups) => {
-	localStorage.setItem("bookmarks", JSON.stringify(bookmarks))
+	try {
+		localStorage.setItem("bookmarks", JSON.stringify(bookmarks))
+	} catch (error) {
+		console.error(error)		
+	}
 }

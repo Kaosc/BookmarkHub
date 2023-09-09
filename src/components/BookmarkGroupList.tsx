@@ -18,11 +18,11 @@ export default function BookmarkGroupList({ bookmarkData }: { bookmarkData: Book
 	})
 
 	const addBookmarkToGroup = () => {
-		dispatch(toggleForm({ group: { id: bookmarkData.id, title: bookmarkData.title }, mode: "addBookmark" }))
+		dispatch(toggleForm({ initGroup: { id: bookmarkData.id, title: bookmarkData.title }, mode: "addBookmark" }))
 	}
 
 	const editGroup = () => {
-		dispatch(toggleForm({ group: { id: bookmarkData.id, title: bookmarkData.title }, mode: "editGroup" }))
+		dispatch(toggleForm({ initGroup: { id: bookmarkData.id, title: bookmarkData.title }, mode: "editGroup" }))
 	}
 
 	return (

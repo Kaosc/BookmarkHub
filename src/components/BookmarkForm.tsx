@@ -2,7 +2,9 @@ import React, { useEffect, useState, useCallback } from "react"
 import Select from "react-select"
 import { nanoid } from "nanoid"
 import { MdDeleteForever } from "react-icons/md"
-
+import ImageUploading from "react-images-uploading"
+import { ImageType } from "react-images-uploading/dist/typings"
+import { BiCopy, BiUpload } from "react-icons/bi"
 import { useDispatch, useSelector } from "react-redux"
 import {
 	addBookmark,
@@ -11,18 +13,24 @@ import {
 	deleteGroup,
 	editBookmark,
 	editGroupTitle,
+	moveBookmark,
 } from "../redux/features/bookmarkSlice"
 
 import { faviconPlaceHolder } from "../utils/constants"
-import { resetFrom, setFormGroup } from "../redux/features/formSlice"
+import { resetFrom } from "../redux/features/formSlice"
 import Button from "./ui/Button"
 import { fetchFaviconGrabber } from "../api/fetchFaviconGrabber"
-
+import { IoMdAdd } from "react-icons/io"
 export default function BookmarkForm() {
 	const bookmarks = useSelector((state: StoreRootState) => state.bookmarks)
-	const { visible, group, prevBookmark, mode } = useSelector((state: StoreRootState) => state.form)
+	const { visible, initGroup, prevBookmark, mode } = useSelector((state: StoreRootState) => state.form)
 
-	const [groupTitle, setGroupTitle] = useState("")
+	// FORM STATES
+	const [uploadedFavicon, setUploadedFavicon] = useState<ImageType[]>([])
+	const maxFileSize = 10 * 1024 * 1024
+
+	const [group, setGroup] = useState({ id: "", title: "" })
+
 	const [title, setTitle] = useState("")
 	const [url, setUrl] = useState("")
 
@@ -32,28 +40,30 @@ export default function BookmarkForm() {
 	const dispatch = useDispatch()
 
 	useEffect(() => {
-		if (mode === "addBookmark") {
-			setGroupTitle("")
-			setTitle("")
-			setUrl("")
-		} else if (mode === "addGroup") {
-			setGroupTitle("")
-		} else if (mode === "editBookmark") {
-			setTitle(prevBookmark?.title || "")
-			setUrl(prevBookmark?.url || "")
-		} else if (mode === "editGroup" && group?.title) {
-			setGroupTitle(group.title)
-		}
+		setUploadedFavicon([{ dataURL: prevBookmark?.favicon || "" }])
+		setGroup({
+			id: initGroup?.id || "default",
+			title: initGroup?.id === "default" ? initGroup?.id : initGroup?.title || "default",
+		})
+		setTitle(prevBookmark?.title || "")
+		setUrl(prevBookmark?.url || "")
 
 		return () => {
-			setGroupTitle("")
+			setGroup({ id: "", title: "" })
 			setTitle("")
 			setUrl("")
+			setUploadedFavicon([])
 		}
-	}, [prevBookmark, mode, group])
+	}, [visible, initGroup, prevBookmark, mode])
 
-	const handleGroupGroupNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setGroupTitle(e.target.value)
+	useEffect(() => {
+		console.log("uploadedFavicon", uploadedFavicon)
+	}, [uploadedFavicon])
+
+	////////////////////////// FORM CHANGE //////////////////////////
+
+	const handleNewGroupTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		setGroup((prev) => ({ ...prev, title: e.target.value }))
 	}
 
 	const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -64,23 +74,37 @@ export default function BookmarkForm() {
 		setUrl(e.target.value)
 	}
 
-	const handleGroupSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+	const handleGroupSelect = (option: any) => {
+		setGroup({ id: option.value, title: option.label })
+	}
+
+	////////////////////////// FAVICON CHANGE ////////////////////////
+
+	const handleFaviconChange = (imageList: ImageType[]) => {
+		setUploadedFavicon(imageList)
+	}
+
+	////////////////////////// FORM SUBMIT //////////////////////////
+
+	const handleGroupTitleEdit = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
-		dispatch(addGroup({ id: nanoid(), title: groupTitle, bookmarks: [] }))
+		dispatch(editGroupTitle({ id: group.id || "default", title: group.title }))
 		quitFrom()
 	}
 
-	const handleGroupEdit = (e: React.MouseEvent<HTMLButtonElement>) => {
+	const handleGroupSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
-		dispatch(editGroupTitle({ id: group?.id ?? "default", title: groupTitle }))
+		dispatch(addGroup({ id: nanoid(), title: group.title, bookmarks: [] }))
 		quitFrom()
 	}
 
 	const handleGroupDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
-		if (group?.id) dispatch(deleteGroup(group?.id))
+		dispatch(deleteGroup(group.id))
 		quitFrom()
 	}
+
+	////////////////////////// BOOKMARK SUBMIT //////////////////////////
 
 	const handleBookmarkEdit = async (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
@@ -93,11 +117,25 @@ export default function BookmarkForm() {
 			url: url,
 		}
 
-		if (prevBookmark?.url !== url) {
-			bookmark.favicon = await fetchFaviconGrabber(url)
+		// Update favicon if url or favicon changed
+		if (prevBookmark?.url !== url || prevBookmark.favicon !== uploadedFavicon[0]?.dataURL) {
+			bookmark.favicon = uploadedFavicon[0]?.dataURL || (await fetchFaviconGrabber(url)) || faviconPlaceHolder
 		}
 
-		dispatch(editBookmark({ bookmark: bookmark, groupId: group?.id ?? "default" }))
+		// Update bookmark
+		dispatch(editBookmark({ bookmark: bookmark, groupId: group.id ?? "default" }))
+
+		// Check is bookmark moved to another group
+		if (initGroup?.id !== group?.id) {
+			dispatch(
+				moveBookmark({
+					bookmarkId: prevBookmark?.id ?? "",
+					groupId: initGroup?.id ?? "default",
+					toGroupId: group.id,
+				}),
+			)
+		}
+
 		quitFrom()
 	}
 
@@ -112,16 +150,19 @@ export default function BookmarkForm() {
 			url: url,
 		}
 
-		bookmark.favicon = await fetchFaviconGrabber(url)
+		bookmark.favicon = uploadedFavicon[0]?.dataURL || (await fetchFaviconGrabber(url)) || faviconPlaceHolder
 
 		dispatch(addBookmark({ bookmark: bookmark, groupId: group?.id ?? "default" }))
 		quitFrom()
 	}
+
 	const handleBookmarkDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
 		dispatch(deleteBookmark({ bookmarkId: prevBookmark?.id ?? "", groupId: group?.id ?? "default" }))
 		quitFrom()
 	}
+
+	////////////////////////// BUTTONS //////////////////////////
 
 	const submit = (_: React.MouseEvent<HTMLButtonElement>) => {
 		switch (mode) {
@@ -129,7 +170,7 @@ export default function BookmarkForm() {
 				handleGroupSubmit(_)
 				break
 			case "editGroup":
-				handleGroupEdit(_)
+				handleGroupTitleEdit(_)
 				break
 			case "addBookmark":
 				handleBookmarkSubmit(_)
@@ -160,6 +201,8 @@ export default function BookmarkForm() {
 		setLoading(false)
 	}
 
+	////////////////////////// COMPONENTS //////////////////////////
+
 	const Loading = useCallback(
 		() => (
 			<div className="flex flex-col items-center justify-center my-7">
@@ -182,11 +225,7 @@ export default function BookmarkForm() {
 		return <h1 className="text-2xl text-white font-bold mb-4">{formTitle}</h1>
 	}, [mode, loading])
 
-	const SelectDropDown = useCallback(() => {
-		const handleGroupChange = (option: any) => {
-			dispatch(setFormGroup({ id: option.value, title: option.label }))
-		}
-
+	const SelectDropDown = () => {
 		return (
 			<Select
 				className="w-full mb-4"
@@ -194,8 +233,8 @@ export default function BookmarkForm() {
 				onMenuOpen={() => setIsSelectInputFocused(true)}
 				onMenuClose={() => setIsSelectInputFocused(false)}
 				isSearchable={true}
-				value={group?.id ? { value: group.id, label: group.title } : null}
-				onChange={handleGroupChange}
+				value={{ value: group.id, label: group.title }}
+				onChange={handleGroupSelect}
 				options={bookmarks.map((bookmarkGroup) => ({
 					value: bookmarkGroup.id,
 					label: bookmarkGroup.title,
@@ -256,7 +295,42 @@ export default function BookmarkForm() {
 				}}
 			/>
 		)
-	}, [group, bookmarks, dispatch])
+	}
+
+	const FormButtons = () => {
+		return (
+			<div className="flex justify-between w-full mt-2">
+				{/* DELETE */}
+				{mode.includes("edit") && (
+					<Button
+						className={`px-[10px] text-red-600 rin-1 ring-red-600 rounded-md hover:bg-red-600 hover:text-white`}
+						onClick={remove}
+						{...{ type: "button" }}
+					>
+						<MdDeleteForever />
+					</Button>
+				)}
+				<div className="flex w-full items-center justify-end">
+					{/* CANCEL */}
+					<Button
+						className={`mr-3`}
+						onClick={quitFrom}
+						{...{ type: "reset" }}
+					>
+						<p>Cancel</p>
+					</Button>
+
+					{/* EDIT & ADD */}
+					<Button
+						onClick={submit}
+						props={{ type: "submit" }}
+					>
+						<p>{mode.includes("edit") ? "Save" : "Add"}</p>
+					</Button>
+				</div>
+			</div>
+		)
+	}
 
 	return (
 		<div
@@ -276,72 +350,134 @@ export default function BookmarkForm() {
 					{loading ? (
 						<Loading />
 					) : (
-
-						// UPLOAD IMAGE
-						// UPLOAD IMAGE
-						// UPLOAD IMAGE
-						// UPLOAD IMAGE
-
-						<form className="flex flex-col items-center justify-center">
-							{(mode === "editGroup" || mode === "addGroup") && (
-								<input
-									value={groupTitle}
-									className="input"
-									type="text"
-									placeholder={"Group Title"}
-									onChange={handleGroupGroupNameChange}
-								/>
-							)}
+						<>
 							{(mode === "addBookmark" || mode === "editBookmark") && (
-								<>
+								<div className="flex w-full items-center mb-4">
+									<ImageUploading
+										value={uploadedFavicon}
+										maxFileSize={maxFileSize}
+										onChange={handleFaviconChange}
+									>
+										{({ imageList, onImageUpload, onImageRemoveAll, errors }) => (
+											<div className="flex w-full items-center justify-between h-16 border-[0.5px] border-[#757575] px-3">
+												<div className="flex">
+													{imageList[0]?.dataURL && (
+														<div className="flex items-center justify-center">
+															<img
+																src={imageList[0]?.dataURL}
+																alt=""
+																className="w-12 h-10 rounded-full"
+															/>
+														</div>
+													)}
+													{!imageList[0]?.dataURL && (
+														<div className="flex items-center">
+															<Button
+																onClick={onImageUpload}
+																className={`outline-dashed ring-0  h-9 w-9`}
+																{...{ type: "button" }}
+															>
+																<IoMdAdd size={20} />
+															</Button>
+															{!errors && (
+																<p className="text-sm text-gray-400 ml-3">Upload Favicon (optional)</p>
+															)}
+															{errors && (
+																<div className="ml-5">
+																	{errors.maxNumber && (
+																		<span className="text-red-500 text-sm">
+																			Number of selected images exceed maxNumber
+																		</span>
+																	)}
+																	{errors.acceptType && (
+																		<span className="text-red-500 text-sm">
+																			Your selected file type is not allow
+																		</span>
+																	)}
+																	{errors.maxFileSize && (
+																		<span className="text-red-500 text-sm">
+																			Selected file size exceed {maxFileSize / 1024 / 1024} MB
+																		</span>
+																	)}
+																	{errors.resolution && (
+																		<span className="text-red-500 text-sm">
+																			Selected file is not match your desired resolution
+																		</span>
+																	)}
+																</div>
+															)}
+														</div>
+													)}
+												</div>
+
+												{imageList[0]?.dataURL && (
+													<div className="flex items-center">
+														<Button
+															className={`px-1 z-50 mr-2`}
+															onClick={onImageUpload}
+															{...{ type: "button" }}
+														>
+															<BiUpload
+																size={20}
+																className="text-white hover:text-black"
+															/>
+														</Button>
+														<Button
+															className={`px-1 z-50`}
+															onClick={onImageRemoveAll}
+															{...{ type: "button" }}
+														>
+															<MdDeleteForever
+																size={20}
+																className="text-white hover:text-black"
+															/>
+														</Button>
+													</div>
+												)}
+											</div>
+										)}
+									</ImageUploading>
+								</div>
+							)}
+							<form className="flex flex-col items-center">
+								{(mode === "editGroup" || mode === "addGroup") && (
 									<input
-										value={title}
+										value={group.title}
 										className="input"
 										type="text"
-										placeholder={"Title"}
-										onChange={handleTitleChange}
+										placeholder={"Group Title"}
+										onChange={handleNewGroupTitleChange}
 									/>
-									<input
-										value={url}
-										className="input"
-										type="url"
-										placeholder="URL"
-										onChange={handleUrlChange}
-									/>
-									<SelectDropDown />
-								</>
-							)}
-							<div className="flex justify-between w-full mt-2">
-								{/* DELETE */}
-								{mode.includes("edit") && (
-									<Button
-										style={`px-[10px] text-red-600 rin-1 ring-red-600 rounded-md hover:bg-red-600 hover:text-white`}
-										onClick={remove}
-										{...{ type: "button" }}
-									>
-										<MdDeleteForever />
-									</Button>
 								)}
-								<div className="flex w-full items-center justify-end">
-									{/* CANCEL */}
-									<Button
-										style={`mr-3`}
-										onClick={quitFrom}
-										{...{ type: "reset" }}
-									>
-										<p>Cancel</p>
-									</Button>
-
-									{/* EDIT & ADD */}
-									<Button
-										onClick={submit}
-										props={{ type: "submit" }}
-									>
-										<p>{mode.includes("edit") ? "Save" : "Add"}</p>
-									</Button>
-								</div>
-							</div>
-						</form>
+								{(mode === "addBookmark" || mode === "editBookmark") && (
+									<>
+										<input
+											value={title}
+											className="input"
+											type="text"
+											placeholder={"Title"}
+											onChange={handleTitleChange}
+										/>
+										<div className="relative flex w-full">
+											<input
+												value={url}
+												className="input required:ring-1 required:ring-red-600 pr-11"
+												type="url"
+												placeholder="URL*"
+												onChange={handleUrlChange}
+											/>
+											<BiCopy
+												size={22}
+												className="absolute right-3 top-3 text-white transition-all duration-300 ease-in-out hover:opacity-50 cursor-pointer hover:animate-pulse"
+												onClick={() => navigator.clipboard.writeText(url)}
+											/>
+										</div>
+										<SelectDropDown />
+									</>
+								)}
+								<FormButtons />
+							</form>
+						</>
 					)}
 				</div>
 			</div>
