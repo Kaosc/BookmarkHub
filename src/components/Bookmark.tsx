@@ -105,7 +105,13 @@ function Bookmark({
 	}
 
 	const redirect = () => {
-		if (url) window.open(url, "_blank")
+		if (url) {
+			try {
+				window.open(url, "_blank")
+			} catch (e) {
+				alert("URL not valid")
+			}
+		}
 	}
 
 	return (

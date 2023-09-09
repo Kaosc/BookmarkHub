@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useCallback } from "react"
 import Select from "react-select"
 import { nanoid } from "nanoid"
-import { MdDeleteForever } from "react-icons/md"
 import ImageUploading from "react-images-uploading"
 import { ImageType } from "react-images-uploading/dist/typings"
-import { BiCopy, BiUpload } from "react-icons/bi"
 import { useDispatch, useSelector } from "react-redux"
+
+import { resetFrom } from "../redux/features/formSlice"
 import {
 	addBookmark,
 	addGroup,
@@ -16,12 +16,15 @@ import {
 	moveBookmark,
 } from "../redux/features/bookmarkSlice"
 
-import { faviconPlaceHolder } from "../utils/constants"
-import { resetFrom } from "../redux/features/formSlice"
-import Button from "./ui/Button"
-import { fetchFavicon } from "../api/fetchFavicon"
+import { BiCopy, BiUpload } from "react-icons/bi"
+import { MdDeleteForever } from "react-icons/md"
 import { IoMdAdd } from "react-icons/io"
+
+import Button from "./ui/Button"
 import ActivityIndicator from "./ui/ActivityIndicator"
+import { faviconPlaceHolder } from "../utils/constants"
+import { fetchFavicon } from "../api/fetchFavicon"
+
 export default function BookmarkForm() {
 	const bookmarks = useSelector((state: StoreRootState) => state.bookmarks)
 	const { visible, initGroup, prevBookmark, mode } = useSelector((state: StoreRootState) => state.form)
@@ -39,6 +42,12 @@ export default function BookmarkForm() {
 	const [isSelectInputFocused, setIsSelectInputFocused] = useState(false)
 
 	const dispatch = useDispatch()
+
+	useEffect(() => {
+		const handleKeydown = (e: KeyboardEvent) => e.key === "Enter" && e.preventDefault()
+		window.addEventListener("keydown", handleKeydown)
+		return () => window.removeEventListener("keydown", handleKeydown)
+	}, [])
 
 	useEffect(() => {
 		setUploadedFavicon(prevBookmark?.favicon || "")
@@ -65,14 +74,17 @@ export default function BookmarkForm() {
 	////////////////////////// FORM CHANGE //////////////////////////
 
 	const handleNewGroupTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		e.preventDefault()
 		setGroup((prev) => ({ ...prev, title: e.target.value }))
 	}
 
 	const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		e.preventDefault()
 		setTitle(e.target.value)
 	}
 
 	const handleUrlChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		e.preventDefault()
 		setUrl(e.target.value)
 	}
 
@@ -125,7 +137,10 @@ export default function BookmarkForm() {
 				bookmark.favicon = favicon
 			}
 			// If user didn't upload a favicon, check for url changes & update favicon
-		} else if ((!favicon?.startsWith("data:image") && url !== prevBookmark?.url) || !favicon) {
+			console.log(!favicon?.startsWith("data:image") && url !== prevBookmark?.url)
+
+			console.log(url, prevBookmark?.url)
+		} else if ((favicon?.startsWith("data:image") && !favicon) || url !== prevBookmark?.url) {
 			bookmark.favicon = await fetchFavicon(url)
 		}
 
