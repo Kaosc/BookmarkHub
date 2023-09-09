@@ -21,6 +21,7 @@ import { resetFrom } from "../redux/features/formSlice"
 import Button from "./ui/Button"
 import { fetchFavicon } from "../api/fetchFavicon"
 import { IoMdAdd } from "react-icons/io"
+import ActivityIndicator from './ui/ActivityIndicator';
 export default function BookmarkForm() {
 	const bookmarks = useSelector((state: StoreRootState) => state.bookmarks)
 	const { visible, initGroup, prevBookmark, mode } = useSelector((state: StoreRootState) => state.form)
@@ -210,15 +211,6 @@ export default function BookmarkForm() {
 
 	////////////////////////// COMPONENTS //////////////////////////
 
-	const Loading = useCallback(
-		() => (
-			<div className="flex flex-col items-center justify-center my-7">
-				<div className="animate-spin rounded-full h-14 w-14 border-b-4 border-gray"></div>
-			</div>
-		),
-		[],
-	)
-
 	const FromTitle = useCallback(() => {
 		let formTitle = ""
 
@@ -314,7 +306,7 @@ export default function BookmarkForm() {
 						onClick={remove}
 						{...{ type: "button" }}
 					>
-						<MdDeleteForever />
+						<MdDeleteForever size={20} />
 					</Button>
 				)}
 				<div className="flex w-full items-center justify-end">
@@ -355,7 +347,7 @@ export default function BookmarkForm() {
 				>
 					<FromTitle />
 					{loading ? (
-						<Loading />
+						<ActivityIndicator />
 					) : (
 						<>
 							{(mode === "addBookmark" || mode === "editBookmark") && (
@@ -382,7 +374,7 @@ export default function BookmarkForm() {
 															<div className="flex items-center">
 																<Button
 																	onClick={onImageUpload}
-																	className={`outline-dashed ring-0  h-9 w-9`}
+																	className={`outline-dashed ring-0 h-9 w-9`}
 																	{...{ type: "button" }}
 																>
 																	<IoMdAdd size={20} />
@@ -393,27 +385,26 @@ export default function BookmarkForm() {
 															</div>
 														)}
 													</div>
-
 													{imageList[0]?.dataURL && (
 														<div className="flex items-center">
 															<Button
-																className={`px-1 z-50 mr-2`}
+																className={`group px-1 z-50 mr-2`}
 																onClick={onImageUpload}
 																{...{ type: "button" }}
 															>
 																<BiUpload
 																	size={20}
-																	className="text-white hover:text-black"
+																	className="text-white group-hover:text-black"
 																/>
 															</Button>
 															<Button
-																className={`px-1 z-50`}
+																className={`group px-1 z-50`}
 																onClick={onImageRemoveAll}
 																{...{ type: "button" }}
 															>
 																<MdDeleteForever
 																	size={20}
-																	className="text-white hover:text-black"
+																	className="text-white group-hover:text-black"
 																/>
 															</Button>
 														</div>

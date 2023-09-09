@@ -1,6 +1,6 @@
 import axios from "axios"
 
-import { DUCK_FAVICON_API, faviconPlaceHolder } from "../utils/constants"
+import { DUCK_FAVICON_API, ICON_HORSE_API, faviconPlaceHolder } from "../utils/constants"
 import { cleanURL } from "../utils/cleanURL"
 
 export const fetchFavicon = async (url: string): Promise<string> => {
@@ -9,6 +9,10 @@ export const fetchFavicon = async (url: string): Promise<string> => {
 	// const sz = 128
 
 	if (!domain) return favicon
+
+	if (domain.endsWith("google.com")) {
+		return ICON_HORSE_API + domain
+	}
 
 	await axios
 		.get(domain, { baseURL: "https://favicongrabber.com/api/grab/" })

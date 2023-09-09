@@ -1,4 +1,4 @@
-import { memo, useRef } from "react"
+import { memo, useRef, useState } from "react"
 import { AiFillEdit } from "react-icons/ai"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
@@ -9,6 +9,7 @@ import { editBookmark } from "../redux/features/bookmarkSlice"
 
 import { cleanURL } from "../utils/cleanURL"
 import { DUCK_FAVICON_API, GOOGLE_FAVICON_API, ICON_HORSE_API } from "../utils/constants"
+import ActivityIndicator from "./ui/ActivityIndicator"
 
 function Bookmark({
 	group,
@@ -22,6 +23,7 @@ function Bookmark({
 	const dispatch = useDispatch()
 
 	const { id, title, url, favicon } = bookmark
+	const [imageLoading, setImageLoading] = useState(true)
 
 	// dnd-kit
 	const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: id })
@@ -83,6 +85,8 @@ function Bookmark({
 	}
 
 	const handleOnImageLoaded = (e: any | undefined) => {
+		setImageLoading(false)
+
 		if (!e) return
 
 		imgReqSuccesAPI.current.forEach((api) => {
@@ -126,16 +130,24 @@ function Bookmark({
 				onClick={redirect}
 				className="flex flex-col justify-center items-center hover:scale-[1.04] transition-all hover:animate-pulse"
 			>
+				{imageLoading && (
+					<ActivityIndicator
+						size={"w-5 h-5"}
+						color={"#fff"}
+					/>
+				)}
+
 				<img
 					src={favicon}
 					alt={title}
-					width={32}
-					height={32}
-					className="mb-[5px]"
+					width={29}
+					height={29}
+					className={`mb-[5px] ${imageLoading && "hidden"}`}
 					onError={handleOnImageLoadError}
 					onLoad={handleOnImageLoaded}
 				/>
-				<p className="text-xs text-center text-white text-clip line-clamp-1 w-[60px]">{title}</p>
+
+				<p className="text-[11px] text-center text-white text-clip line-clamp-1 w-[60px]">{title}</p>
 			</button>
 		</div>
 	)

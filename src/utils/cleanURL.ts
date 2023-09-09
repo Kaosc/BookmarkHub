@@ -1,5 +1,5 @@
 export const cleanURL = (url: string): string | null => {
-	let domain = null
+	let domain = url
 
 	// Get the domain
 	if (url?.startsWith("https://") || url?.startsWith("http://")) {
@@ -7,7 +7,6 @@ export const cleanURL = (url: string): string | null => {
 			domain = new URL(url).hostname
 		} catch (e) {
 			console.error("Cannot convert invalid URL", e)
-			return null
 		}
 	}
 
