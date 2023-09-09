@@ -107,7 +107,12 @@ function Bookmark({
 	const redirect = () => {
 		if (url) {
 			try {
-				window.open(url, "_blank")
+				if (!url.startsWith("https")) {
+					window.open(`https://${url}`, "_blank")
+					return
+				} else {
+					window.open(url, "_blank")
+				}
 			} catch (e) {
 				alert("URL not valid")
 			}
