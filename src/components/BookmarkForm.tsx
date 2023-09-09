@@ -26,8 +26,8 @@ import { faviconPlaceHolder } from "../utils/constants"
 import { fetchFavicon } from "../api/fetchFavicon"
 
 export default function BookmarkForm() {
-	const bookmarks = useSelector((state: StoreRootState) => state.bookmarks)
-	const { visible, initGroup, prevBookmark, mode } = useSelector((state: StoreRootState) => state.form)
+	const bookmarks = useSelector((state: RootState) => state.bookmarks)
+	const { visible, initGroup, prevBookmark, mode } = useSelector((state: RootState) => state.form)
 
 	// FORM STATES
 	const [favicon, setUploadedFavicon] = useState("")
@@ -136,10 +136,6 @@ export default function BookmarkForm() {
 			if (favicon !== prevBookmark?.favicon) {
 				bookmark.favicon = favicon
 			}
-			// If user didn't upload a favicon, check for url changes & update favicon
-			console.log(!favicon?.startsWith("data:image") && url !== prevBookmark?.url)
-
-			console.log(url, prevBookmark?.url)
 		} else if ((favicon?.startsWith("data:image") && !favicon) || url !== prevBookmark?.url) {
 			bookmark.favicon = await fetchFavicon(url)
 		}

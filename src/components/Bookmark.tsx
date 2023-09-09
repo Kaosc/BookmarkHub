@@ -15,13 +15,15 @@ function Bookmark({
 	group,
 	bookmark,
 	opacity = "opacity-100",
+	className,
 }: {
 	group?: GroupInfo
 	bookmark: Bookmark
 	opacity?: string
+	className?: React.HTMLAttributes<HTMLDivElement>["className"]
 }) {
 	const dispatch = useDispatch()
-
+	
 	const { id, title, url, favicon } = bookmark
 	const [imageLoading, setImageLoading] = useState(true)
 
@@ -125,7 +127,10 @@ function Bookmark({
 			style={style}
 			{...listeners}
 			{...attributes}
-			className={`group relative flex flex-col items-center justify-center hover:bg-zinc-900 p-1 w-[70px] my-3 mx-[1px] transition-all ${opacity}`}
+			className={`group relative flex flex-col items-center justify-center hover:bg-zinc-900 
+							p-1 w-[70px] my-2 mx-[1px] transition-all ${opacity}
+							transition-all duration-500 ease-out animate-in fade-in-0 ${className}
+							`}
 		>
 			<div className={`absolute flex invisible top-0 left-0 justify-end w-full group-hover:visible z-10`}>
 				<button

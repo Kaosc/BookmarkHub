@@ -9,7 +9,7 @@ export {}
 // import BookmarkGroupList from "../components/BookmarkGroupList"
 
 // export default function Home() {
-// 	const bookmarkGroups = useSelector((state: StoreRootState) => state.bookmarks)
+// 	const bookmarkGroups = useSelector((state: RootState) => state.bookmarks)
 // 	const dispatch = useDispatch()
 
 // 	const move = (

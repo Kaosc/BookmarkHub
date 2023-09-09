@@ -6,9 +6,10 @@ import Navbar from "./components/Navbar"
 import BookmarkForm from "./components/BookmarkForm"
 
 import { storeBookmarks } from "./utils/localStorage"
+import Search from "./pages/Search"
 
 export default function App() {
-	const bookmarks = useSelector((state: StoreRootState) => state.bookmarks)
+	const bookmarks = useSelector((state: RootState) => state.bookmarks)
 
 	useEffect(() => {
 		storeBookmarks(bookmarks)
@@ -19,6 +20,7 @@ export default function App() {
 			<Navbar />
 			<BookmarkForm />
 			<Home />
+			<Search />
 		</main>
 	)
 }

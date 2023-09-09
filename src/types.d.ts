@@ -1,6 +1,7 @@
-interface StoreRootState {
+interface RootState {
 	bookmarks: BookmarkGroups
 	form: Form
+	search: string
 }
 
 type BookmarkGroups = BookmarkData[]

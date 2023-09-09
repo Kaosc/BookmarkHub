@@ -5,6 +5,7 @@ import { useDispatch } from "react-redux"
 import { toggleForm } from "../redux/features/formSlice"
 
 import Divider from "./ui/Divider"
+import SearchBar from "./SearchBar"
 
 export default function Navbar() {
 	const dispatch = useDispatch()
@@ -24,7 +25,7 @@ export default function Navbar() {
 
 	return (
 		<div className="z-20 sticky flex items-center justify-between w-full h-16 px-4 bg-gradient-to-r from-zinc-900 to-zinc-950">
-			<button
+			{/* <button
 				onClick={() => {
 					localStorage.clear()
 					window.location.reload()
@@ -32,14 +33,14 @@ export default function Navbar() {
 				className="text-white"
 			>
 				clean
-			</button>
+			</button> */}
 
-			<div className="flex items-center">
+			<div className="flex items-center justify-center">
 				<BsFillBookmarkFill
-					size={20}
-					className="text-white mt-[7px]"
+					size={23}
+					className="text-white  mr-3"
 				/>
-				<h1 className="text-2xl font-bold text-white ml-3">[Search]</h1>
+				<SearchBar />
 			</div>
 
 			<div className="flex items-center justify-center">
@@ -53,7 +54,7 @@ export default function Navbar() {
 
 					{/* dropdown */}
 					<div
-						className="absolute right-10 top-10 flex flex-col items-center w-[130px] rounded-lg p-2 bg-gradient-to-tr from-zinc-900 to-zinc-800 opacity-0
+						className="absolute right-[52px] top-10 flex flex-col items-center w-[130px] rounded-lg p-2 bg-gradient-to-tr from-zinc-900 to-zinc-800 opacity-0
 					transition-all duration-300 invisible group-hover:visible group-hover:opacity-100"
 					>
 						<button

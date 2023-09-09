@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useRef, useEffect } from "react"
 
 import {
 	DndContext,
@@ -19,10 +19,33 @@ import { editGroup } from "../redux/features/bookmarkSlice"
 import BookmarkGroupList from "../components/BookmarkGroupList"
 import Bookmark from "../components/Bookmark"
 
+// get scroll event
 export default function Home() {
-	const bookmarkGroups = useSelector((state: StoreRootState) => state.bookmarks)
+	const bookmarkGroups = useSelector((state: RootState) => state.bookmarks)
 	const dispatch = useDispatch()
+
 	const [activeBookmark, setActiveBookmark] = useState<Bookmark>()
+	const isScrolling = useRef(false)
+
+	useEffect(() => {
+		let timeout: NodeJS.Timeout
+
+		const handleScroll = () => {
+			isScrolling.current = true
+
+			// Debounce the scroll end detection
+			timeout = setTimeout(() => {
+				isScrolling.current = false
+			}, 100) // Adjust the debounce delay as needed
+		}
+
+		window.addEventListener("scroll", handleScroll)
+
+		return () => {
+			window.removeEventListener("scroll", handleScroll)
+			clearTimeout(timeout)
+		}
+	}, [])
 
 	const sensors = useSensors(
 		useSensor(PointerSensor, {
@@ -93,21 +116,34 @@ export default function Home() {
 			bookmarks: [...overBookmarkGroup.bookmarks, activeBookmarkGroup.bookmarks[activeBookmarkIndex]],
 		}
 
-		dispatch(
-			editGroup({
-				id: activeBookmarkGroupId,
-				title: updatedActiveGroup.title,
-				bookmarks: updatedActiveGroup.bookmarks,
-			}),
-		)
+		// if user scrolling while dragging bookmark disable dispatch
 
-		dispatch(
-			editGroup({
-				id: overBookmarkGroupId,
-				title: updatedOverGroup.title,
-				bookmarks: updatedOverGroup.bookmarks,
-			}),
-		)
+		if (isScrolling.current) return
+
+		if (activeBookmarkGroup.id !== overBookmarkGroup.id) {
+			const t = setTimeout(() => {
+				if (activeBookmarkGroup.id === overBookmarkGroup.id) {
+					clearTimeout(t)
+					return
+				}
+
+				dispatch(
+					editGroup({
+						id: activeBookmarkGroupId,
+						title: updatedActiveGroup.title,
+						bookmarks: updatedActiveGroup.bookmarks,
+					}),
+				)
+
+				dispatch(
+					editGroup({
+						id: overBookmarkGroupId,
+						title: updatedOverGroup.title,
+						bookmarks: updatedOverGroup.bookmarks,
+					}),
+				)
+			}, 250)
+		}
 	}
 
 	const handleDragEnd = (event: DragEndEvent) => {
@@ -149,7 +185,15 @@ export default function Home() {
 				onDragStart={handleDragStart}
 				onDragEnd={handleDragEnd}
 				onDragOver={handleDragOver}
-				autoScroll
+				autoScroll={{
+					enabled: true,
+					interval: 5,
+					acceleration: 200,
+					threshold: {
+						x: 0.1,
+						y: 0.25,
+					},
+				}}
 			>
 				{bookmarkGroups.map((bookmarkData) => (
 					<BookmarkGroupList
