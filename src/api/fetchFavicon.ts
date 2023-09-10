@@ -1,24 +1,25 @@
 import axios from "axios"
 
-import { DUCK_FAVICON_API, ICON_HORSE_API, faviconPlaceHolder } from "../utils/constants"
+import { DUCK_FAVICON_API, ICON_HORSE_API, GOOGLE_FAVICON_API, faviconPlaceHolder } from "../utils/constants"
 import { cleanURL } from "../utils/cleanURL"
 
-export const fetchFavicon = async (url: string): Promise<string> => {
-	let favicon = faviconPlaceHolder
-	let domain = cleanURL(url)
-	// const sz = 128
+export const fetchFavicon = async (url: string): Promise<string[]> => {
+	const favicons = [faviconPlaceHolder]
 
-	if (domain.endsWith("google.com")) return ICON_HORSE_API + domain
+	let domain = cleanURL(url)
+
+	favicons.push(ICON_HORSE_API + domain)
+	favicons.push(DUCK_FAVICON_API + domain + ".ico")
+	favicons.push(GOOGLE_FAVICON_API + domain + "&sz=128")
 
 	await axios
 		.get(domain, { baseURL: "https://favicongrabber.com/api/grab/" })
 		.then((res) => {
-			if (res.data.icons.length > 0) favicon = res.data.icons[0]?.src
-			else favicon = DUCK_FAVICON_API + domain + ".ico"
+			if (res.data?.icons[0]?.src) {
+				favicons.push(res.data.icons[0]?.src)
+			}
 		})
-		.catch((_) => {
-			favicon = DUCK_FAVICON_API + domain + ".ico"
-		})
+		.catch((_) => {})
 
-	return favicon
+	return favicons
 }

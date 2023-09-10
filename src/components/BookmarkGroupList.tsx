@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable"
 import { useDroppable } from "@dnd-kit/core"
 
@@ -8,67 +9,71 @@ import { useDispatch } from "react-redux"
 import { toggleForm } from "../redux/features/formSlice"
 
 import Bookmark from "./Bookmark"
+import BookmarkForm from "./form/BookmarkForm"
 
 export default function BookmarkGroupList({ bookmarkData }: { bookmarkData: BookmarkData }) {
 	const isGroupDefault = bookmarkData.id === "default"
 	const dispatch = useDispatch()
 
+	const [formVisible, setFormVisible] = useState(false)
+
 	const { setNodeRef } = useDroppable({
 		id: bookmarkData.id,
 	})
 
-	const addBookmarkToGroup = () => {
-		dispatch(toggleForm({ mode: "addBookmark" }))
-	}
+	const handleFormVisible = () => setFormVisible((prev) => !prev)
 
 	const editGroup = () => {
 		dispatch(toggleForm({ prevGroup: { id: bookmarkData.id, title: bookmarkData.title }, mode: "editGroup" }))
 	}
 
 	return (
-		<SortableContext
-			id={bookmarkData.id}
-			items={bookmarkData.bookmarks}
-			strategy={rectSortingStrategy}
-		>
-			<div
-				ref={setNodeRef}
-				className="flex flex-wrap w-full transition-all ease-in-out"
+		<>
+			{formVisible && <BookmarkForm groupIdToAdd={bookmarkData.id} handleFormVisible={handleFormVisible} />}
+			<SortableContext
+				id={bookmarkData.id}
+				items={bookmarkData.bookmarks}
+				strategy={rectSortingStrategy}
 			>
-				<div className="flex w-full items-center justify-between px-2 bg-gradient-to-r from-zinc-900 to-zinc-950">
-					<h1 className="py-2 text-base font-bold text-center text-white">
-						{bookmarkData.title === "default" ? "Bookmark Hub" : bookmarkData.title}
-					</h1>
-					<div className="flex">
-						{!isGroupDefault && (
+				<div
+					ref={setNodeRef}
+					className="flex flex-wrap w-full transition-all ease-in-out"
+				>
+					<div className="flex w-full items-center justify-between px-2 bg-gradient-to-r from-zinc-900 to-zinc-950">
+						<h1 className="py-2 text-base font-bold text-center text-white">
+							{bookmarkData.title === "default" ? "Bookmark Hub" : bookmarkData.title}
+						</h1>
+						<div className="flex">
+							{!isGroupDefault && (
+								<button
+									className="flex items-center justify-center hover:opacity-50 hover:animate-pulse"
+									onClick={editGroup}
+								>
+									<AiFillEdit
+										size={19}
+										className="text-white"
+									/>
+								</button>
+							)}
 							<button
 								className="flex items-center justify-center hover:opacity-50 hover:animate-pulse"
-								onClick={editGroup}
+								onClick={handleFormVisible}
 							>
-								<AiFillEdit
-									size={19}
+								<IoIosAdd
+									size={30}
 									className="text-white"
 								/>
 							</button>
-						)}
-						<button
-							className="flex items-center justify-center hover:opacity-50 hover:animate-pulse"
-							onClick={addBookmarkToGroup}
-						>
-							<IoIosAdd
-								size={30}
-								className="text-white"
-							/>
-						</button>
+						</div>
 					</div>
+					{bookmarkData.bookmarks.map((bookmark) => (
+						<Bookmark
+							key={bookmark.id}
+							bookmark={bookmark}
+						/>
+					))}
 				</div>
-				{bookmarkData.bookmarks.map((bookmark) => (
-					<Bookmark
-						key={bookmark.id}
-						bookmark={bookmark}
-					/>
-				))}
-			</div>
-		</SortableContext>
+			</SortableContext>
+		</>
 	)
 }

@@ -17,7 +17,7 @@ type Bookmark = {
 	title: string
 	url: string
 	favicon: string
-	group: string
+	groupId: string
 }
 
 type Form = {
