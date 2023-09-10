@@ -26,7 +26,6 @@ export const bookmarksSlice = createSlice({
 			},
 		) => {
 			const bookmark = action.payload
-			console.log(bookmark)
 			return state.map((group: BookmarkData) => {
 				if (group.id === bookmark.groupId) {
 					return {

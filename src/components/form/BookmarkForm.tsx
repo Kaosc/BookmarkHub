@@ -16,6 +16,7 @@ import Dialog from "../Dialog"
 import ActivityIndicator from "../ui/ActivityIndicator"
 
 import { fetchFavicon } from "../../api/fetchFavicon"
+import { faviconPlaceHolder } from "../../utils/constants"
 
 export default function BookmarkForm({
 	bookmark,
@@ -51,7 +52,6 @@ export default function BookmarkForm({
 			})),
 		[bookmarkData],
 	)
-	console.log(groupOptions)
 
 	useEffect(() => {
 		if (url && !favicon?.startsWith("data")) {
@@ -60,6 +60,8 @@ export default function BookmarkForm({
 					setFaviconList(favicons)
 				})
 			}
+		} else {
+			setFaviconList([])
 		}
 	}, [url, favicon, bookmark?.url])
 
@@ -74,7 +76,7 @@ export default function BookmarkForm({
 
 		let newBookmark: Bookmark = {
 			id: bookmarkId,
-			favicon: favicon,
+			favicon: favicon || faviconList[faviconList.length - 1] || faviconPlaceHolder,
 			title: title,
 			url: url,
 			groupId: group.id,
@@ -96,7 +98,6 @@ export default function BookmarkForm({
 			groupId: group.id,
 		}
 
-		// // If user uploaded a favicon, check for changes & update favicon
 		// if (favicon.startsWith("data:image")) {
 		// 	if (favicon !== prevBookmark?.favicon) {
 		// 		bookmark.favicon = favicon
@@ -127,10 +128,8 @@ export default function BookmarkForm({
 		e.preventDefault()
 
 		if (groupIdToAdd) {
-			console.log("add bookmark")
 			handleBookmarkAdd(e)
 		} else {
-			console.log("edit bookmark")
 			handleBookmarkEdit(e)
 		}
 	}
@@ -253,16 +252,16 @@ export default function BookmarkForm({
 	const FaviconList = () => {
 		if (faviconList.length > 0) {
 			return (
-				<div className="flex flex-wrap w-full mb-4">
+				<div className="flex flex-wrap w-full mb-4 items-center justify-center">
 					{faviconList.map((favicon) => (
 						<div
 							key={favicon}
-							className="flex items-center justify-center w-12 h-12 m-1 border-[0.5px] border-[#757575] rounded-full"
+							className="flex items-center justify-center w-12 h-12 m-1"
 						>
 							<img
 								src={favicon}
 								alt="favicon-preview"
-								className="w-12 h-12 rounded-full hover:opacity-50"
+								className="w-11 h-11  hover:opacity-50"
 								onClick={() => setFavicon(favicon)}
 							/>
 						</div>
