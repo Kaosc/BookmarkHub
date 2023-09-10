@@ -4,7 +4,7 @@ import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { useDispatch } from "react-redux"
 
-import { setFormBookmark, toggleForm } from "../redux/features/formSlice"
+import { toggleForm } from "../redux/features/formSlice"
 import { editBookmark } from "../redux/features/bookmarkSlice"
 
 import { cleanURL } from "../utils/cleanURL"
@@ -12,18 +12,16 @@ import { DUCK_FAVICON_API, GOOGLE_FAVICON_API, ICON_HORSE_API } from "../utils/c
 import ActivityIndicator from "./ui/ActivityIndicator"
 
 function Bookmark({
-	group,
 	bookmark,
 	opacity = "opacity-100",
 	className,
 }: {
-	group?: GroupInfo
 	bookmark: Bookmark
 	opacity?: string
 	className?: React.HTMLAttributes<HTMLDivElement>["className"]
 }) {
 	const dispatch = useDispatch()
-	
+
 	const { id, title, url, favicon } = bookmark
 	const [imageLoading, setImageLoading] = useState(true)
 
@@ -72,17 +70,14 @@ function Bookmark({
 
 		e.currentTarget.src = updatedSrc
 
-		if (group?.id) {
-			dispatch(
-				editBookmark({
-					bookmark: {
-						...bookmark,
-						favicon: updatedSrc,
-					},
-					groupId: group.id,
-				}),
-			)
-		}
+		dispatch(
+			editBookmark({
+				bookmark: {
+					...bookmark,
+					favicon: updatedSrc,
+				},
+			}),
+		)
 	}
 
 	const handleOnImageLoaded = (e: any | undefined) => {
@@ -101,9 +96,7 @@ function Bookmark({
 	//////////////////////////////////////////////////////////////////
 
 	const handleEditBookmark = () => {
-		dispatch(setFormBookmark(bookmark))
-		if (group)
-			dispatch(toggleForm({ initGroup: { id: group?.id, title: group?.title }, mode: "editBookmark" }))
+		dispatch(toggleForm({ prevBookmark: bookmark, mode: "editBookmark" }))
 	}
 
 	const redirect = () => {

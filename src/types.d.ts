@@ -17,13 +17,19 @@ type Bookmark = {
 	title: string
 	url: string
 	favicon: string
+	group: string
 }
 
 type Form = {
 	visible?: boolean
-	initGroup?: GroupInfo
 	mode: FormMode
 	prevBookmark?: Bookmark | undefined
+	prevGroup?:
+		| {
+				id: string
+				title: string
+		  }
+		| undefined
 }
 
 type GroupInfo = {

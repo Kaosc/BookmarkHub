@@ -8,6 +8,12 @@
     text-white border-[0.5px] border-[#757575] outline-none pl-2 
     hover:border-white focus:scale-[1.02] focus:border-white
   }
+
+  .button {
+    @apply items-center justify-center px-2 py-1 ring-1 ring-[#a5a5a5] rounded-md text-[#a5a5a5] 
+    hover:bg-[#f1f1f1ef] hover:text-black 
+    transition-all duration-100 ease-in-out 
+  }
 }
 
 body {

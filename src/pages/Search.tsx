@@ -41,7 +41,6 @@ export default function Search() {
 						<Bookmark
 							key={bookmark.id}
 							bookmark={bookmark}
-							group={bookmarkGroups.find((group) => group.bookmarks.find((b) => b.id === bookmark.id))}
 						/>
 					)
 				})}

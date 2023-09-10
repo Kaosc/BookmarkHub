@@ -11,7 +11,7 @@ export default function Navbar() {
 	const dispatch = useDispatch()
 
 	const addBookmark = () => {
-		dispatch(toggleForm({ initGroup: { id: "default", title: "default" }, mode: "addBookmark" }))
+		dispatch(toggleForm({ prevGroup: { id: "default", title: "default" }, mode: "addBookmark" }))
 	}
 
 	const addGroup = () => {
@@ -25,16 +25,6 @@ export default function Navbar() {
 
 	return (
 		<div className="z-20 sticky flex items-center justify-between w-full h-16 px-4 bg-gradient-to-r from-zinc-900 to-zinc-950">
-			{/* <button
-				onClick={() => {
-					localStorage.clear()
-					window.location.reload()
-				}}
-				className="text-white"
-			>
-				clean
-			</button> */}
-
 			<div className="flex items-center justify-center">
 				<BsFillBookmarkFill
 					size={23}

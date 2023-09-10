@@ -18,13 +18,11 @@ export default function BookmarkGroupList({ bookmarkData }: { bookmarkData: Book
 	})
 
 	const addBookmarkToGroup = () => {
-		dispatch(
-			toggleForm({ initGroup: { id: bookmarkData.id, title: bookmarkData.title }, mode: "addBookmark" }),
-		)
+		dispatch(toggleForm({ mode: "addBookmark" }))
 	}
 
 	const editGroup = () => {
-		dispatch(toggleForm({ initGroup: { id: bookmarkData.id, title: bookmarkData.title }, mode: "editGroup" }))
+		dispatch(toggleForm({ prevGroup: { id: bookmarkData.id, title: bookmarkData.title }, mode: "editGroup" }))
 	}
 
 	return (
@@ -35,9 +33,9 @@ export default function BookmarkGroupList({ bookmarkData }: { bookmarkData: Book
 		>
 			<div
 				ref={setNodeRef}
-				className="flex flex-wrap w-full transition-all ease-in-out animate-in slide-in-from-top duration-1000"
+				className="flex flex-wrap w-full transition-all ease-in-out"
 			>
-				<div className="flex w-full items-center justify-between px-2 bg-gradient-to-r from-zinc-900 to-zinc-950 transition-all ease-in-out animate-in slide-in-from-top-5 duration-500">
+				<div className="flex w-full items-center justify-between px-2 bg-gradient-to-r from-zinc-900 to-zinc-950">
 					<h1 className="py-2 text-base font-bold text-center text-white">
 						{bookmarkData.title === "default" ? "Bookmark Hub" : bookmarkData.title}
 					</h1>
@@ -67,10 +65,6 @@ export default function BookmarkGroupList({ bookmarkData }: { bookmarkData: Book
 				{bookmarkData.bookmarks.map((bookmark) => (
 					<Bookmark
 						key={bookmark.id}
-						group={{
-							id: bookmarkData.id,
-							title: bookmarkData.title,
-						}}
 						bookmark={bookmark}
 					/>
 				))}

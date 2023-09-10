@@ -22,22 +22,19 @@ export const bookmarksSlice = createSlice({
 		addBookmark: (
 			state,
 			action: {
-				payload: {
-					bookmark: Bookmark
-					groupId: string
-				}
+				payload: Bookmark
 			},
 		) => {
-			const { bookmark, groupId } = action.payload
-
+			const bookmark = action.payload
 			return state.map((group: BookmarkData) => {
-				if (group.id === groupId) {
+				if (group.id === bookmark.group) {
 					return {
 						...group,
 						bookmarks: [...group.bookmarks, bookmark],
 					}
+				} else {
+					return group
 				}
-				return group
 			})
 		},
 		deleteBookmark: (
@@ -57,8 +54,9 @@ export const bookmarksSlice = createSlice({
 						...group,
 						bookmarks: group.bookmarks.filter((bookmark: Bookmark) => bookmark.id !== bookmarkId),
 					}
+				} else {
+					return group
 				}
-				return group
 			})
 		},
 		editBookmark: (
@@ -66,61 +64,27 @@ export const bookmarksSlice = createSlice({
 			action: {
 				payload: {
 					bookmark: Bookmark
-					groupId: string
+					movedFromId?: string
 				}
 			},
 		) => {
-			const { bookmark, groupId } = action.payload
+			const { movedFromId, bookmark } = action.payload
 
 			return state.map((group: BookmarkData) => {
-				if (group.id === groupId) {
+				if (group.id === movedFromId) {
 					return {
 						...group,
-						bookmarks: group.bookmarks.map((bookmarkItem: Bookmark) => {
-							if (bookmarkItem.id === bookmark.id) {
-								return bookmark
-							}
-							return bookmarkItem
-						}),
+						bookmarks: group.bookmarks.filter((b: Bookmark) => b.id !== bookmark.id),
 					}
-				}
-				return group
-			})
-		},
-		moveBookmark: (
-			state,
-			action: {
-				payload: {
-					bookmarkId: string
-					groupId: string
-					toGroupId: string
-				}
-			},
-		) => {
-			const { bookmarkId, groupId, toGroupId } = action.payload
-
-			const bookmarkToMove = state
-				.find((group: BookmarkData) => group.id === groupId)
-				?.bookmarks.find((bookmark: Bookmark) => bookmark.id === bookmarkId)
-
-			if (bookmarkToMove) {
-				return state.map((group: BookmarkData) => {
-					if (group.id === groupId) {
-						return {
-							...group,
-							bookmarks: group.bookmarks.filter((bookmark: Bookmark) => bookmark.id !== bookmarkId),
-						}
+				} else if (group.id === bookmark.group) {
+					return {
+						...group,
+						bookmarks: [...group.bookmarks, bookmark],
 					}
-					if (group.id === toGroupId) {
-						return {
-							...group,
-							bookmarks: [...group.bookmarks, bookmarkToMove],
-						}
-					}
+				} else {
 					return group
-				})
-			}
-			return state
+				}
+			})
 		},
 		addGroup: (state, action: { payload: BookmarkData }) => {
 			const { payload } = action
@@ -166,7 +130,6 @@ export const {
 	editBookmark,
 	addGroup,
 	deleteGroup,
-	moveBookmark,
 	editGroup,
 	editGroupTitle,
 	setBookmarkGroups,
