@@ -38,7 +38,7 @@ export default function BookmarkGroupList({ bookmarkData }: { bookmarkData: Book
 			>
 				<div
 					ref={setNodeRef}
-					className="flex flex-wrap w-full transition-all ease-in-out px-[2px]"
+					className="flex flex-wrap w-full transition-all ease-in-out"
 				>
 					{/* GROUP HEADER */}
 					{bookmarkData.id !== "default" && (
