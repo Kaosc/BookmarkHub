@@ -29,15 +29,15 @@ export default function SearchBar() {
 	}
 
 	return (
-		<div className="relative flex flex-row w-56 h-9 items-center justify-center rounded-full bg-zinc-800 focus:ring-2 focus:ring-slate-500 focus:ring-opacity-50 hover:bg-zinc-700 transition-all ease-in-out duration-300">
-			<button className="absolute left-3 bottom-[7px] hover:scale-110 transition-all ease-in-out">
+		<div className="relative flex flex-row w-56 h-8 items-center justify-center rounded-full bg-zinc-800 focus:ring-2 focus:ring-slate-500 focus:ring-opacity-50 hover:bg-zinc-700 transition-all ease-in-out duration-300">
+			<button className="absolute left-3 bottom-[5px] hover:scale-110 transition-all ease-in-out">
 				<BiSearchAlt2
 					size={22}
-					className="text-gray-400  hover:text-white"
+					className="text-gray-400 hover:text-white"
 				/>
 			</button>
 			<input
-				className="ml-[41px] mr-9 overflow-hidden text-gray-300 text-xl outline-none bg-transparent"
+				className="ml-[41px] mr-9 overflow-hidden text-gray-300 text-lg outline-none bg-transparent"
 				ref={inputRef}
 				required
 				autoFocus={true}
@@ -47,7 +47,7 @@ export default function SearchBar() {
 			/>
 			{visible && (
 				<button
-					className="absolute right-1 bottom-[4px] hover:scale-110 transition-all ease-in-out"
+					className="absolute right-1 hover:scale-110 transition-all ease-in-out"
 					onClick={clearInput}
 				>
 					<IoIosClose

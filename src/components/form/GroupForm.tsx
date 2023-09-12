@@ -1,50 +1,84 @@
 import React, { useState } from "react"
 import { nanoid } from "nanoid"
-import { useDispatch, useSelector } from "react-redux"
-// import Dialog from "./Dialog"
 
-export default function GroupForm() {
+import { useDispatch } from "react-redux"
+import { addGroup, deleteGroup, editGroupTitle } from "../../redux/features/bookmarkSlice"
+
+import Dialog from "../Dialog"
+import FormButtons from "./FormButtons"
+
+export default function GroupForm({
+	prevGroup,
+	handleFormVisible,
+}: {
+	prevGroup?: { id: string; title: string }
+	handleFormVisible: Function
+}) {
 	const dispatch = useDispatch()
-	const bookmarkGroups = useSelector((state: RootState) => state.bookmarks)
 
-	// FORM STATES
-	const [bookmarkDataGroup, setBookmarkDataGroup] = useState({ id: "", title: "" })
+	const [group, setGroup] = useState(prevGroup || { id: "default", title: "" })
 
 	const quitFrom = (e: React.MouseEvent<HTMLButtonElement>) => {
+		handleFormVisible()
 		e.preventDefault()
 	}
 
-	////////////////////////// GROUP SUBMIT //////////////////////////
-
-	const handleGroupTitleEdit = (e: React.MouseEvent<HTMLButtonElement>) => {
+	const handleGroupTitleEdit = (e: React.ChangeEvent<HTMLInputElement>) => {
 		e.preventDefault()
-		// dispatch(editGroupTitle({ id: bookmarkDataGroup.id || "default", title: bookmarkDataGroup.title }))
+		setGroup({
+			...group,
+			title: e.target.value,
+		})
+	}
+
+	const handleGroupEdit = (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault()
+		dispatch(editGroupTitle({ id: group.id, title: group.title }))
 		quitFrom(e)
 	}
 
-	const handleGroupSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+	const handleGroupAdd = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
-		// dispatch(addGroup({ id: nanoid(), title: bookmarkDataGroup.title, bookmarks: [] }))
+		dispatch(addGroup({ id: nanoid(), title: group.title, bookmarks: [] }))
 		quitFrom(e)
 	}
 
 	const handleGroupDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
-		// dispatch(deleteGroup(bookmarkDataGroup.id))
+		dispatch(deleteGroup(group.id))
 		quitFrom(e)
 	}
 
-	////////////////////////// COMPONENTS //////////////////////////
+	const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault()
+
+		if (prevGroup) {
+			handleGroupEdit(e)
+		} else {
+			handleGroupAdd(e)
+		}
+	}
 
 	return (
-		<form className="flex flex-col items-center">
+		<Dialog
+			onClose={quitFrom}
+			title={prevGroup ? "Edit Group" : "Add Group"}
+		>
 			<input
-				value={bookmarkDataGroup.title}
+				value={group.title}
+				required
 				className="input"
 				type="text"
 				placeholder={"Group Title"}
-				// onChange={handleGroupTitleEdit}
+				onChange={handleGroupTitleEdit}
 			/>
-		</form>
+			<FormButtons
+				value={group.title}
+				prevValue={prevGroup?.title}
+				handleSubmit={handleSubmit}
+				handleDelete={handleGroupDelete}
+				handleCancel={quitFrom}
+			/>
+		</Dialog>
 	)
 }

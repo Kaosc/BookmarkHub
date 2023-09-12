@@ -1,4 +1,4 @@
-export const faviconPlaceHolder = require("../assets/placeholder-favicon.png")
+export const faviconPlaceHolder = "https://www.favicon.cc/favicon/560/925/favicon.ico"
 
 /*
    https://www.google.com/s2/favicons?domain=youtube.com&sz=128

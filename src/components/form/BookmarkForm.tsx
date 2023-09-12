@@ -17,26 +17,24 @@ import ActivityIndicator from "../ui/ActivityIndicator"
 
 import { fetchFavicon } from "../../api/fetchFavicon"
 import { faviconPlaceHolder } from "../../utils/constants"
+import FormButtons from "./FormButtons"
 
 export default function BookmarkForm({
 	bookmark,
-	groupIdToAdd,
 	handleFormVisible,
 }: {
 	bookmark?: Bookmark
-	groupIdToAdd?: string
 	handleFormVisible: Function
 }) {
 	const bookmarkData = useSelector((state: RootState) => state.bookmarks)
 	const dispatch = useDispatch()
 
-	const bookmarkId = bookmark?.id || nanoid()
 	const [favicon, setFavicon] = useState(bookmark?.favicon || "")
 	const [title, setTitle] = useState(bookmark?.title || "")
 	const [url, setUrl] = useState(bookmark?.url || "")
 	const [group, setGroup] = useState({
-		id: bookmark?.groupId || groupIdToAdd || "default",
-		title: bookmarkData.find((bd) => bd.id === bookmark?.groupId)?.title,
+		id: bookmark?.groupId || "default",
+		title: bookmarkData.find((bd) => bd.id === bookmark?.groupId)?.title || "Default",
 	})
 
 	const [loading, setLoading] = useState(false)
@@ -50,16 +48,19 @@ export default function BookmarkForm({
 				value: bdg.id,
 				label: bdg.title,
 			})),
-		[bookmarkData],
+		[bookmarkData]
 	)
 
 	useEffect(() => {
+		console.log(faviconPlaceHolder)
 		if (url && !favicon?.startsWith("data")) {
+			console.log(url !== bookmark?.url)
 			if (url !== bookmark?.url) {
+				console.log("fetching favicon")
 				fetchFavicon(url).then((favicons) => {
 					setFaviconList(favicons)
 				})
-			}
+			} 
 		} else {
 			setFaviconList([])
 		}
@@ -75,7 +76,7 @@ export default function BookmarkForm({
 		setLoading(true)
 
 		let newBookmark: Bookmark = {
-			id: bookmarkId,
+			id: nanoid(),
 			favicon: favicon || faviconList[faviconList.length - 1] || faviconPlaceHolder,
 			title: title,
 			url: url,
@@ -87,16 +88,20 @@ export default function BookmarkForm({
 	}
 
 	const handleBookmarkEdit = async (e: React.MouseEvent<HTMLButtonElement>) => {
+		if (!bookmark) return
+
 		e.preventDefault()
 		setLoading(true)
 
 		let newBookmark: Bookmark = {
-			id: bookmarkId,
-			favicon: favicon,
+			id: bookmark.id,
+			favicon: favicon || faviconList[faviconList.length - 1] || faviconPlaceHolder,
 			title: title,
 			url: url,
 			groupId: group.id,
 		}
+
+		console.log(newBookmark)
 
 		// if (favicon.startsWith("data:image")) {
 		// 	if (favicon !== prevBookmark?.favicon) {
@@ -105,12 +110,12 @@ export default function BookmarkForm({
 		// } else if ((favicon?.startsWith("data:image") && !favicon) || url !== prevBookmark?.url) {
 		// 	bookmark.favicon = await fetchFavicon(url)
 		// }
-		
+
 		dispatch(
 			editBookmark({
 				bookmark: newBookmark,
 				prevGroupId: bookmark?.groupId !== newBookmark.groupId ? bookmark?.groupId : undefined,
-			}),
+			})
 		)
 
 		quitFrom(e)
@@ -127,11 +132,8 @@ export default function BookmarkForm({
 	const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
 
-		if (groupIdToAdd) {
-			handleBookmarkAdd(e)
-		} else {
-			handleBookmarkEdit(e)
-		}
+		if (bookmark) handleBookmarkEdit(e)
+		else handleBookmarkAdd(e)
 	}
 
 	const quitFrom = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -315,35 +317,13 @@ export default function BookmarkForm({
 					{/* GROUP */}
 					<SelectDropDown />
 
-					<div className="flex justify-between w-full mt-2">
-						{/* DELETE */}
-						<Button
-							className={`px-[10px] text-red-600 rin-1 ring-red-600 rounded-md hover:bg-red-600 hover:text-white`}
-							onClick={handleBookmarkDelete}
-							type="button"
-						>
-							<MdDeleteForever size={20} />
-						</Button>
-
-						<div className="flex w-full items-center justify-end">
-							{/* CANCEL */}
-							<Button
-								className={`mr-3`}
-								onClick={quitFrom}
-								type="button"
-							>
-								<p>Cancel</p>
-							</Button>
-
-							{/* EDIT & ADD */}
-							<Button
-								onClick={(e) => url && handleSubmit(e)}
-								type="submit"
-							>
-								<p>{bookmark ? "Save" : "Add"}</p>
-							</Button>
-						</div>
-					</div>
+					<FormButtons
+						handleCancel={quitFrom}
+						handleDelete={handleBookmarkDelete}
+						handleSubmit={handleSubmit}
+						prevValue={bookmark?.url}
+						value={url}
+					/>
 				</form>
 			</Dialog>
 		)

@@ -62,7 +62,7 @@ export default function Home() {
 				delay: 100,
 				tolerance: 5,
 			},
-		}),
+		})
 	)
 
 	const handleDragStart = (event: DragEndEvent) => {
@@ -73,7 +73,7 @@ export default function Home() {
 			bookmarkGroups
 				.map((group) => group.bookmarks)
 				.flat()
-				.find((bookmark) => bookmark.id === id),
+				.find((bookmark) => bookmark.id === id)
 		)
 	}
 
@@ -96,7 +96,7 @@ export default function Home() {
 		if (!overBookmarkGroup || !activeBookmarkGroup) return
 
 		const activeBookmarkIndex = activeBookmarkGroup.bookmarks.findIndex(
-			(bookmark) => bookmark.id === activeBookmarkId,
+			(bookmark) => bookmark.id === activeBookmarkId
 		)
 
 		if (activeBookmarkIndex === -1) {
@@ -117,32 +117,24 @@ export default function Home() {
 		}
 
 		// if user scrolling while dragging bookmark disable dispatch
-
 		if (isScrolling.current) return
 
 		if (activeBookmarkGroup.id !== overBookmarkGroup.id) {
-			const t = setTimeout(() => {
-				if (activeBookmarkGroup.id === overBookmarkGroup.id) {
-					clearTimeout(t)
-					return
-				}
+			dispatch(
+				editGroup({
+					id: activeBookmarkGroupId,
+					title: updatedActiveGroup.title,
+					bookmarks: updatedActiveGroup.bookmarks,
+				})
+			)
 
-				dispatch(
-					editGroup({
-						id: activeBookmarkGroupId,
-						title: updatedActiveGroup.title,
-						bookmarks: updatedActiveGroup.bookmarks,
-					}),
-				)
-
-				dispatch(
-					editGroup({
-						id: overBookmarkGroupId,
-						title: updatedOverGroup.title,
-						bookmarks: updatedOverGroup.bookmarks,
-					}),
-				)
-			}, 250)
+			dispatch(
+				editGroup({
+					id: overBookmarkGroupId,
+					title: updatedOverGroup.title,
+					bookmarks: updatedOverGroup.bookmarks,
+				})
+			)
 		}
 	}
 
@@ -171,7 +163,7 @@ export default function Home() {
 					id: overBookmarkGroupId,
 					title: overBookmarkGroup.title,
 					bookmarks: newGroup,
-				}),
+				})
 			)
 		}
 
@@ -179,7 +171,7 @@ export default function Home() {
 	}
 
 	return (
-		<main className="overflow-y-auto">
+		<main className="overflow-y-auto bg-gradient-to-r from-[#0e0e0e] to-zinc-950">
 			<DndContext
 				sensors={sensors}
 				onDragStart={handleDragStart}

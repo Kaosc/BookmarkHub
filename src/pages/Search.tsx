@@ -31,7 +31,7 @@ export default function Search() {
 
 	return (
 		<div
-			className={`absolute top-0 left-0 z-10 mt-14 w-[435px] h-[494px] bg-gradient-to-r from-zinc-900 to-zinc-950 ${
+			className={`absolute top-0 left-0 z-10 mt-14 w-[435px] h-[494px] bg-gradient-to-r from-[#0e0e0e] to-zinc-950 ${
 				search ? "visible animate-in fade-in-0 duration-300" : "invisible animate-out fade-out-0 duration-300"
 			} `}
 		>

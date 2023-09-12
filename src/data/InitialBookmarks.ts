@@ -1,7 +1,7 @@
 export const InitialBookmarks: BookmarkGroups = [
 	{
 		id: "default",
-		title: "default",
+		title: "Default",
 		bookmarks: [
 			{
 				id: "default-1",

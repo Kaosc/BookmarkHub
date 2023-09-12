@@ -23,7 +23,7 @@ export const bookmarksSlice = createSlice({
 			state,
 			action: {
 				payload: Bookmark
-			},
+			}
 		) => {
 			const bookmark = action.payload
 			return state.map((group: BookmarkData) => {
@@ -41,7 +41,7 @@ export const bookmarksSlice = createSlice({
 			state,
 			action: {
 				payload: Bookmark
-			},
+			}
 		) => {
 			const bookmark = action.payload
 
@@ -63,9 +63,11 @@ export const bookmarksSlice = createSlice({
 					bookmark: Bookmark
 					prevGroupId?: string
 				}
-			},
+			}
 		) => {
 			const { prevGroupId, bookmark } = action.payload
+			console.log("prevGroupId", prevGroupId)
+
 			if (prevGroupId) {
 				return state.map((group: BookmarkData) => {
 					if (group.id === bookmark.groupId) {
@@ -122,15 +124,16 @@ export const bookmarksSlice = createSlice({
 			})
 		},
 		editGroupTitle: (state, action: { payload: { id: string; title: string } }) => {
-			const { payload } = action
+			const { id, title } = action.payload
 			return state.map((group: BookmarkData) => {
-				if (group.id === payload.id) {
+				if (group.id === id) {
 					return {
 						...group,
-						title: payload.title,
+						title: title,
 					}
+				} else {
+					return group
 				}
-				return group
 			})
 		},
 		setBookmarkGroups: (_, action: { payload: BookmarkGroups }) => {

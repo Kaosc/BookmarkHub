@@ -77,7 +77,7 @@ function Bookmark({
 						height={29}
 						className={`mb-[5px]`}
 					/>
-					<p className="text-[11px] text-center text-white text-clip line-clamp-1 w-[60px]">{title}</p>
+					<p className="text-[11px] text-center text-white line-clamp-1 w-[57px]">{title}</p>
 				</button>
 			</div>
 		</>

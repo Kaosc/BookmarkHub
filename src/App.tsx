@@ -11,6 +11,7 @@ export default function App() {
 	const bookmarks = useSelector((state: RootState) => state.bookmarks)
 
 	useEffect(() => {
+		// localStorage.clear()
 		storeBookmarks(bookmarks)
 	}, [bookmarks])
 
