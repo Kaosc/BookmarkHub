@@ -4,7 +4,6 @@ import ImageUploading, { ImageType } from "react-images-uploading"
 import { nanoid } from "nanoid"
 import Select from "react-select"
 
-// Icons
 import { BiCopy, BiUpload } from "react-icons/bi"
 import { MdDeleteForever } from "react-icons/md"
 import { IoMdAdd } from "react-icons/io"
@@ -52,11 +51,8 @@ export default function BookmarkForm({
 	)
 
 	useEffect(() => {
-		console.log(faviconPlaceHolder)
 		if (url && !favicon?.startsWith("data")) {
-			console.log(url !== bookmark?.url)
 			if (url !== bookmark?.url) {
-				console.log("fetching favicon")
 				fetchFavicon(url).then((favicons) => {
 					setFaviconList(favicons)
 				})
@@ -101,16 +97,6 @@ export default function BookmarkForm({
 			groupId: group.id,
 		}
 
-		console.log(newBookmark)
-
-		// if (favicon.startsWith("data:image")) {
-		// 	if (favicon !== prevBookmark?.favicon) {
-		// 		bookmark.favicon = favicon
-		// 	}
-		// } else if ((favicon?.startsWith("data:image") && !favicon) || url !== prevBookmark?.url) {
-		// 	bookmark.favicon = await fetchFavicon(url)
-		// }
-
 		dispatch(
 			editBookmark({
 				bookmark: newBookmark,
@@ -125,7 +111,7 @@ export default function BookmarkForm({
 		e.preventDefault()
 		if (!bookmark) return
 
-		dispatch(deleteBookmark(bookmark))
+		dispatch(deleteBookmark({bookmarkId: bookmark.id, groupId: group.id}))
 		quitFrom(e)
 	}
 

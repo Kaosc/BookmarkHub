@@ -26,6 +26,7 @@ export const bookmarksSlice = createSlice({
 			}
 		) => {
 			const bookmark = action.payload
+
 			return state.map((group: BookmarkData) => {
 				if (group.id === bookmark.groupId) {
 					return {
@@ -40,16 +41,19 @@ export const bookmarksSlice = createSlice({
 		deleteBookmark: (
 			state,
 			action: {
-				payload: Bookmark
+				payload: {
+					bookmarkId: string
+					groupId: string
+				}
 			}
 		) => {
-			const bookmark = action.payload
+			const { bookmarkId, groupId } = action.payload
 
 			return state.map((group: BookmarkData) => {
-				if (group.id === bookmark.groupId) {
+				if (group.id === groupId) {
 					return {
 						...group,
-						bookmarks: group.bookmarks.filter((b: Bookmark) => b.id !== bookmark.id),
+						bookmarks: group.bookmarks.filter((b: Bookmark) => b.id !== bookmarkId),
 					}
 				} else {
 					return group
@@ -66,7 +70,6 @@ export const bookmarksSlice = createSlice({
 			}
 		) => {
 			const { prevGroupId, bookmark } = action.payload
-			console.log("prevGroupId", prevGroupId)
 
 			if (prevGroupId) {
 				return state.map((group: BookmarkData) => {
@@ -125,6 +128,7 @@ export const bookmarksSlice = createSlice({
 		},
 		editGroupTitle: (state, action: { payload: { id: string; title: string } }) => {
 			const { id, title } = action.payload
+			
 			return state.map((group: BookmarkData) => {
 				if (group.id === id) {
 					return {
