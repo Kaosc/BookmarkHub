@@ -13,10 +13,10 @@ import { addBookmark, deleteBookmark, editBookmark } from "../../redux/features/
 import Button from "../ui/Button"
 import Dialog from "../Dialog"
 import ActivityIndicator from "../ui/ActivityIndicator"
-
 import { fetchFavicon } from "../../api/fetchFavicon"
 import { faviconPlaceHolder } from "../../utils/constants"
 import FormButtons from "./FormButtons"
+import { notify } from "../../utils/notify"
 
 export default function BookmarkForm({
 	bookmark,
@@ -56,7 +56,7 @@ export default function BookmarkForm({
 				fetchFavicon(url).then((favicons) => {
 					setFaviconList(favicons)
 				})
-			} 
+			}
 		} else {
 			setFaviconList([])
 		}
@@ -80,6 +80,8 @@ export default function BookmarkForm({
 		}
 
 		dispatch(addBookmark(newBookmark))
+
+		notify("Bookmark Added")
 		quitFrom(e)
 	}
 
@@ -104,6 +106,7 @@ export default function BookmarkForm({
 			})
 		)
 
+		notify("Bookmark Edited")
 		quitFrom(e)
 	}
 
@@ -111,7 +114,9 @@ export default function BookmarkForm({
 		e.preventDefault()
 		if (!bookmark) return
 
-		dispatch(deleteBookmark({bookmarkId: bookmark.id, groupId: group.id}))
+		dispatch(deleteBookmark({ bookmarkId: bookmark.id, groupId: group.id }))
+
+		notify("Bookmark Deleted")
 		quitFrom(e)
 	}
 

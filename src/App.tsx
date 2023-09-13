@@ -1,5 +1,6 @@
 import { useEffect } from "react"
 import { useSelector } from "react-redux"
+import { ToastContainer } from "react-toastify"
 
 import Home from "./pages/Home"
 import Navbar from "./components/Navbar"
@@ -20,6 +21,7 @@ export default function App() {
 			<Navbar />
 			<Home />
 			<Search />
+			<ToastContainer/>
 		</main>
 	)
 }

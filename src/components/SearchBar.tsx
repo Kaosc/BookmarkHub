@@ -32,12 +32,12 @@ export default function SearchBar() {
 		<div className="relative flex flex-row w-56 h-8 items-center justify-center rounded-full bg-zinc-800 focus:ring-2 focus:ring-slate-500 focus:ring-opacity-50 hover:bg-zinc-700 transition-all ease-in-out duration-300">
 			<button className="absolute left-3 bottom-[5px] hover:scale-110 transition-all ease-in-out">
 				<BiSearchAlt2
-					size={22}
+					size={19}
 					className="text-gray-400 hover:text-white"
 				/>
 			</button>
 			<input
-				className="ml-[41px] mr-9 overflow-hidden text-gray-300 text-lg outline-none bg-transparent"
+				className="ml-[37px] mr-9 overflow-hidden text-gray-300 text-base outline-none bg-transparent"
 				ref={inputRef}
 				required
 				autoFocus={true}

@@ -6,6 +6,7 @@ import { addGroup, deleteGroup, editGroupTitle } from "../../redux/features/book
 
 import Dialog from "../Dialog"
 import FormButtons from "./FormButtons"
+import { notify } from "./../../utils/notify"
 
 export default function GroupForm({
 	prevGroup,
@@ -34,18 +35,21 @@ export default function GroupForm({
 	const handleGroupEdit = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
 		dispatch(editGroupTitle({ id: group.id, title: group.title }))
+		notify("Group Edited")
 		quitFrom(e)
 	}
 
 	const handleGroupAdd = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
 		dispatch(addGroup({ id: nanoid(), title: group.title, bookmarks: [] }))
+		notify("Group Added")
 		quitFrom(e)
 	}
 
 	const handleGroupDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
 		dispatch(deleteGroup(group.id))
+		notify("Group Deleted")
 		quitFrom(e)
 	}
 

@@ -1,4 +1,6 @@
 import { useState } from "react"
+import { useDispatch } from "react-redux"
+import { nanoid } from "nanoid"
 
 import { IoMdSettings } from "react-icons/io"
 import { IoIosAdd } from "react-icons/io"
@@ -6,14 +8,14 @@ import { AiOutlineFolderOpen } from "react-icons/ai"
 import { BiBookmarkPlus } from "react-icons/bi"
 import { LiaFileImportSolid } from "react-icons/lia"
 
+import { addBookmark } from "../redux/features/bookmarkSlice"
+
 import Divider from "./ui/Divider"
 import SearchBar from "./SearchBar"
 import BookmarkForm from "./form/BookmarkForm"
 import GroupForm from "./form/GroupForm"
-import { useDispatch } from "react-redux"
-import { addBookmark } from "../redux/features/bookmarkSlice"
-import { nanoid } from "nanoid"
 import { faviconPlaceHolder } from "../utils/constants"
+import { notify } from "../utils/notify"
 
 export default function Navbar() {
 	const dispatch = useDispatch()
@@ -31,19 +33,25 @@ export default function Navbar() {
 	}
 
 	const addActiveTabToBookmark = async () => {
-		let activeTab = await chrome.tabs.query({ active: true, currentWindow: true })
+		let activeTab: chrome.tabs.Tab[] | undefined = await chrome?.tabs?.query({
+			active: true,
+			currentWindow: true,
+		})
 
-		if (!activeTab[0]?.url) return
-
-		dispatch(
-			addBookmark({
-				id: nanoid(),
-				favicon: activeTab[0]?.favIconUrl || faviconPlaceHolder,
-				title: activeTab[0]?.title || "Untitled",
-				url: activeTab[0]?.url,
-				groupId: "default",
-			})
-		)
+		if (activeTab && activeTab[0]?.url) {
+			notify("Active Tab Added to Bookmark")
+			dispatch(
+				addBookmark({
+					id: nanoid(),
+					favicon: activeTab[0]?.favIconUrl || faviconPlaceHolder,
+					title: activeTab[0]?.title || "Untitled",
+					url: activeTab[0]?.url,
+					groupId: "default",
+				})
+			)
+		} else {
+			notify("No Active Tab", true)
+		}
 	}
 
 	const texts = {
@@ -60,7 +68,7 @@ export default function Navbar() {
 					<img
 						src="/favicon.png"
 						alt="logo"
-						className="w-[27px] h-[27px] mr-2"
+						className="w-[24px] h-[24px] mr-2"
 					/>
 					<SearchBar />
 				</div>
@@ -83,11 +91,8 @@ export default function Navbar() {
 							/>
 						</button>
 
-						{/* dropdown */}
-						<div
-							className="absolute right-[0px] top-10 flex flex-col items-center w-[130px] rounded-lg p-2 bg-gradient-to-tr from-zinc-900 to-zinc-800 opacity-0
-					transition-all duration-300 invisible group-hover:visible group-hover:opacity-100"
-						>
+						{/* DROPDOWN */}
+						<div className="dropdownContainer">
 							<button
 								onClick={handleBookmarkFormVisible}
 								className="flex w-full items-center hover:opacity-50 m-1"
