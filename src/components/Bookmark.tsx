@@ -57,7 +57,7 @@ function Bookmark({
 							transition-all duration-500 ease-out animate-in fade-in-0 ${className}
 							`}
 			>
-				<div className={`absolute flex invisible top-0 left-0 justify-end w-full group-hover:visible z-10`}>
+				<div className={`absolute flex invisible top-0 right-0 justify-end group-hover:visible z-10`}>
 					<button
 						onClick={handleFormVisible}
 						className="p-1 text-white rounded-full hover:bg-gray-600 transition-all"
