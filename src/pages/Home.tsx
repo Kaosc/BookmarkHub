@@ -79,6 +79,11 @@ export default function Home() {
 	const handleDragOver = (event: DragOverEvent) => {
 		const { active, over } = event
 
+		// Add a check to prevent unnecessary updates
+		if (!active || !over || active.id === over.id) {
+			return
+		}
+
 		const activeBookmarkId = active.id
 		const activeBookmarkGroupId = active.data.current?.sortable.containerId || activeBookmarkId
 
@@ -140,6 +145,10 @@ export default function Home() {
 	const handleDragEnd = (event: DragEndEvent) => {
 		const { active, over } = event
 
+		if (!active) {
+			return
+		}
+
 		const activeBookmarkIndex = active.data.current?.sortable.index
 
 		const overBookmarkIndex = over?.data.current?.sortable.index
@@ -179,7 +188,7 @@ export default function Home() {
 			>
 				{bookmarkGroups.map((bookmarkData) => (
 					<GroupContainer
-						key={bookmarkData.id}
+						key={bookmarkData.id+bookmarkData.title}
 						bookmarkData={bookmarkData}
 					/>
 				))}
@@ -189,6 +198,7 @@ export default function Home() {
 				>
 					{activeBookmark ? (
 						<Bookmark
+							key={"activeBookmark"}
 							opacity="opacity-50"
 							bookmark={activeBookmark}
 						/>

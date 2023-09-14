@@ -81,10 +81,10 @@ export default function GroupContainer({ bookmarkData }: { bookmarkData: Bookmar
 					className="flex flex-wrap w-full transition-all ease-in-out"
 				>
 					{/* GROUP HEADER */}
-					{bookmarkData.id !== "default" && <GroupHeader />}
+					{bookmarkData?.id !== "default" && <GroupHeader />}
 
 					{/* BOOKMARK LIST */}
-					{bookmarkData.bookmarks.map((bookmark) => (
+					{bookmarkData?.bookmarks.map((bookmark) => (
 						<Bookmark
 							key={bookmark.id}
 							bookmark={bookmark}

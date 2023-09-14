@@ -158,6 +158,7 @@ export default function GroupForm({
 						type="text"
 						placeholder={"Group Title"}
 						onChange={handleGroupTitleEdit}
+						autoFocus
 					/>
 					<FormButtons
 						value={group.title}
