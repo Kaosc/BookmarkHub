@@ -1,4 +1,5 @@
 import { useEffect } from "react"
+
 import { IoMdClose } from "react-icons/io"
 
 export default function Dialog({
@@ -22,7 +23,7 @@ export default function Dialog({
 		>
 			<div className={`flex w-full h-full items-center justify-center transition-all ease-in-out`}>
 				<div
-					className={`relative flex-col w-3/4 bg-gradient-to-tr from-zinc-900 to-zinc-800 p-5 rounded-lg animate-in fade-in-0 slide-in-from-top-20 duration-300`}
+					className={`relative flex-col w-3/4 bg-gradient-to-tr from-[#121213] to-[#1B1B1C] p-5 rounded-lg animate-in fade-in-0 slide-in-from-top-20 duration-300`}
 				>
 					<button
 						className="absolute top-3 right-3 text-white hover:opacity-50 hover:animate-pulse cursor-pointer"

@@ -80,7 +80,12 @@ export default function Navbar() {
 					editMode={editMode}
 				/>
 			)}
-			<div className="z-20 sticky flex items-center justify-between w-full h-16 px-3 bg-gradient-to-r from-[#0e0e0e] to-zinc-950 border-b-[1px] border-b-[#1b1b1b]">
+			<div
+				className="z-20 sticky flex items-center justify-between w-full h-16 px-3 
+					bg-gradient-to-r from-[#0e0e0e] to-zinc-950 border-b-[1px] border-b-[#1b1b1b]
+					shadow-xl shadow-[#00000069]
+				"
+			>
 				{/* SEARCH BAR  */}
 				<div className="flex items-center justify-center">
 					<img

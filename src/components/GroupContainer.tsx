@@ -9,7 +9,7 @@ import Bookmark from "./sortable/Bookmark"
 import BookmarkForm from "./form/BookmarkForm"
 import GroupForm from "./form/GroupForm"
 
-export default function BookmarkGroupList({ bookmarkData }: { bookmarkData: BookmarkData }) {
+export default function GroupContainer({ bookmarkData }: { bookmarkData: BookmarkData }) {
 	const isGroupDefault = bookmarkData.id === "default"
 
 	const [bookmarkFormVisible, setBookmarkFormVisible] = useState(false)
@@ -19,6 +19,48 @@ export default function BookmarkGroupList({ bookmarkData }: { bookmarkData: Book
 
 	const handleBookmarkFormVisible = () => setBookmarkFormVisible((prev) => !prev)
 	const handleGroupFormVisible = () => setGroupFormVisible((prev) => !prev)
+
+	const GroupHeader = () => (
+		<div
+			className="
+			flex w-full items-center justify-between mx-2 px-2 py-[2px] my-2
+			rounded-full bg-[#1B1B1C]
+			transition-all ease-in-out shadow-lg shadow-[rgba(0, 0, 0, 0.603)]
+		"
+		>
+			{/* TITLE */}
+			<h1 className="pl-2 text-[13.5px] font-semibold text-center text-zinc-200 truncate max-w-xs">
+				{bookmarkData.title === "default" ? "Bookmark Hub" : bookmarkData.title}
+			</h1>
+
+			{/* BUTTONS */}
+			<div className="flex">
+				{/* EDIT GROUP BUTTON */}
+				{!isGroupDefault && (
+					<button
+						className="flex items-center justify-center hover:opacity-50 hover:animate-pulse"
+						onClick={handleGroupFormVisible}
+					>
+						<AiFillEdit
+							size={17}
+							className="text-white"
+						/>
+					</button>
+				)}
+
+				{/* ADD BOOKMARK BUTTON */}
+				<button
+					className="flex items-center justify-center hover:opacity-50 hover:animate-pulse"
+					onClick={handleBookmarkFormVisible}
+				>
+					<IoIosAdd
+						size={26}
+						className="text-white"
+					/>
+				</button>
+			</div>
+		</div>
+	)
 
 	return (
 		<>
@@ -39,42 +81,7 @@ export default function BookmarkGroupList({ bookmarkData }: { bookmarkData: Book
 					className="flex flex-wrap w-full transition-all ease-in-out"
 				>
 					{/* GROUP HEADER */}
-					{bookmarkData.id !== "default" && (
-						<div
-							className="
-								flex w-full items-center justify-between mx-3 px-1 my-2
-								border-b-[1px] border-zinc-600
-								transition-all ease-in-out 
-							"
-						>
-							<h1 className="py-2 text-sm font-bold text-center text-zinc-200 truncate max-w-xs">
-								{bookmarkData.title === "default" ? "Bookmark Hub" : bookmarkData.title}
-							</h1>
-
-							<div className="flex">
-								{!isGroupDefault && (
-									<button
-										className="flex items-center justify-center hover:opacity-50 hover:animate-pulse"
-										onClick={handleGroupFormVisible}
-									>
-										<AiFillEdit
-											size={19}
-											className="text-white"
-										/>
-									</button>
-								)}
-								<button
-									className="flex items-center justify-center hover:opacity-50 hover:animate-pulse"
-									onClick={handleBookmarkFormVisible}
-								>
-									<IoIosAdd
-										size={30}
-										className="text-white"
-									/>
-								</button>
-							</div>
-						</div>
-					)}
+					{bookmarkData.id !== "default" && <GroupHeader />}
 
 					{/* BOOKMARK LIST */}
 					{bookmarkData.bookmarks.map((bookmark) => (

@@ -1,7 +1,8 @@
 import React, { memo } from "react"
 import { useSortable } from "@dnd-kit/sortable"
-import { RxDragHandleHorizontal } from "react-icons/rx"
 import { CSS } from "@dnd-kit/utilities"
+
+import { RxDragHandleHorizontal } from "react-icons/rx"
 import { MdDeleteForever } from "react-icons/md"
 
 function Group({
@@ -34,8 +35,8 @@ function Group({
 				{...listeners}
 				{...attributes}
 				className={`
-					flex items-center justify-start w-full p-1 my-2 border border-gray-600 rounded-md 
-					${activeGroup?.id === group.id && "bg-zinc-900"} 
+					flex items-center justify-start w-full p-1 my-2 ring-1 ring-zinc-500 rounded-md 
+					${activeGroup?.id === group.id && "bg-zinc-800 ring-[2px]"} 
 					${activeGroup ? "cursor-grabbing" : "cursor-grab"}
 				`}
 			>

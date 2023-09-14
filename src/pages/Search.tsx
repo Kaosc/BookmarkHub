@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
+
 import Bookmark from "../components/sortable/Bookmark"
 
 export default function Search() {
@@ -35,16 +36,27 @@ export default function Search() {
 				search ? "visible animate-in fade-in-0 duration-300" : "invisible animate-out fade-out-0 duration-300"
 			} `}
 		>
-			<div className="flex flex-row flex-wrap items-start justify-start ">
-				{filteredBookmarks.map((bookmark) => {
-					return (
+			{filteredBookmarks.length > 0 && (
+				<div className="flex flex-row flex-wrap items-start justify-start">
+					{filteredBookmarks.map((bookmark) => (
 						<Bookmark
 							key={bookmark.id}
 							bookmark={bookmark}
 						/>
-					)
-				})}
-			</div>
+					))}
+				</div>
+			)}
+
+			{filteredBookmarks.length === 0 && (
+				<div className="flex flex-col w-full h-full items-center justify-center animate-in fade-in-0">
+					<img
+						src="assets/kitty-dark.png"
+						alt="search"
+						className="w-[150px] h-[150px]"
+					/>
+					<p className="text-center text-[#BEBEBE] text-lg">No bookmark found</p>
+				</div>
+			)}
 		</div>
 	)
 }

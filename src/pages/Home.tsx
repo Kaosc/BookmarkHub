@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from "react"
-
+import { useSelector, useDispatch } from "react-redux"
 import {
 	DndContext,
 	DragOverlay,
@@ -13,10 +13,9 @@ import {
 } from "@dnd-kit/core"
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 
-import { useSelector, useDispatch } from "react-redux"
 import { editGroup } from "../redux/features/bookmarkSlice"
 
-import BookmarkGroupList from "../components/BookmarkGroupList"
+import GroupContainer from "../components/GroupContainer"
 import Bookmark from "../components/sortable/Bookmark"
 
 // get scroll event
@@ -177,26 +176,15 @@ export default function Home() {
 				onDragStart={handleDragStart}
 				onDragEnd={handleDragEnd}
 				onDragOver={handleDragOver}
-				autoScroll={{
-					enabled: true,
-					interval: 5,
-					acceleration: 200,
-					threshold: {
-						x: 0.1,
-						y: 0.25,
-					},
-				}}
 			>
 				{bookmarkGroups.map((bookmarkData) => (
-					<BookmarkGroupList
+					<GroupContainer
 						key={bookmarkData.id}
 						bookmarkData={bookmarkData}
 					/>
 				))}
 				<DragOverlay
 					transition={undefined}
-					style={{ pointerEvents: "none", animation: "ease-in-out" }}
-					className={"absolute"}
 					adjustScale={false}
 				>
 					{activeBookmark ? (

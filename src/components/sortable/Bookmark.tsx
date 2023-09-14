@@ -1,9 +1,11 @@
 import { memo, useState } from "react"
-import { AiFillEdit } from "react-icons/ai"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 
+import { AiFillEdit } from "react-icons/ai"
+
 import BookmarkForm from "../form/BookmarkForm"
+import { notify } from "../../utils/notify"
 
 function Bookmark({
 	bookmark,
@@ -34,7 +36,7 @@ function Bookmark({
 					window.open(url, "_blank")
 				}
 			} catch (e) {
-				alert("URL not valid")
+				notify("Url is invalid")
 			}
 		}
 	}
@@ -52,10 +54,11 @@ function Bookmark({
 				style={style}
 				{...listeners}
 				{...attributes}
-				className={`group relative flex flex-col items-center justify-center hover:bg-zinc-900 
-							p-1 w-[70px] my-2 mx-[1px] transition-all ${opacity}
-							transition-all duration-500 ease-out animate-in fade-in-0 ${className}
-							`}
+				className={`
+					group relative flex flex-col items-center justify-center hover:bg-zinc-900 
+					p-1 w-[70px] my-2 mx-[1px] transition-all ${opacity}
+					transition-all duration-500 ease-out animate-in fade-in-0 ${className}
+				`}
 			>
 				<div className={`absolute flex invisible top-0 right-0 justify-end group-hover:visible z-10`}>
 					<button

@@ -11,11 +11,11 @@ import { IoMdAdd } from "react-icons/io"
 import { addBookmark, deleteBookmark, editBookmark } from "../../redux/features/bookmarkSlice"
 
 import Button from "../ui/Button"
-import Dialog from "../Dialog"
 import ActivityIndicator from "../ui/ActivityIndicator"
+import Dialog from "../Dialog"
+import FormButtons from "./FormButtons"
 import { fetchFavicon } from "../../api/fetchFavicon"
 import { faviconPlaceHolder } from "../../utils/constants"
-import FormButtons from "./FormButtons"
 import { notify } from "../../utils/notify"
 
 export default function BookmarkForm({
@@ -133,6 +133,12 @@ export default function BookmarkForm({
 		setLoading(false)
 	}
 
+	const handleUrlCopy = (e: React.MouseEvent<SVGSVGElement>) => {
+		e.preventDefault()
+		navigator.clipboard.writeText(url)
+		notify("URL Copied")	
+	}
+
 	const SelectDropDown = useCallback(() => {
 		return (
 			<Select
@@ -165,7 +171,7 @@ export default function BookmarkForm({
 					onChange={handleFaviconChange}
 				>
 					{({ imageList, onImageUpload, onImageRemoveAll, errors }) => (
-						<div className="flex flex-col w-full items-center justify-between p-2 border-[0.5px] border-[#757575] px-3">
+						<div className="flex flex-col w-full items-center justify-between p-2 rounded-md border-[0.5px] border-[#757575] px-3 py-3">
 							<div className="flex w-full items-center justify-between">
 								<div className="flex">
 									{imageList[0]?.dataURL && (
@@ -173,7 +179,7 @@ export default function BookmarkForm({
 											<img
 												src={imageList[0]?.dataURL}
 												alt="favicon-preview"
-												className="w-12 h-12 rounded-full"
+												className="w-12 h-12"
 											/>
 										</div>
 									)}
@@ -181,7 +187,7 @@ export default function BookmarkForm({
 										<div className="flex items-center">
 											<Button
 												onClick={onImageUpload}
-												className={`outline-dashed ring-0 h-9 w-9`}
+												className={`outline-dashed ring-0 h-8 w-8 flex items-center justify-center hover:opacity-80 transition-all ease-in-out duration-300`}
 												{...{ type: "button" }}
 											>
 												<IoMdAdd size={20} />
@@ -254,7 +260,7 @@ export default function BookmarkForm({
 							<img
 								src={favicon}
 								alt="favicon-preview"
-								className="w-11 h-11  hover:opacity-50"
+								className="w-11 h-11 hover:opacity-50"
 								onClick={() => setFavicon(favicon)}
 							/>
 						</div>
@@ -301,7 +307,7 @@ export default function BookmarkForm({
 						<BiCopy
 							size={22}
 							className="absolute right-3 top-3 text-white transition-all duration-300 ease-in-out hover:opacity-50 cursor-pointer hover:animate-pulse"
-							onClick={() => navigator.clipboard.writeText(url)}
+							onClick={handleUrlCopy}
 						/>
 					</div>
 
@@ -325,7 +331,7 @@ const SelectStyles: any = {
 	control: (provided: any) => ({
 		...provided,
 		backgroundColor: "#00000000",
-		borderRadius: 0,
+		borderRadius: 6,
 		borderWidth: 0.5,
 		borderColor: ["#757575", "#757575", "#757575", "#757575"],
 	}),

@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import { nanoid } from "nanoid"
 
 import { SortableContext, rectSortingStrategy, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
@@ -13,13 +14,12 @@ import {
 	useSensors,
 } from "@dnd-kit/core"
 
-import { useDispatch, useSelector } from "react-redux"
 import { addGroup, deleteGroup, editGroupTitle, setBookmarkGroups } from "../../redux/features/bookmarkSlice"
 
 import Dialog from "../Dialog"
 import FormButtons from "./FormButtons"
-import { notify } from "./../../utils/notify"
 import Group from "../sortable/Group"
+import { notify } from "./../../utils/notify"
 
 export default function GroupForm({
 	editMode,

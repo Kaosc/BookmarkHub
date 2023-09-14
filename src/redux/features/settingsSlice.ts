@@ -4,10 +4,10 @@ export const settingsSlice = createSlice({
 	name: "settings",
 	initialState: "",
 	reducers: {
-      setSettings: (_, action) => {
-         return action.payload
-      },
-   },
+		setSettings: (_, action) => {
+			return action.payload
+		},
+	},
 })
 
 export const { setSettings } = settingsSlice.actions

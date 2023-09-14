@@ -6,7 +6,7 @@ export {}
 // import { editGroup } from "../redux/features/bookmarkSlice"
 
 // import Bookmark from "../components/Bookmark"
-// import BookmarkGroupList from "../components/BookmarkGroupList"
+// import GroupContainer from "../components/GroupContainer"
 
 // export default function Home() {
 // 	const bookmarkGroups = useSelector((state: RootState) => state.bookmarks)
@@ -89,7 +89,7 @@ export {}
 // 		<main>
 // 			<DragDropContext onDragEnd={onDragEnd}>
 // 				{bookmarkGroups.map((bookmarkData, index) => (
-// 					<BookmarkGroupList
+// 					<GroupContainer
 // 						key={bookmarkData.id}
 // 						title={bookmarkData.title}
 // 						initGroupId={bookmarkData.id}
@@ -128,7 +128,7 @@ export {}
 // 								</div>
 // 							)}
 // 						</Droppable>
-// 					</BookmarkGroupList>
+// 					</GroupContainer>
 // 				))}
 // 			</DragDropContext>
 // 		</main>

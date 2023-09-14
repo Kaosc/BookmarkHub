@@ -12,5 +12,5 @@ export const notify = (message: string, error?: boolean) => {
 		theme: "dark",
 		className: "w-[60%] text-sm",
 		role: "alert",
-   })
+	})
 }

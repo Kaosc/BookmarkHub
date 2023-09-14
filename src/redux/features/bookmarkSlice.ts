@@ -128,7 +128,7 @@ export const bookmarksSlice = createSlice({
 		},
 		editGroupTitle: (state, action: { payload: { id: string; title: string } }) => {
 			const { id, title } = action.payload
-			
+
 			return state.map((group: BookmarkData) => {
 				if (group.id === id) {
 					return {

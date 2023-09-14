@@ -5,7 +5,7 @@
 @layer components {
   .input {
     @apply w-full h-11 mb-4 bg-transparent transition-all duration-300 ease-in-out 
-    text-white border-[0.5px] border-[#757575] outline-none pl-2 
+    text-white border-[0.5px] border-[#757575] outline-none pl-2 rounded-md
     hover:border-white focus:scale-[1.02] focus:border-white
   }
 
@@ -22,7 +22,12 @@
     hidden group-hover:flex group-hover:opacity-100
     transition-all duration-300 ease-in-out
   }
+
+  .basedShadow {
+    @apply shadow-md shadow-[#00000069]
+  }
 }
+
 
 body {
   margin: 0;
