@@ -29,7 +29,7 @@ export default function SearchBar() {
 	}
 
 	return (
-		<div className="relative flex flex-row w-56 h-8 items-center justify-center rounded-full bg-zinc-800 focus:ring-2 focus:ring-slate-500 focus:ring-opacity-50 hover:bg-zinc-700 transition-all ease-in-out duration-300">
+		<div className="relative flex flex-row w-48 h-8 items-center justify-center rounded-full bg-zinc-800 focus:ring-2 focus:ring-slate-500 focus:ring-opacity-50 hover:bg-zinc-700 transition-all ease-in-out duration-300">
 			<button className="absolute left-3 bottom-[5px] hover:scale-110 transition-all ease-in-out">
 				<BiSearchAlt2
 					size={19}

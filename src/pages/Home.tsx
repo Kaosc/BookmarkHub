@@ -17,7 +17,7 @@ import { useSelector, useDispatch } from "react-redux"
 import { editGroup } from "../redux/features/bookmarkSlice"
 
 import BookmarkGroupList from "../components/BookmarkGroupList"
-import Bookmark from "../components/Bookmark"
+import Bookmark from "../components/sortable/Bookmark"
 
 // get scroll event
 export default function Home() {

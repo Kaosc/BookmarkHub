@@ -21,7 +21,7 @@ export default function App() {
 			<Navbar />
 			<Home />
 			<Search />
-			<ToastContainer/>
+			<ToastContainer />
 		</main>
 	)
 }

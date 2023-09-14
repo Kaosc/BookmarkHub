@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
-import Bookmark from "../components/Bookmark"
+import Bookmark from "../components/sortable/Bookmark"
 
 export default function Search() {
 	const bookmarkGroups = useSelector((state: RootState) => state.bookmarks)

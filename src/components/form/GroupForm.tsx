@@ -1,36 +1,61 @@
-import React, { useState } from "react"
+import React, { useCallback, useState } from "react"
 import { nanoid } from "nanoid"
 
-import { useDispatch } from "react-redux"
-import { addGroup, deleteGroup, editGroupTitle } from "../../redux/features/bookmarkSlice"
+import { SortableContext, rectSortingStrategy, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
+import {
+	DndContext,
+	DragEndEvent,
+	KeyboardSensor,
+	PointerSensor,
+	TouchSensor,
+	useDroppable,
+	useSensor,
+	useSensors,
+} from "@dnd-kit/core"
+
+import { useDispatch, useSelector } from "react-redux"
+import { addGroup, deleteGroup, editGroupTitle, setBookmarkGroups } from "../../redux/features/bookmarkSlice"
 
 import Dialog from "../Dialog"
 import FormButtons from "./FormButtons"
 import { notify } from "./../../utils/notify"
+import Group from "../sortable/Group"
 
 export default function GroupForm({
+	editMode,
 	prevGroup,
 	handleFormVisible,
 }: {
+	editMode?: React.RefObject<boolean>
 	prevGroup?: { id: string; title: string }
 	handleFormVisible: Function
 }) {
+	const bookmarkData = useSelector((state: RootState) => state.bookmarks)
 	const dispatch = useDispatch()
 
 	const [group, setGroup] = useState(prevGroup || { id: "default", title: "" })
+	const [activeGroup, setActiveGroup] = useState<BookmarkData>()
 
-	const quitFrom = (e: React.MouseEvent<HTMLButtonElement>) => {
-		handleFormVisible()
-		e.preventDefault()
-	}
+	const { setNodeRef } = useDroppable({ id: "groups" })
 
-	const handleGroupTitleEdit = (e: React.ChangeEvent<HTMLInputElement>) => {
-		e.preventDefault()
-		setGroup({
-			...group,
-			title: e.target.value,
-		})
-	}
+	const quitFrom = useCallback(
+		(e: React.MouseEvent<HTMLButtonElement>) => {
+			handleFormVisible()
+			e.preventDefault()
+		},
+		[handleFormVisible]
+	)
+
+	const handleGroupTitleEdit = useCallback(
+		(e: React.ChangeEvent<HTMLInputElement>) => {
+			e.preventDefault()
+			setGroup({
+				...group,
+				title: e.target.value,
+			})
+		},
+		[group]
+	)
 
 	const handleGroupEdit = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
@@ -46,12 +71,15 @@ export default function GroupForm({
 		quitFrom(e)
 	}
 
-	const handleGroupDelete = (e: React.MouseEvent<HTMLButtonElement>) => {
-		e.preventDefault()
-		dispatch(deleteGroup(group.id))
-		notify("Group Deleted")
-		quitFrom(e)
-	}
+	const handleGroupDelete = useCallback(
+		(e: React.MouseEvent<HTMLButtonElement>, groupId?: string) => {
+			e.preventDefault()
+			dispatch(deleteGroup(groupId || group.id))
+			notify("Group Deleted")
+			if (!groupId) quitFrom(e)
+		},
+		[group, dispatch, quitFrom]
+	)
 
 	const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
@@ -63,26 +91,109 @@ export default function GroupForm({
 		}
 	}
 
+	/////////////////// DRAG & DROP ///////////////////////
+
+	const sensors = useSensors(
+		useSensor(PointerSensor, {
+			activationConstraint: {
+				delay: 85,
+				tolerance: 5,
+			},
+		}),
+		useSensor(KeyboardSensor, {
+			coordinateGetter: sortableKeyboardCoordinates,
+		}),
+		useSensor(TouchSensor, {
+			activationConstraint: {
+				delay: 85,
+				tolerance: 5,
+			},
+		})
+	)
+
+	const handleDragStart = (event: DragEndEvent) => {
+		const { active } = event
+		const { id } = active
+
+		setActiveGroup(bookmarkData.find((group) => group.id === id))
+	}
+
+	const handleDragEnd = (event: DragEndEvent) => {
+		setActiveGroup(undefined)
+
+		const { active, over } = event
+
+		const activeGroupId = active.id
+		const overGroupId = over?.id
+
+		if (!activeGroupId || !overGroupId || activeGroupId === overGroupId) {
+			return
+		}
+
+		const activeGroupIndex = bookmarkData.findIndex((group) => group.id === activeGroupId)
+		const overGroupIndex = bookmarkData.findIndex((group) => group.id === overGroupId)
+
+		if (activeGroupIndex === -1 || overGroupIndex === -1 || !activeGroup) {
+			return
+		}
+
+		const updatedBookmarkGroupsList = [...bookmarkData]
+		updatedBookmarkGroupsList.splice(activeGroupIndex, 1)
+		updatedBookmarkGroupsList.splice(overGroupIndex, 0, activeGroup)
+
+		dispatch(setBookmarkGroups(updatedBookmarkGroupsList))
+	}
+
 	return (
 		<Dialog
 			onClose={quitFrom}
-			title={prevGroup ? "Edit Group" : "Add Group"}
+			title={editMode?.current ? "Reorder Groups" : prevGroup ? "Edit Group" : "Add Group"}
 		>
-			<input
-				value={group.title}
-				required
-				className="input"
-				type="text"
-				placeholder={"Group Title"}
-				onChange={handleGroupTitleEdit}
-			/>
-			<FormButtons
-				value={group.title}
-				prevValue={prevGroup?.title}
-				handleSubmit={handleSubmit}
-				handleDelete={handleGroupDelete}
-				handleCancel={quitFrom}
-			/>
+			{!editMode?.current ? (
+				<form>
+					<input
+						value={group.title}
+						required
+						className="input"
+						type="text"
+						placeholder={"Group Title"}
+						onChange={handleGroupTitleEdit}
+					/>
+					<FormButtons
+						value={group.title}
+						prevValue={prevGroup?.title}
+						handleSubmit={handleSubmit}
+						handleDelete={handleGroupDelete}
+						handleCancel={quitFrom}
+					/>
+				</form>
+			) : (
+				<DndContext
+					sensors={sensors}
+					onDragStart={handleDragStart}
+					onDragEnd={handleDragEnd}
+				>
+					<SortableContext
+						id="groups"
+						items={bookmarkData}
+						strategy={rectSortingStrategy}
+					>
+						<div
+							ref={setNodeRef}
+							className="overflow-y-auto max-h-96 px-3 py-1 rounded-xl"
+						>
+							{bookmarkData.map((group) => (
+								<Group
+									key={group.id}
+									group={group}
+									activeGroup={activeGroup}
+									handleGroupDelete={handleGroupDelete}
+								/>
+							))}
+						</div>
+					</SortableContext>
+				</DndContext>
+			)}
 		</Dialog>
 	)
 }

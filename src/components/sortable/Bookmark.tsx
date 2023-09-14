@@ -3,7 +3,7 @@ import { AiFillEdit } from "react-icons/ai"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 
-import BookmarkForm from "./form/BookmarkForm"
+import BookmarkForm from "../form/BookmarkForm"
 
 function Bookmark({
 	bookmark,
@@ -77,7 +77,7 @@ function Bookmark({
 						height={29}
 						className={`mb-[5px]`}
 					/>
-					<p className="text-[11px] text-center text-white line-clamp-1 w-[57px]">{title}</p>
+					<p className="text-[11px] text-center text-white truncate max-w-[57px]">{title}</p>
 				</button>
 			</div>
 		</>

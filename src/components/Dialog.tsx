@@ -32,7 +32,6 @@ export default function Dialog({
 					</button>
 
 					<h1 className="text-2xl text-white font-bold mb-4">{title}</h1>
-
 					{children}
 				</div>
 			</div>

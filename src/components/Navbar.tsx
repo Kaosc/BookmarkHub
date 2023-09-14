@@ -1,10 +1,11 @@
-import { useState } from "react"
+import { useState, useRef } from "react"
 import { useDispatch } from "react-redux"
 import { nanoid } from "nanoid"
 
 import { IoMdSettings } from "react-icons/io"
-import { IoIosAdd } from "react-icons/io"
-import { AiOutlineFolderOpen } from "react-icons/ai"
+import { IoAddCircleOutline } from "react-icons/io5"
+import { LuFolderPlus } from "react-icons/lu"
+import { TbFolderCog } from "react-icons/tb"
 import { BiBookmarkPlus } from "react-icons/bi"
 import { LiaFileImportSolid } from "react-icons/lia"
 
@@ -19,16 +20,23 @@ import { notify } from "../utils/notify"
 
 export default function Navbar() {
 	const dispatch = useDispatch()
+
 	const [bookmarkFormVisible, setBookmarkFormVisible] = useState(false)
 	const [groupFormVisible, setGroupFormVisible] = useState(false)
+	const editMode = useRef(false)
 
 	const handleBookmarkFormVisible = () => {
 		if (groupFormVisible) setGroupFormVisible(false)
 		setBookmarkFormVisible((prev) => !prev)
 	}
 
-	const handleGroupFormVisible = () => {
+	const handleGroupFormVisible = (e: React.MouseEvent<HTMLButtonElement>, edit?: boolean) => {
+		if (e) e?.preventDefault()
 		if (bookmarkFormVisible) setBookmarkFormVisible(false)
+
+		if (edit) editMode.current = true
+		else editMode.current = false
+
 		setGroupFormVisible((prev) => !prev)
 	}
 
@@ -59,11 +67,21 @@ export default function Navbar() {
 		addGroup: "Add Group",
 	}
 
+	const styles = {
+		button: "hover:opacity-50 transition-all ease-in-out duration-150",
+	}
+
 	return (
 		<>
 			{bookmarkFormVisible && <BookmarkForm handleFormVisible={handleBookmarkFormVisible} />}
-			{groupFormVisible && <GroupForm handleFormVisible={handleGroupFormVisible} />}
-			<div className="z-20 sticky flex items-center justify-between w-full h-16 px-4 bg-gradient-to-r from-[#0e0e0e] to-zinc-950 border-b-[1px] border-b-[#1b1b1b]">
+			{groupFormVisible && (
+				<GroupForm
+					handleFormVisible={handleGroupFormVisible}
+					editMode={editMode}
+				/>
+			)}
+			<div className="z-20 sticky flex items-center justify-between w-full h-16 px-3 bg-gradient-to-r from-[#0e0e0e] to-zinc-950 border-b-[1px] border-b-[#1b1b1b]">
+				{/* SEARCH BAR  */}
 				<div className="flex items-center justify-center">
 					<img
 						src="/favicon.png"
@@ -73,20 +91,24 @@ export default function Navbar() {
 					<SearchBar />
 				</div>
 
-				<div className="flex items-center justify-center">
+				{/* BUTTONS */}
+				<div className="flex w-1/3 items-center justify-evenly">
+					{/* GET ACTIVE TAB */}
 					<button
-						className="flex items-center justify-center hover:opacity-50 hover:animate-pulse mr-1"
+						className={styles.button}
 						onClick={addActiveTabToBookmark}
 					>
 						<LiaFileImportSolid
-							size={23}
+							size={25}
 							className="text-white"
 						/>
 					</button>
-					<div className="group">
-						<button className="flex items-center justify-center hover:opacity-50 hover:animate-pulse mr-1">
-							<IoIosAdd
-								size={37}
+
+					{/* ADD BOOKMARK/GROUP */}
+					<div className="group flex items-center justify-center">
+						<button className={styles.button}>
+							<IoAddCircleOutline
+								size={25}
 								className="text-white"
 							/>
 						</button>
@@ -101,25 +123,37 @@ export default function Navbar() {
 									size={20}
 									className="text-white mr-2"
 								/>
-								<p className="text-[13px] text-left text-white">{texts.addBookmark}</p>
+								<p className="text-[12px] text-white">{texts.addBookmark}</p>
 							</button>
 							<Divider />
 							<button
-								onClick={handleGroupFormVisible}
+								onClick={(e) => handleGroupFormVisible(e)}
 								className="flex w-full items-center hover:opacity-50 m-1"
 							>
-								<AiOutlineFolderOpen
-									size={20}
+								<LuFolderPlus
+									size={19}
 									className="text-white mr-2"
 								/>
-								<p className="text-[13px] text-left text-white">{texts.addGroup}</p>
+								<p className="text-[12px] text-white">{texts.addGroup}</p>
 							</button>
 						</div>
 					</div>
 
-					<button className="flex items-center justify-center hover:opacity-50 hover:animate-pulse">
+					{/* REORDER GROUPS */}
+					<button
+						className={styles.button}
+						onClick={(e) => handleGroupFormVisible(e, true)}
+					>
+						<TbFolderCog
+							size={25}
+							className="text-white"
+						/>
+					</button>
+
+					{/* SETTINGS */}
+					<button className={styles.button}>
 						<IoMdSettings
-							size={23}
+							size={24}
 							className="text-white"
 						/>
 					</button>
