@@ -7,6 +7,7 @@ import Navbar from "./components/Navbar"
 
 import { storeBookmarks } from "./utils/localStorage"
 import Search from "./pages/Search"
+import Settings from "./pages/Settings"
 
 export default function App() {
 	const bookmarks = useSelector((state: RootState) => state.bookmarks)
@@ -17,10 +18,11 @@ export default function App() {
 	}, [bookmarks])
 
 	return (
-		<main className="flex bg-gradient-to-r from-zinc-950 to-black">
+		<main className="flex">
 			<Navbar />
 			<Home />
 			<Search />
+			<Settings />
 			<ToastContainer />
 		</main>
 	)

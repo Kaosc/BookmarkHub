@@ -2,6 +2,7 @@ import { useEffect, useState } from "react"
 import { useSelector } from "react-redux"
 
 import Bookmark from "../components/sortable/Bookmark"
+import Text from "../components/ui/Text"
 
 export default function Search() {
 	const bookmarkGroups = useSelector((state: RootState) => state.bookmarks)
@@ -32,9 +33,10 @@ export default function Search() {
 
 	return (
 		<div
-			className={`absolute top-0 left-0 z-10 mt-14 w-[435px] h-[494px] bg-gradient-to-r from-[#0e0e0e] to-zinc-950 ${
-				search ? "visible animate-in fade-in-0 duration-300" : "invisible animate-out fade-out-0 duration-300"
-			} `}
+			className={`absolute top-0 left-0 z-10 mt-14 w-[435px] h-[494px] 
+				bg-gradient-to-r from-zinc-200 to-zinc-50 dark:from-[#0e0e0e] dark:to-zinc-950 
+				${search ? "visible animate-in fade-in-0 duration-300" : "invisible animate-out fade-out-0 duration-300"} 
+			`}
 		>
 			{filteredBookmarks.length > 0 && (
 				<div className="flex flex-row flex-wrap items-start justify-start">
@@ -54,7 +56,7 @@ export default function Search() {
 						alt="search"
 						className="w-[150px] h-[150px]"
 					/>
-					<p className="text-center text-[#BEBEBE] text-lg">No bookmark found</p>
+					<Text className="text-center text-lg">No bookmark found</Text>
 				</div>
 			)}
 		</div>

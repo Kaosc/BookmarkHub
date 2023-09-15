@@ -7,6 +7,6 @@ export const store = configureStore({
 	reducer: {
 		bookmarks: bookmarksSlice.reducer,
 		search: searchSlice.reducer,
-		Settings: settingsSlice.reducer,
+		settings: settingsSlice.reducer,
 	},
 })

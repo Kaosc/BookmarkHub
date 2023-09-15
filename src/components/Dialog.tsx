@@ -2,6 +2,8 @@ import { useEffect } from "react"
 
 import { IoMdClose } from "react-icons/io"
 
+import Text from "./ui/Text"
+
 export default function Dialog({
 	title,
 	onClose,
@@ -33,7 +35,7 @@ export default function Dialog({
 						<IoMdClose size={30} />
 					</button>
 
-					<h1 className="text-2xl text-white font-bold mb-4">{title}</h1>
+					<Text className="text-2xl font-bold mb-4">{title}</Text>
 					{children}
 				</div>
 			</div>

@@ -6,6 +6,7 @@ import { AiFillEdit, AiOutlineArrowDown, AiOutlineArrowUp } from "react-icons/ai
 import { IoIosAdd } from "react-icons/io"
 
 import { setBookmarkGroups } from "../../redux/features/bookmarkSlice"
+import Text from "../ui/Text"
 
 function GroupHeader({
 	bookmarkData,
@@ -39,15 +40,14 @@ function GroupHeader({
 	return (
 		<div
 			className={`
-				flex items-center justify-between mx-2 px-2 py-[2px] my-2
-				rounded-full bg-[#1B1B1C]
-				transition-all ease-in-out shadow-lg shadow-[rgba(0, 0, 0, 0.603)]
+				flex items-center justify-between mx-2 px-2 py-[2px] my-2 rounded-full shadow-lg transition-all ease-in-out 
+				dark:bg-[#1B1B1C] bg-[#e7e7e7] dark:shadow-[rgba(0, 0, 0, 0.603)] shadow-[#2e2e2e34]
 			`}
 		>
 			{/* TITLE */}
-			<h1 className="pl-2 text-[13.5px] font-semibold text-center text-zinc-200 truncate max-w-xs">
+			<Text className="pl-2 text-[13.5px] font-semibold text-center truncate max-w-xs">
 				{bookmarkData.title}
-			</h1>
+			</Text>
 
 			{/* BUTTONS */}
 			<div className="flex items-center justify-between">
@@ -60,7 +60,7 @@ function GroupHeader({
 					>
 						<AiOutlineArrowUp
 							size={17}
-							className="text-white mr-[2px]"
+							className="text-black dark:text-white mr-[2px]"
 						/>
 					</button>
 				)}
@@ -74,7 +74,7 @@ function GroupHeader({
 					>
 						<AiOutlineArrowDown
 							size={17}
-							className="text-white mr-[2px]"
+							className="text-black dark:text-white mr-[2px]"
 						/>
 					</button>
 				)}
@@ -88,7 +88,7 @@ function GroupHeader({
 					>
 						<AiFillEdit
 							size={17}
-							className="text-white mr-[1px]"
+							className="text-black dark:text-white mr-[1px]"
 						/>
 					</button>
 				)}
@@ -101,7 +101,7 @@ function GroupHeader({
 				>
 					<IoIosAdd
 						size={26}
-						className="text-white"
+						className="text-black dark:text-white"
 					/>
 				</button>
 			</div>

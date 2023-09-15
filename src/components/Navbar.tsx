@@ -10,6 +10,7 @@ import { BiBookmarkPlus } from "react-icons/bi"
 import { LiaFileImportSolid } from "react-icons/lia"
 
 import { addBookmark } from "../redux/features/bookmarkSlice"
+import { toggleSettings } from "../redux/features/settingsSlice"
 
 import Divider from "./ui/Divider"
 import SearchBar from "./SearchBar"
@@ -17,6 +18,7 @@ import BookmarkForm from "./form/BookmarkForm"
 import GroupForm from "./form/GroupForm"
 import { faviconPlaceHolder } from "../utils/constants"
 import { notify } from "../utils/notify"
+import Text from "./ui/Text"
 
 export default function Navbar() {
 	const dispatch = useDispatch()
@@ -64,6 +66,14 @@ export default function Navbar() {
 		}
 	}, [dispatch])
 
+	const handleSettingsVisible = useCallback(
+		(e: React.MouseEvent<HTMLButtonElement>) => {
+			e.preventDefault()
+			dispatch(toggleSettings())
+		},
+		[dispatch]
+	)
+
 	const texts = {
 		addBookmark: "Add Bookmark",
 		addGroup: "Add Group",
@@ -75,7 +85,11 @@ export default function Navbar() {
 	}
 
 	return (
-		<div className="z-20 sticky flex items-center justify-between w-full h-16 px-3 bg-gradient-to-r from-[#0e0e0e] to-zinc-950 border-b-[1px] border-b-[#1b1b1b] shadow-xl shadow-[#00000069]">
+		<div
+			className="z-20 sticky flex items-center justify-between w-full h-16 px-3 border-b-[1px]
+				bg-gradient-to-r from-zinc-200 to-zinc-50 dark:from-[#0e0e0e] dark:to-zinc-950 
+				border-b-[#d8d8d8] dark:border-b-[#1b1b1b] shadow-xl shadow-[#a0a0a069] dark:shadow-[#00000069]"
+		>
 			{bookmarkFormVisible && <BookmarkForm handleFormVisible={handleBookmarkFormVisible} />}
 			{groupFormVisible && (
 				<GroupForm
@@ -102,7 +116,7 @@ export default function Navbar() {
 				>
 					<LiaFileImportSolid
 						size={25}
-						className="text-white"
+						className="text-black dark:text-white"
 					/>
 				</button>
 
@@ -111,12 +125,15 @@ export default function Navbar() {
 					<button className={styles.button}>
 						<IoAddCircleOutline
 							size={25}
-							className="text-white"
+							className="text-black dark:text-white"
 						/>
 					</button>
 
 					{/* DROPDOWN */}
-					<div className="hidden absolute right-[30px] top-9 w-[130px] group-hover:flex group-hover:opacity-100 transition-all ease-in-out animate-in fade-in-0 duration-300">
+					<div
+						className="hidden absolute right-[30px] top-9 w-[130px] group-hover:flex group-hover:opacity-100 
+							transition-all ease-in-out animate-in fade-in-0 duration-300"
+					>
 						<div className="dropdownContainer">
 							<button
 								onClick={handleBookmarkFormVisible}
@@ -124,9 +141,9 @@ export default function Navbar() {
 							>
 								<BiBookmarkPlus
 									size={20}
-									className="text-white mr-2"
+									className="text-black dark:text-white mr-2"
 								/>
-								<p className="text-[12px] text-white">{texts.addBookmark}</p>
+								<Text className="text-[12px]">{texts.addBookmark}</Text>
 							</button>
 							<Divider />
 							<button
@@ -135,9 +152,9 @@ export default function Navbar() {
 							>
 								<LuFolderPlus
 									size={19}
-									className="text-white mr-2"
+									className="text-black dark:text-white mr-2"
 								/>
-								<p className="text-[12px] text-white">{texts.addGroup}</p>
+								<Text className="text-[12px]">{texts.addGroup}</Text>
 							</button>
 						</div>
 					</div>
@@ -150,21 +167,18 @@ export default function Navbar() {
 				>
 					<TbFolderCog
 						size={25}
-						className="text-white"
+						className="text-black dark:text-white"
 					/>
 				</button>
 
 				{/* SETTINGS */}
 				<button
 					className={styles.button}
-					onClick={() => {
-						localStorage.clear()
-						window.location.reload()
-					}}
+					onClick={handleSettingsVisible}
 				>
 					<IoMdSettings
 						size={24}
-						className="text-white"
+						className="text-black dark:text-white"
 					/>
 				</button>
 			</div>

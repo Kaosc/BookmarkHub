@@ -6,6 +6,8 @@ import { AiFillEdit } from "react-icons/ai"
 
 import BookmarkForm from "../form/BookmarkForm"
 import { notify } from "../../utils/notify"
+import { useSelector } from "react-redux"
+import Text from "../ui/Text"
 
 function Bookmark({
 	bookmark,
@@ -16,6 +18,8 @@ function Bookmark({
 	opacity?: string
 	className?: React.HTMLAttributes<HTMLDivElement>["className"]
 }) {
+	const { allowTwoLineTitle, showBookmarksTitle } = useSelector((state: RootState) => state.settings)
+
 	const { id, title, url, favicon } = bookmark
 	const [formVisible, setFormVisible] = useState(false)
 
@@ -77,7 +81,15 @@ function Bookmark({
 						height={29}
 						className={`mb-[5px]`}
 					/>
-					<p className="text-[11px] text-center text-white truncate max-w-[57px]">{title}</p>
+					{showBookmarksTitle && (
+						<Text
+							className={`text-[11px] text-center max-w-[57px] ${
+								allowTwoLineTitle ? "line-clamp-2" : "truncate"
+							}`}
+						>
+							{title}
+						</Text>
+					)}
 				</button>
 			</div>
 		</>

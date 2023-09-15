@@ -4,6 +4,7 @@ import { CSS } from "@dnd-kit/utilities"
 
 import { RxDragHandleHorizontal } from "react-icons/rx"
 import { MdDeleteForever } from "react-icons/md"
+import Text from "../ui/Text"
 
 function Group({
 	group,
@@ -45,7 +46,7 @@ function Group({
 						size={26}
 						className={`text-white`}
 					/>
-					<p className="ml-2 text-white truncate max-w-[190px]">{group.title}</p>
+					<Text className="ml-2 truncate max-w-[190px]">{group.title}</Text>
 				</div>
 
 				{/* delete */}

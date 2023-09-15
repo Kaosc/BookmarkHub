@@ -187,7 +187,10 @@ export default function Home() {
 			collisionDetection={pointerWithin}
 		>
 			<main
-				className="overflow-y-auto scroll-auto bg-gradient-to-r from-[#0e0e0e] to-zinc-950"
+				className="
+						overflow-y-auto scroll-auto bg-gradient-to-r 
+					 from-zinc-200 to-zinc-50 dark:from-[#0e0e0e] dark:to-zinc-950
+					"
 				ref={scrollRef}
 			>
 				{bookmarkGroups.map((bookmarkData, index) => (

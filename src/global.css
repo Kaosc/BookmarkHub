@@ -16,7 +16,7 @@
   }
 
   .basedShadow {
-    @apply shadow-md shadow-[#00000069]
+    @apply shadow-md shadow-[#aaaaaa] dark:shadow-[#00000069]
   }
 }
 

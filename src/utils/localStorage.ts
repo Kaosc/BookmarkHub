@@ -21,3 +21,27 @@ export const storeBookmarks = (bookmarks: BookmarkGroups) => {
 		console.error(e)
 	}
 }
+
+export const getSettings = () => {
+	let settings = null
+
+	try {
+		settings = localStorage.getItem("settings")
+	} catch (e) {
+		console.error(e)
+	}
+
+	if (settings) {
+		return JSON.parse(settings)
+	}
+
+	return null
+}
+
+export const storeSettings = (settings: Settings) => {
+	try {
+		localStorage.setItem("settings", JSON.stringify(settings))
+	} catch (e) {
+		console.error(e)
+	}
+}

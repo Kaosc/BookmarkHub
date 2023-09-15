@@ -17,6 +17,7 @@ import FormButtons from "./FormButtons"
 import { fetchFavicon } from "../../api/fetchFavicon"
 import { faviconPlaceHolder } from "../../utils/constants"
 import { notify } from "../../utils/notify"
+import Text from "../ui/Text"
 
 export default function BookmarkForm({
 	bookmark,
@@ -285,7 +286,7 @@ export default function BookmarkForm({
 		} else {
 			return (
 				<div className="flex w-full items-center justify-center mb-4">
-					<p className="text-sm text-gray-400">Favicons will be appear here</p>
+					<Text className="text-sm">Favicons will be appear here</Text>
 					<button
 						onClick={handleFaviconFetchManually}
 						className={`outline-dashed h-8 w-8 flex items-center justify-center hover:opacity-80 transition-all ease-in-out duration-300 ml-1`}

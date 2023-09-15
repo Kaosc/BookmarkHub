@@ -1,7 +1,7 @@
 interface RootState {
 	bookmarks: BookmarkGroups
-	form: Form
 	search: string
+	settings: Settings
 }
 
 type BookmarkGroups = BookmarkData[]
@@ -12,6 +12,11 @@ interface BookmarkData {
 	bookmarks: Bookmark[]
 }
 
+type GroupInfo = {
+	id: string
+	title: string
+}
+
 type Bookmark = {
 	id: string
 	title: string
@@ -20,7 +25,9 @@ type Bookmark = {
 	groupId: string
 }
 
-type GroupInfo = {
-	id: string
-	title: string
+type Settings = {
+	visible: boolean
+	theme: string
+	showBookmarksTitle: boolean
+	allowTwoLineTitle: boolean
 }
