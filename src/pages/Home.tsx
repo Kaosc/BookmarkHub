@@ -177,9 +177,11 @@ export default function Home() {
 				onDragStart={handleDragStart}
 				onDragEnd={handleDragEnd}
 				onDragOver={handleDragOver}
+				id="bookmarksContext"
 			>
-				{bookmarkGroups.map((bookmarkData) => (
+				{bookmarkGroups.map((bookmarkData, index) => (
 					<GroupContainer
+						groupIndex={index}
 						key={bookmarkData.id}
 						bookmarkData={bookmarkData}
 					/>

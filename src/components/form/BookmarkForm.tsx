@@ -307,7 +307,7 @@ export default function BookmarkForm({
 							title="Bookmark URL"
 							placeholder="URL*"
 							onChange={handleUrlChange}
-							autoFocus
+							autoFocus={bookmark ? false : true}
 						/>
 						<BiCopy
 							size={22}

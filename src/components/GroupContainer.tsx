@@ -9,11 +9,16 @@ import { AiOutlineArrowUp, AiOutlineArrowDown } from "react-icons/ai"
 import Bookmark from "./sortable/Bookmark"
 import BookmarkForm from "./form/BookmarkForm"
 import GroupForm from "./form/GroupForm"
-import { nanoid } from "nanoid"
 import { useDispatch, useSelector } from "react-redux"
 import { setBookmarkGroups } from "../redux/features/bookmarkSlice"
 
-export default function GroupContainer({ bookmarkData }: { bookmarkData: BookmarkData }) {
+export default function GroupContainer({
+	bookmarkData,
+	groupIndex,
+}: {
+	bookmarkData: BookmarkData
+	groupIndex: number
+}) {
 	const bookmarkGroups = useSelector((state: RootState) => state.bookmarks)
 	const dispatch = useDispatch()
 
@@ -30,10 +35,7 @@ export default function GroupContainer({ bookmarkData }: { bookmarkData: Bookmar
 	const GroupHeader = useCallback(() => {
 		const moveGroupTo = (to: string) => {
 			const toIndex = to === "up" ? -1 : 1
-			const groupIndex = bookmarkGroups.findIndex((group) => group.id === bookmarkData.id)
-
 			const newBookmarkGroups = arrayMove(bookmarkGroups, groupIndex, groupIndex + toIndex)
-
 			dispatch(setBookmarkGroups(newBookmarkGroups))
 		}
 
@@ -58,7 +60,7 @@ export default function GroupContainer({ bookmarkData }: { bookmarkData: Bookmar
 				{/* BUTTONS */}
 				<div className="flex items-center justify-between">
 					{/* MOVE UP & DOWN BUTTONS */}
-					{bookmarkGroups.findIndex((group) => group.id === bookmarkData.id) !== 1 && (
+					{groupIndex !== 1 && (
 						<button
 							className={buttonStyle}
 							onClick={() => moveGroupTo("up")}
@@ -70,8 +72,7 @@ export default function GroupContainer({ bookmarkData }: { bookmarkData: Bookmar
 							/>
 						</button>
 					)}
-					{bookmarkGroups.findIndex((group) => group.id === bookmarkData.id) !==
-						bookmarkGroups.length - 1 && (
+					{groupIndex !== bookmarkGroups.length - 1 && (
 						<button
 							className={buttonStyle}
 							onClick={() => moveGroupTo("down")}
@@ -119,6 +120,7 @@ export default function GroupContainer({ bookmarkData }: { bookmarkData: Bookmar
 		isGroupDefault,
 		bookmarkGroups,
 		dispatch,
+		groupIndex,
 	])
 
 	return (
@@ -139,13 +141,12 @@ export default function GroupContainer({ bookmarkData }: { bookmarkData: Bookmar
 				/>
 			)}
 			<SortableContext
-				id={bookmarkData?.id}
-				items={bookmarkData?.bookmarks || []}
+				id={bookmarkData.id}
+				items={bookmarkData?.bookmarks}
 				strategy={rectSortingStrategy}
 			>
 				{/* GROUP HEADER */}
 				<div
-					key={bookmarkData?.id || ""}
 					ref={setNodeRef}
 					className="flex flex-col w-full transition-all ease-in-out"
 				>
@@ -153,9 +154,9 @@ export default function GroupContainer({ bookmarkData }: { bookmarkData: Bookmar
 
 					{/* BOOKMARK LISTS */}
 					<div className="grid grid-cols-6 px-1">
-						{bookmarkData?.bookmarks?.map((bookmark) => (
+						{bookmarkData.bookmarks.map((bookmark) => (
 							<Bookmark
-								key={bookmark?.id || nanoid()}
+								key={bookmark.id}
 								bookmark={bookmark}
 							/>
 						))}
