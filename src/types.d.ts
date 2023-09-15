@@ -20,21 +20,7 @@ type Bookmark = {
 	groupId: string
 }
 
-type Form = {
-	visible?: boolean
-	mode: FormMode
-	prevBookmark?: Bookmark | undefined
-	prevGroup?:
-		| {
-				id: string
-				title: string
-		  }
-		| undefined
-}
-
 type GroupInfo = {
 	id: string
 	title: string
 }
-
-type FormMode = "addBookmark" | "editBookmark" | "addGroup" | "editGroup"

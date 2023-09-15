@@ -24,10 +24,7 @@ export default function BookmarkForm({
 	handleFormVisible,
 }: {
 	bookmark?: Bookmark
-	initGroupToAdd?: {
-		id: string
-		title: string
-	}
+	initGroupToAdd?: GroupInfo
 	handleFormVisible: Function
 }) {
 	const bookmarkData = useSelector((state: RootState) => state.bookmarks)

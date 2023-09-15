@@ -27,7 +27,7 @@ export default function GroupForm({
 	handleFormVisible,
 }: {
 	editMode?: React.RefObject<boolean>
-	prevGroup?: { id: string; title: string }
+	prevGroup?: GroupInfo
 	handleFormVisible: Function
 }) {
 	const bookmarkData = useSelector((state: RootState) => state.bookmarks)
