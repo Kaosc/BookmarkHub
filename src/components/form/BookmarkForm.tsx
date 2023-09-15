@@ -20,9 +20,14 @@ import { notify } from "../../utils/notify"
 
 export default function BookmarkForm({
 	bookmark,
+	initGroupToAdd,
 	handleFormVisible,
 }: {
 	bookmark?: Bookmark
+	initGroupToAdd?: {
+		id: string
+		title: string
+	}
 	handleFormVisible: Function
 }) {
 	const bookmarkData = useSelector((state: RootState) => state.bookmarks)
@@ -32,8 +37,9 @@ export default function BookmarkForm({
 	const [title, setTitle] = useState(bookmark?.title || "")
 	const [url, setUrl] = useState(bookmark?.url || "")
 	const [group, setGroup] = useState({
-		id: bookmark?.groupId || "default",
-		title: bookmarkData.find((bd) => bd.id === bookmark?.groupId)?.title || "Default",
+		id: bookmark?.groupId || initGroupToAdd?.id || "default",
+		title:
+			bookmarkData.find((bd) => bd.id === bookmark?.groupId)?.title || initGroupToAdd?.title || "Default",
 	})
 
 	const [loading, setLoading] = useState(false)
@@ -136,7 +142,7 @@ export default function BookmarkForm({
 	const handleUrlCopy = (e: React.MouseEvent<SVGSVGElement>) => {
 		e.preventDefault()
 		navigator.clipboard.writeText(url)
-		notify("URL Copied")	
+		notify("URL Copied")
 	}
 
 	const SelectDropDown = useCallback(() => {

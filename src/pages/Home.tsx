@@ -1,5 +1,6 @@
-import { useState, useRef, useEffect } from "react"
+import { useState, useCallback, useRef } from "react"
 import { useSelector, useDispatch } from "react-redux"
+import { useScrolling } from "react-use"
 import {
 	DndContext,
 	DragOverlay,
@@ -13,7 +14,7 @@ import {
 } from "@dnd-kit/core"
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 
-import { editGroup } from "../redux/features/bookmarkSlice"
+import { editGroup, setBookmarkGroups } from "../redux/features/bookmarkSlice"
 
 import GroupContainer from "../components/GroupContainer"
 import Bookmark from "../components/sortable/Bookmark"
@@ -24,27 +25,9 @@ export default function Home() {
 	const dispatch = useDispatch()
 
 	const [activeBookmark, setActiveBookmark] = useState<Bookmark>()
-	const isScrolling = useRef(false)
 
-	useEffect(() => {
-		let timeout: NodeJS.Timeout
-
-		const handleScroll = () => {
-			isScrolling.current = true
-
-			// Debounce the scroll end detection
-			timeout = setTimeout(() => {
-				isScrolling.current = false
-			}, 100) // Adjust the debounce delay as needed
-		}
-
-		window.addEventListener("scroll", handleScroll)
-
-		return () => {
-			window.removeEventListener("scroll", handleScroll)
-			clearTimeout(timeout)
-		}
-	}, [])
+	const scrollRef = useRef<HTMLDivElement>(null)
+	const scrolling = useScrolling(scrollRef)
 
 	const sensors = useSensors(
 		useSensor(PointerSensor, {
@@ -64,122 +47,131 @@ export default function Home() {
 		})
 	)
 
-	const handleDragStart = (event: DragEndEvent) => {
-		const { active } = event
-		const { id } = active
+	const handleDragStart = useCallback(
+		(event: DragEndEvent) => {
+			const { active } = event
+			const { id } = active
 
-		setActiveBookmark(
-			bookmarkGroups
-				.map((group) => group.bookmarks)
-				.flat()
-				.find((bookmark) => bookmark.id === id)
-		)
-	}
+			setActiveBookmark(
+				bookmarkGroups
+					.map((group) => group.bookmarks)
+					.flat()
+					.find((bookmark) => bookmark.id === id)
+			)
+		},
+		[bookmarkGroups]
+	)
 
-	const handleDragOver = (event: DragOverEvent) => {
-		const { active, over } = event
+	const handleDragOver = useCallback(
+		(event: DragOverEvent) => {
+			const { active, over } = event
 
-		// Add a check to prevent unnecessary updates
-		if (!active || !over || active.id === over.id) {
-			return
-		}
+			// Add a check to prevent unnecessary updates
+			if (!active || !over || active.id === over.id) {
+				return
+			}
 
-		const activeBookmarkId = active.id
-		const activeBookmarkGroupId = active.data.current?.sortable.containerId || activeBookmarkId
+			const activeBookmarkId = active.id
+			const activeBookmarkGroupId = active.data.current?.sortable.containerId || activeBookmarkId
 
-		const overBookmarkId = over?.id
-		const overBookmarkGroupId = over?.data.current?.sortable.containerId || overBookmarkId
+			const overBookmarkId = over?.id
+			const overBookmarkGroupId = over?.data.current?.sortable.containerId || overBookmarkId
 
-		if (!activeBookmarkId || !overBookmarkId || activeBookmarkGroupId === overBookmarkGroupId) {
-			return
-		}
+			if (!activeBookmarkId || !overBookmarkId || activeBookmarkGroupId === overBookmarkGroupId) {
+				return
+			}
 
-		const activeBookmarkGroup = bookmarkGroups.find((group) => group.id === activeBookmarkGroupId)
-		const overBookmarkGroup = bookmarkGroups.find((group) => group.id === overBookmarkGroupId)
+			const activeBookmarkGroup = bookmarkGroups.find((group) => group.id === activeBookmarkGroupId)
+			const overBookmarkGroup = bookmarkGroups.find((group) => group.id === overBookmarkGroupId)
 
-		if (!overBookmarkGroup || !activeBookmarkGroup) return
+			if (!overBookmarkGroup || !activeBookmarkGroup) return
 
-		const activeBookmarkIndex = activeBookmarkGroup.bookmarks.findIndex(
-			(bookmark) => bookmark.id === activeBookmarkId
-		)
-
-		if (activeBookmarkIndex === -1) {
-			return
-		}
-
-		const updatedActiveGroup = {
-			...activeBookmarkGroup,
-			bookmarks: [
-				...activeBookmarkGroup.bookmarks.slice(0, activeBookmarkIndex),
-				...activeBookmarkGroup.bookmarks.slice(activeBookmarkIndex + 1),
-			],
-		}
-
-		const updatedOverGroup = {
-			...overBookmarkGroup,
-			bookmarks: [...overBookmarkGroup.bookmarks, activeBookmarkGroup.bookmarks[activeBookmarkIndex]],
-		}
-
-		// if user scrolling while dragging bookmark disable dispatch
-		if (isScrolling.current) return
-
-		if (activeBookmarkGroup.id !== overBookmarkGroup.id) {
-			dispatch(
-				editGroup({
-					id: activeBookmarkGroupId,
-					title: updatedActiveGroup.title,
-					bookmarks: updatedActiveGroup.bookmarks,
-				})
+			const activeBookmarkIndex = activeBookmarkGroup.bookmarks.findIndex(
+				(bookmark) => bookmark.id === activeBookmarkId
 			)
 
-			dispatch(
-				editGroup({
-					id: overBookmarkGroupId,
-					title: updatedOverGroup.title,
-					bookmarks: updatedOverGroup.bookmarks,
-				})
-			)
-		}
-	}
+			if (activeBookmarkIndex === -1) {
+				return
+			}
 
-	const handleDragEnd = (event: DragEndEvent) => {
-		const { active, over } = event
+			const updatedActiveGroup = {
+				...activeBookmarkGroup,
+				bookmarks: [
+					...activeBookmarkGroup.bookmarks.slice(0, activeBookmarkIndex),
+					...activeBookmarkGroup.bookmarks.slice(activeBookmarkIndex + 1),
+				],
+			}
 
-		if (!active) {
-			return
-		}
+			const updatedOverGroup = {
+				...overBookmarkGroup,
+				bookmarks: [...overBookmarkGroup.bookmarks, activeBookmarkGroup.bookmarks[activeBookmarkIndex]],
+			}
 
-		const activeBookmarkIndex = active.data.current?.sortable.index
+			if (scrolling) return
 
-		const overBookmarkIndex = over?.data.current?.sortable.index
-		const overBookmarkGroupId = over?.data.current?.sortable.containerId
-		const overBookmarkGroup = bookmarkGroups.find((group) => group.id === overBookmarkGroupId)
+			if (activeBookmarkGroup.id !== overBookmarkGroup.id) {
+				dispatch(
+					setBookmarkGroups(
+						bookmarkGroups.map((group) => {
+							if (group.id === activeBookmarkGroupId) {
+								return updatedActiveGroup
+							} else if (group.id === overBookmarkGroupId) {
+								return updatedOverGroup
+							} else {
+								return group
+							}
+						})
+					)
+				)
+			}
+		},
+		[bookmarkGroups, dispatch, scrolling]
+	)
 
-		if (
-			!activeBookmarkIndex !== undefined &&
-			overBookmarkIndex === undefined &&
-			activeBookmarkIndex === overBookmarkIndex
-		) {
-			return
-		}
+	const handleDragEnd = useCallback(
+		(event: DragEndEvent) => {
+			const { active, over } = event
 
-		if (overBookmarkGroup) {
-			const newGroup = arrayMove(overBookmarkGroup.bookmarks, activeBookmarkIndex, overBookmarkIndex)
+			if (!active) {
+				return
+			}
 
-			dispatch(
-				editGroup({
-					id: overBookmarkGroupId,
-					title: overBookmarkGroup.title,
-					bookmarks: newGroup,
-				})
-			)
-		}
+			const activeBookmarkIndex = active.data.current?.sortable.index
 
-		setActiveBookmark(undefined)
-	}
+			const overBookmarkIndex = over?.data.current?.sortable.index
+			const overBookmarkGroupId = over?.data.current?.sortable.containerId
+			const overBookmarkGroup = bookmarkGroups.find((group) => group.id === overBookmarkGroupId)
+
+			if (
+				!activeBookmarkIndex !== undefined &&
+				overBookmarkIndex === undefined &&
+				activeBookmarkIndex === overBookmarkIndex
+			) {
+				return
+			}
+
+			if (overBookmarkGroup) {
+				const newGroup = arrayMove(overBookmarkGroup.bookmarks, activeBookmarkIndex, overBookmarkIndex)
+
+				dispatch(
+					editGroup({
+						id: overBookmarkGroupId,
+						title: overBookmarkGroup.title,
+						bookmarks: newGroup,
+					})
+				)
+			}
+
+			setActiveBookmark(undefined)
+		},
+		[bookmarkGroups, dispatch]
+	)
 
 	return (
-		<main className="overflow-y-auto bg-gradient-to-r from-[#0e0e0e] to-zinc-950">
+		<main
+			className="overflow-y-auto bg-gradient-to-r from-[#0e0e0e] to-zinc-950"
+			ref={scrollRef}
+		>
 			<DndContext
 				sensors={sensors}
 				onDragStart={handleDragStart}
@@ -188,7 +180,7 @@ export default function Home() {
 			>
 				{bookmarkGroups.map((bookmarkData) => (
 					<GroupContainer
-						key={bookmarkData.id+bookmarkData.title}
+						key={bookmarkData.id}
 						bookmarkData={bookmarkData}
 					/>
 				))}

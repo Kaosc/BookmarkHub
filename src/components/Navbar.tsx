@@ -1,4 +1,4 @@
-import { useState, useRef } from "react"
+import { useState, useRef, useCallback } from "react"
 import { useDispatch } from "react-redux"
 import { nanoid } from "nanoid"
 
@@ -25,22 +25,25 @@ export default function Navbar() {
 	const [groupFormVisible, setGroupFormVisible] = useState(false)
 	const editMode = useRef(false)
 
-	const handleBookmarkFormVisible = () => {
+	const handleBookmarkFormVisible = useCallback(() => {
 		if (groupFormVisible) setGroupFormVisible(false)
 		setBookmarkFormVisible((prev) => !prev)
-	}
+	}, [groupFormVisible])
 
-	const handleGroupFormVisible = (e: React.MouseEvent<HTMLButtonElement>, edit?: boolean) => {
-		if (e) e?.preventDefault()
-		if (bookmarkFormVisible) setBookmarkFormVisible(false)
+	const handleGroupFormVisible = useCallback(
+		(e: React.MouseEvent<HTMLButtonElement>, edit?: boolean) => {
+			if (e) e?.preventDefault()
+			if (bookmarkFormVisible) setBookmarkFormVisible(false)
 
-		if (edit) editMode.current = true
-		else editMode.current = false
+			if (edit) editMode.current = true
+			else editMode.current = false
 
-		setGroupFormVisible((prev) => !prev)
-	}
+			setGroupFormVisible((prev) => !prev)
+		},
+		[bookmarkFormVisible]
+	)
 
-	const addActiveTabToBookmark = async () => {
+	const addActiveTabToBookmark = useCallback(async () => {
 		let activeTab: chrome.tabs.Tab[] | undefined = await chrome?.tabs?.query({
 			active: true,
 			currentWindow: true,
@@ -60,7 +63,7 @@ export default function Navbar() {
 		} else {
 			notify("No Active Tab", true)
 		}
-	}
+	}, [dispatch])
 
 	const texts = {
 		addBookmark: "Add Bookmark",
