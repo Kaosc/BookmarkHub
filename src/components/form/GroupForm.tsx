@@ -156,6 +156,7 @@ export default function GroupForm({
 						required
 						className="input"
 						type="text"
+						title="Enter the name of the new group"
 						placeholder={"Group Title"}
 						onChange={handleGroupTitleEdit}
 						autoFocus

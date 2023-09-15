@@ -63,7 +63,7 @@ function Bookmark({
 				<div className={`absolute flex invisible top-0 right-0 justify-end group-hover:visible z-10`}>
 					<button
 						onClick={handleFormVisible}
-						className="p-1 text-white rounded-full hover:bg-gray-600 transition-all"
+						className="p-1 text-white rounded-full hover:bg-zinc-400 hover:text-black transition-all"
 					>
 						<AiFillEdit size={13} />
 					</button>

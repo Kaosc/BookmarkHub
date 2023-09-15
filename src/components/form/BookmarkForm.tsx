@@ -150,6 +150,8 @@ export default function BookmarkForm({
 			<Select
 				className="w-full mb-4"
 				placeholder="Group"
+				noOptionsMessage={() => "No Group Found"}
+				required
 				isSearchable={true}
 				value={{ value: group.id, label: group.title }}
 				onChange={handleGroupChange}
@@ -194,7 +196,7 @@ export default function BookmarkForm({
 											<Button
 												onClick={onImageUpload}
 												className={`outline-dashed ring-0 h-8 w-8 flex items-center justify-center hover:opacity-80 transition-all ease-in-out duration-300`}
-												{...{ type: "button" }}
+												props={{ type: "button" }}
 											>
 												<IoMdAdd size={20} />
 											</Button>
@@ -205,24 +207,18 @@ export default function BookmarkForm({
 								{imageList[0]?.dataURL && (
 									<div className="flex items-center">
 										<Button
-											className={`groupId px-1 z-50 mr-2`}
+											className={`hover:text-black px-1 z-50 mr-2`}
 											onClick={onImageUpload}
-											{...{ type: "button" }}
+											props={{ title: "Upload" }}
 										>
-											<BiUpload
-												size={20}
-												className="text-white groupId-hover:text-black"
-											/>
+											<BiUpload size={20} />
 										</Button>
 										<Button
-											className={`groupId px-1 z-50`}
+											className={`hover:text-black px-1 z-50`}
 											onClick={onImageRemoveAll}
-											{...{ type: "button" }}
+											props={{ title: "Remove" }}
 										>
-											<MdDeleteForever
-												size={20}
-												className="text-white groupId-hover:text-black"
-											/>
+											<MdDeleteForever size={20} />
 										</Button>
 									</div>
 								)}
@@ -296,6 +292,7 @@ export default function BookmarkForm({
 						value={title}
 						className="input"
 						type="text"
+						title="Bookmark Title"
 						placeholder={"Title"}
 						onChange={handleTitleChange}
 					/>
@@ -303,16 +300,18 @@ export default function BookmarkForm({
 					{/* URL */}
 					<div className="relative flex w-full">
 						<input
-							value={url}
 							required
+							value={url}
 							className="input pr-10"
 							type="url"
+							title="Bookmark URL"
 							placeholder="URL*"
 							onChange={handleUrlChange}
 							autoFocus
 						/>
 						<BiCopy
 							size={22}
+							title="Click to Copy URL"
 							className="absolute right-3 top-3 text-white transition-all duration-300 ease-in-out hover:opacity-50 cursor-pointer hover:animate-pulse"
 							onClick={handleUrlCopy}
 						/>
@@ -349,7 +348,15 @@ const SelectStyles: any = {
 	}),
 	menu: (provided: any) => ({
 		...provided,
-		backgroundColor: "#2a2a2e",
+		backgroundColor: "#1c1c1d",
+		color: "#ffffff",
+	}),
+	option: (provided: any, state: any) => ({
+		...provided,
+		backgroundColor: state.isSelected ? "#3e4047" : "#1c1c1d",
+		overflow: "hidden",
+		textOverflow: "ellipsis",
+		whiteSpace: "nowrap",
 		color: "#ffffff",
 	}),
 	input: (provided: any) => ({
@@ -362,20 +369,5 @@ const SelectStyles: any = {
 		...provided,
 		color: "#b9b9b9",
 		borderColor: "#3f3f46",
-	}),
-	valueContainer: (provided: any) => ({
-		...provided,
-		backgroundColor: "#00000000",
-		color: "#ffffff",
-	}),
-	container: (provided: any) => ({
-		...provided,
-		color: "#ffffff",
-		borderColor: "#3f3f46",
-	}),
-	indicatorsContainer: (provided: any) => ({
-		...provided,
-		backgroundColor: "#00000000",
-		color: "#ffffff",
 	}),
 }

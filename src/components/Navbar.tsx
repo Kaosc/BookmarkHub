@@ -72,6 +72,7 @@ export default function Navbar() {
 
 	const styles = {
 		button: "hover:opacity-50 transition-all ease-in-out duration-150",
+		drowdownButton: "flex w-full items-center hover:opacity-50 my-[8px]",
 	}
 
 	return (
@@ -122,28 +123,30 @@ export default function Navbar() {
 						</button>
 
 						{/* DROPDOWN */}
-						<div className="dropdownContainer">
-							<button
-								onClick={handleBookmarkFormVisible}
-								className="flex w-full items-center hover:opacity-50 m-1"
-							>
-								<BiBookmarkPlus
-									size={20}
-									className="text-white mr-2"
-								/>
-								<p className="text-[12px] text-white">{texts.addBookmark}</p>
-							</button>
-							<Divider />
-							<button
-								onClick={(e) => handleGroupFormVisible(e)}
-								className="flex w-full items-center hover:opacity-50 m-1"
-							>
-								<LuFolderPlus
-									size={19}
-									className="text-white mr-2"
-								/>
-								<p className="text-[12px] text-white">{texts.addGroup}</p>
-							</button>
+						<div className="hidden absolute right-[30px] top-9 w-[130px] group-hover:flex group-hover:opacity-100 transition-all ease-in-out animate-in fade-in-0 duration-300">
+							<div className="dropdownContainer">
+								<button
+									onClick={handleBookmarkFormVisible}
+									className={styles.drowdownButton}
+								>
+									<BiBookmarkPlus
+										size={20}
+										className="text-white mr-2"
+									/>
+									<p className="text-[12px] text-white">{texts.addBookmark}</p>
+								</button>
+								<Divider />
+								<button
+									onClick={(e) => handleGroupFormVisible(e)}
+									className={styles.drowdownButton}
+								>
+									<LuFolderPlus
+										size={19}
+										className="text-white mr-2"
+									/>
+									<p className="text-[12px] text-white">{texts.addGroup}</p>
+								</button>
+							</div>
 						</div>
 					</div>
 

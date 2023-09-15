@@ -23,7 +23,7 @@ export default function FormButtons({
 				<Button
 					className={`px-[10px] text-red-600 rin-1 ring-red-600 rounded-md hover:bg-red-600 hover:text-white`}
 					onClick={handleDelete}
-					type="button"
+					props={{ title: "Delete Bookmark" }}
 				>
 					<MdDeleteForever size={20} />
 				</Button>
@@ -34,7 +34,7 @@ export default function FormButtons({
 				<Button
 					className={`mr-3`}
 					onClick={handleCancel}
-					type="button"
+					props={{ type: "reset" }}
 				>
 					<p>Cancel</p>
 				</Button>
@@ -42,7 +42,7 @@ export default function FormButtons({
 				{/* EDIT & ADD */}
 				<Button
 					onClick={(e: React.MouseEvent<HTMLButtonElement>) => value && handleSubmit(e)}
-					type="submit"
+					props={{ type: "submit" }}
 				>
 					<p>{prevValue ? "Save" : "Add"}</p>
 				</Button>

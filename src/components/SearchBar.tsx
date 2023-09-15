@@ -37,12 +37,12 @@ export default function SearchBar() {
 				basedShadow
 			"
 		>
-			<button className="absolute left-3 bottom-[5px] hover:scale-110 transition-all ease-in-out">
+			<div className="absolute left-3 bottom-[5px] hover:scale-110 transition-all ease-in-out">
 				<BiSearchAlt2
 					size={19}
 					className="text-gray-400 hover:text-white"
 				/>
-			</button>
+			</div>
 			<input
 				className="ml-[37px] mr-9 overflow-hidden text-gray-300 text-base outline-none bg-transparent"
 				ref={inputRef}
@@ -56,6 +56,7 @@ export default function SearchBar() {
 				<button
 					className="absolute right-1 hover:scale-110 transition-all ease-in-out"
 					onClick={clearInput}
+					title="Clear Search"
 				>
 					<IoIosClose
 						size={30}
