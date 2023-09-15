@@ -17,7 +17,6 @@ function Bookmark({
 	className?: React.HTMLAttributes<HTMLDivElement>["className"]
 }) {
 	const { id, title, url, favicon } = bookmark
-
 	const [formVisible, setFormVisible] = useState(false)
 
 	const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: id })
@@ -54,7 +53,7 @@ function Bookmark({
 				{...listeners}
 				{...attributes}
 				className={`
-					group relative flex flex-col items-center justify-center hover:bg-zinc-900 
+					group  flex flex-col items-center justify-center hover:bg-zinc-900 
 					p-1 w-[70px] my-2 mx-[1px] transition-all ${opacity}
 					transition-all duration-500 ease-out animate-in fade-in-0 ${className}
 				`}
@@ -70,7 +69,7 @@ function Bookmark({
 
 				<button
 					onClick={redirect}
-					className="flex flex-col justify-center items-center hover:scale-[1.04] transition-all hover:animate-pulse"
+					className="flex  flex-col justify-center items-center hover:scale-[1.04] transition-all hover:animate-pulse"
 				>
 					<img
 						src={favicon}
@@ -86,4 +85,10 @@ function Bookmark({
 	)
 }
 
-export default memo(Bookmark)
+export default memo(Bookmark, (prevProps, nextProps) => {
+	return (
+		prevProps.bookmark === nextProps.bookmark &&
+		prevProps.opacity === nextProps.opacity &&
+		prevProps.className === nextProps.className
+	)
+})

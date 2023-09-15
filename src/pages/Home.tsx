@@ -14,6 +14,7 @@ import {
 	pointerWithin,
 } from "@dnd-kit/core"
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
+import { debounce } from "lodash"
 
 import { editGroup, setBookmarkGroups } from "../redux/features/bookmarkSlice"
 
@@ -62,11 +63,13 @@ export default function Home() {
 		[bookmarkGroups]
 	)
 
+	const debouncedHandleDragOver = debounce((event) => {
+		handleDragOver(event) // Dispatch your actions here
+	}, 10) // Adjust the delay as needed
+
 	const handleDragOver = useCallback(
 		(event: DragOverEvent) => {
 			if (scrolling) return
-
-			console.log("OVER")
 
 			const { active, over } = event
 
@@ -174,7 +177,7 @@ export default function Home() {
 			sensors={sensors}
 			onDragStart={handleDragStart}
 			onDragEnd={handleDragEnd}
-			onDragOver={handleDragOver}
+			onDragOver={debouncedHandleDragOver}
 			collisionDetection={pointerWithin}
 		>
 			<main

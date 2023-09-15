@@ -1,5 +1,5 @@
 import React, { memo } from "react"
-import { useDispatch } from "react-redux"
+import { useDispatch, useSelector } from "react-redux"
 import { arrayMove } from "@dnd-kit/sortable"
 
 import { AiFillEdit, AiOutlineArrowDown, AiOutlineArrowUp } from "react-icons/ai"
@@ -13,15 +13,15 @@ function GroupHeader({
 	handleBookmarkFormVisible,
 	handleGroupFormVisible,
 	isGroupDefault,
-	bookmarkGroups,
 }: {
 	bookmarkData: BookmarkData
 	groupIndex: number
 	handleBookmarkFormVisible: React.MouseEventHandler<HTMLButtonElement>
 	handleGroupFormVisible: React.MouseEventHandler<HTMLButtonElement>
 	isGroupDefault: boolean
-	bookmarkGroups: BookmarkData[]
 }) {
+	const bookmarkGroups = useSelector((state: RootState) => state.bookmarks)
+
 	const dispatch = useDispatch()
 
 	const moveGroupTo = (to: string) => {
@@ -106,4 +106,12 @@ function GroupHeader({
 	)
 }
 
-export default memo(GroupHeader)
+export default memo(GroupHeader, (prevProps, nextProps) => {
+	return (
+		prevProps.bookmarkData === nextProps.bookmarkData &&
+		prevProps.groupIndex === nextProps.groupIndex &&
+		prevProps.handleBookmarkFormVisible === nextProps.handleBookmarkFormVisible &&
+		prevProps.handleGroupFormVisible === nextProps.handleGroupFormVisible &&
+		prevProps.isGroupDefault === nextProps.isGroupDefault
+	)
+})

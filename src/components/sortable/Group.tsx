@@ -62,4 +62,6 @@ function Group({
 	}
 }
 
-export default memo(Group)
+export default memo(Group, (prevProps, nextProps) => {
+	return prevProps.activeGroup?.id === nextProps.activeGroup?.id
+})
