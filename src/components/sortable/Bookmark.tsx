@@ -29,7 +29,6 @@ function Bookmark({
 			try {
 				if (!url.startsWith("https")) {
 					window.open(`https://${url}`, "_blank")
-					return
 				} else {
 					window.open(url, "_blank")
 				}

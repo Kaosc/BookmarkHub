@@ -32,25 +32,26 @@ function GroupHeader({
 
 	const buttonStyle = "flex items-center justify-center hover:opacity-50 hover:animate-pulse"
 
+	if (bookmarkData.id === "default") {
+		return <div className="mt-1"></div>
+	}
+
 	return (
 		<div
 			className={`
-      flex items-center justify-between mx-2 px-2 py-[2px] my-2
-      rounded-full bg-[#1B1B1C]
-      transition-all ease-in-out shadow-lg shadow-[rgba(0, 0, 0, 0.603)]
-      ${bookmarkData?.id === "default" && bookmarkData?.bookmarks?.length > 0 ? "invisible" : "visible"}
-      ${bookmarkData?.id === "default" ? "opacity-0" : ""}
-      ${bookmarkData?.id === "default" && bookmarkData?.bookmarks?.length > 0 ? "hidden" : "block"}
-   `}
+				flex items-center justify-between mx-2 px-2 py-[2px] my-2
+				rounded-full bg-[#1B1B1C]
+				transition-all ease-in-out shadow-lg shadow-[rgba(0, 0, 0, 0.603)]
+			`}
 		>
 			{/* TITLE */}
 			<h1 className="pl-2 text-[13.5px] font-semibold text-center text-zinc-200 truncate max-w-xs">
-				{bookmarkData?.title === "default" ? "Bookmark Hub" : bookmarkData?.title}
+				{bookmarkData.title}
 			</h1>
 
 			{/* BUTTONS */}
 			<div className="flex items-center justify-between">
-				{/* MOVE UP & DOWN BUTTONS */}
+				{/* MOVE UP */}
 				{groupIndex !== 1 && (
 					<button
 						className={buttonStyle}
@@ -59,10 +60,12 @@ function GroupHeader({
 					>
 						<AiOutlineArrowUp
 							size={17}
-							className="text-white"
+							className="text-white mr-[2px]"
 						/>
 					</button>
 				)}
+
+				{/* MOVE DOWN */}
 				{groupIndex !== bookmarkGroups.length - 1 && (
 					<button
 						className={buttonStyle}
