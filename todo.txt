@@ -14,3 +14,5 @@ ABOUT
 FEATURE
    - multiple selection (delete, move)
    - duplicate bookmark
+FIX
+   - bookmark from group dropdown overflow

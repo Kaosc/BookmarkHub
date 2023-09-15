@@ -19,7 +19,6 @@ import { addGroup, deleteGroup, editGroupTitle, setBookmarkGroups } from "../../
 import Dialog from "../Dialog"
 import FormButtons from "./FormButtons"
 import Group from "../sortable/Group"
-import { notify } from "./../../utils/notify"
 
 export default function GroupForm({
 	editMode,
@@ -60,14 +59,12 @@ export default function GroupForm({
 	const handleGroupEdit = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
 		dispatch(editGroupTitle({ id: group.id, title: group.title }))
-		notify("Group Edited")
 		quitFrom(e)
 	}
 
 	const handleGroupAdd = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
 		dispatch(addGroup({ id: nanoid(), title: group.title, bookmarks: [] }))
-		notify("Group Added")
 		quitFrom(e)
 	}
 
@@ -75,7 +72,6 @@ export default function GroupForm({
 		(e: React.MouseEvent<HTMLButtonElement>, groupId?: string) => {
 			e.preventDefault()
 			dispatch(deleteGroup(groupId || group.id))
-			notify("Group Deleted")
 			if (!groupId) quitFrom(e)
 		},
 		[group, dispatch, quitFrom]

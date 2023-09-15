@@ -101,8 +101,6 @@ export default function BookmarkForm({
 		}
 
 		dispatch(addBookmark(newBookmark))
-
-		notify("Bookmark Added")
 		quitFrom(e)
 	}
 
@@ -125,8 +123,6 @@ export default function BookmarkForm({
 				prevGroupId: bookmark?.groupId !== newBookmark.groupId ? bookmark?.groupId : undefined,
 			})
 		)
-
-		// notify("Bookmark Edited")
 		quitFrom(e)
 	}
 
@@ -135,8 +131,6 @@ export default function BookmarkForm({
 		if (!bookmark) return
 
 		dispatch(deleteBookmark({ bookmarkId: bookmark.id, groupId: group.id }))
-
-		notify("Bookmark Deleted")
 		quitFrom(e)
 	}
 

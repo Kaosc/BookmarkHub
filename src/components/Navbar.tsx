@@ -50,7 +50,6 @@ export default function Navbar() {
 		})
 
 		if (activeTab && activeTab[0]?.url) {
-			notify("Active Tab Added to Bookmark")
 			dispatch(
 				addBookmark({
 					id: nanoid(),
