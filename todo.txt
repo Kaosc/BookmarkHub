@@ -1,0 +1,16 @@
+SETTINGS
+   - theme (light/dark)	
+   - import/export bookmarks as json
+   - show/hide bookmark titles
+   - allow/dissallow two line titles
+   - add https:// to url or not
+ABOUT
+   - version
+   - dev website
+   - github
+   - report bug / contact
+   - other apps
+   - open source libraries
+FEATURE
+   - multiple selection (delete, move)
+   - duplicate bookmark
