@@ -20,7 +20,6 @@ import { editGroup, setBookmarkGroups } from "../redux/features/bookmarkSlice"
 import GroupContainer from "../components/group/GroupContainer"
 import Bookmark from "../components/sortable/Bookmark"
 
-// get scroll event
 export default function Home() {
 	const bookmarkGroups = useSelector((state: RootState) => state.bookmarks)
 	const dispatch = useDispatch()
@@ -65,9 +64,12 @@ export default function Home() {
 
 	const handleDragOver = useCallback(
 		(event: DragOverEvent) => {
+			if (scrolling) return
+
+			console.log("OVER")
+
 			const { active, over } = event
 
-			// Add a check to prevent unnecessary updates
 			if (!active || !over || active.id === over.id) {
 				return
 			}
@@ -108,7 +110,7 @@ export default function Home() {
 				bookmarks: [...overBookmarkGroup.bookmarks, activeBookmarkGroup.bookmarks[activeBookmarkIndex]],
 			}
 
-			if (activeBookmarkGroup.id !== overBookmarkGroup.id && !scrolling) {
+			if (activeBookmarkGroup.id !== overBookmarkGroup.id) {
 				dispatch(
 					setBookmarkGroups(
 						bookmarkGroups.map((group) => {
@@ -129,6 +131,8 @@ export default function Home() {
 
 	const handleDragEnd = useCallback(
 		(event: DragEndEvent) => {
+			if (scrolling) return
+
 			const { active, over } = event
 
 			if (!active) {
@@ -151,7 +155,6 @@ export default function Home() {
 
 			if (overBookmarkGroup) {
 				const newGroup = arrayMove(overBookmarkGroup.bookmarks, activeBookmarkIndex, overBookmarkIndex)
-
 				dispatch(
 					editGroup({
 						id: overBookmarkGroupId,
@@ -163,7 +166,7 @@ export default function Home() {
 
 			setActiveBookmark(undefined)
 		},
-		[bookmarkGroups, dispatch]
+		[bookmarkGroups, dispatch, scrolling]
 	)
 
 	return (
@@ -172,7 +175,6 @@ export default function Home() {
 			onDragStart={handleDragStart}
 			onDragEnd={handleDragEnd}
 			onDragOver={handleDragOver}
-			cancelDrop={() => scrolling}
 			collisionDetection={pointerWithin}
 		>
 			<main
@@ -186,13 +188,10 @@ export default function Home() {
 						bookmarkData={bookmarkData}
 					/>
 				))}
-				<DragOverlay
-					transition={undefined}
-					adjustScale={false}
-				>
+				<DragOverlay>
 					{activeBookmark ? (
 						<Bookmark
-							key={"activeBookmark"}
+							key={activeBookmark.id + "overlay"}
 							opacity="opacity-50"
 							bookmark={activeBookmark}
 						/>

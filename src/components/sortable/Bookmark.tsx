@@ -20,7 +20,6 @@ function Bookmark({
 
 	const [formVisible, setFormVisible] = useState(false)
 
-	// dnd-kit
 	const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: id })
 	const style = { transform: CSS.Transform.toString(transform), transition }
 

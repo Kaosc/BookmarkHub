@@ -76,7 +76,7 @@ export default function Navbar() {
 	}
 
 	return (
-		<>
+		<div className="z-20 sticky flex items-center justify-between w-full h-16 px-3 bg-gradient-to-r from-[#0e0e0e] to-zinc-950 border-b-[1px] border-b-[#1b1b1b] shadow-xl shadow-[#00000069]">
 			{bookmarkFormVisible && <BookmarkForm handleFormVisible={handleBookmarkFormVisible} />}
 			{groupFormVisible && (
 				<GroupForm
@@ -84,92 +84,91 @@ export default function Navbar() {
 					editMode={editMode}
 				/>
 			)}
-			<div
-				className="z-20 sticky flex items-center justify-between w-full h-16 px-3 
-					bg-gradient-to-r from-[#0e0e0e] to-zinc-950 border-b-[1px] border-b-[#1b1b1b]
-					shadow-xl shadow-[#00000069]
-				"
-			>
-				{/* SEARCH BAR  */}
-				<div className="flex items-center justify-center">
-					<img
-						src="/favicon.png"
-						alt="logo"
-						className="w-[24px] h-[24px] mr-2"
-					/>
-					<SearchBar />
-				</div>
+			{/* SEARCH BAR  */}
+			<div className="flex items-center justify-center">
+				<img
+					src="/favicon.png"
+					alt="logo"
+					className="w-[24px] h-[24px] mr-2"
+				/>
+				<SearchBar />
+			</div>
 
-				{/* BUTTONS */}
-				<div className="flex w-1/3 items-center justify-evenly">
-					{/* GET ACTIVE TAB */}
-					<button
-						className={styles.button}
-						onClick={addActiveTabToBookmark}
-					>
-						<LiaFileImportSolid
+			{/* BUTTONS */}
+			<div className="flex w-1/3 items-center justify-evenly">
+				{/* GET ACTIVE TAB */}
+				<button
+					className={styles.button}
+					onClick={addActiveTabToBookmark}
+				>
+					<LiaFileImportSolid
+						size={25}
+						className="text-white"
+					/>
+				</button>
+
+				{/* ADD BOOKMARK/GROUP */}
+				<div className="group flex items-center justify-center">
+					<button className={styles.button}>
+						<IoAddCircleOutline
 							size={25}
 							className="text-white"
 						/>
 					</button>
 
-					{/* ADD BOOKMARK/GROUP */}
-					<div className="group flex items-center justify-center">
-						<button className={styles.button}>
-							<IoAddCircleOutline
-								size={25}
-								className="text-white"
-							/>
-						</button>
-
-						{/* DROPDOWN */}
-						<div className="hidden absolute right-[30px] top-9 w-[130px] group-hover:flex group-hover:opacity-100 transition-all ease-in-out animate-in fade-in-0 duration-300">
-							<div className="dropdownContainer">
-								<button
-									onClick={handleBookmarkFormVisible}
-									className={styles.drowdownButton}
-								>
-									<BiBookmarkPlus
-										size={20}
-										className="text-white mr-2"
-									/>
-									<p className="text-[12px] text-white">{texts.addBookmark}</p>
-								</button>
-								<Divider />
-								<button
-									onClick={(e) => handleGroupFormVisible(e)}
-									className={styles.drowdownButton}
-								>
-									<LuFolderPlus
-										size={19}
-										className="text-white mr-2"
-									/>
-									<p className="text-[12px] text-white">{texts.addGroup}</p>
-								</button>
-							</div>
+					{/* DROPDOWN */}
+					<div className="hidden absolute right-[30px] top-9 w-[130px] group-hover:flex group-hover:opacity-100 transition-all ease-in-out animate-in fade-in-0 duration-300">
+						<div className="dropdownContainer">
+							<button
+								onClick={handleBookmarkFormVisible}
+								className={styles.drowdownButton}
+							>
+								<BiBookmarkPlus
+									size={20}
+									className="text-white mr-2"
+								/>
+								<p className="text-[12px] text-white">{texts.addBookmark}</p>
+							</button>
+							<Divider />
+							<button
+								onClick={(e) => handleGroupFormVisible(e)}
+								className={styles.drowdownButton}
+							>
+								<LuFolderPlus
+									size={19}
+									className="text-white mr-2"
+								/>
+								<p className="text-[12px] text-white">{texts.addGroup}</p>
+							</button>
 						</div>
 					</div>
-
-					{/* REORDER GROUPS */}
-					<button
-						className={styles.button}
-						onClick={(e) => handleGroupFormVisible(e, true)}
-					>
-						<TbFolderCog
-							size={25}
-							className="text-white"
-						/>
-					</button>
-
-					{/* SETTINGS */}
-					<button className={styles.button}>
-						<IoMdSettings
-							size={24}
-							className="text-white"
-						/>
-					</button>
 				</div>
+
+				{/* REORDER GROUPS */}
+				<button
+					className={styles.button}
+					onClick={(e) => handleGroupFormVisible(e, true)}
+				>
+					<TbFolderCog
+						size={25}
+						className="text-white"
+					/>
+				</button>
+
+				{/* SETTINGS */}
+				<button
+					className={styles.button}
+					onClick={() => {
+						localStorage.clear()
+						window.location.reload()
+					}}
+				>
+					<IoMdSettings
+						size={24}
+						className="text-white"
+					/>
+				</button>
 			</div>
-		</>
+		</div>
 	)
 }
