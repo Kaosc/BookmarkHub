@@ -176,13 +176,12 @@ export default function GroupForm({
 					onDragEnd={handleDragEnd}
 				>
 					<SortableContext
-						id="groups"
 						items={bookmarkData}
 						strategy={rectSortingStrategy}
 					>
 						<div
 							ref={setNodeRef}
-							className="overflow-y-auto max-h-96 px-3 py-1 rounded-xl"
+							className="overflow-y-auto scroll-auto max-h-96 px-3 py-1 rounded-xl"
 						>
 							{bookmarkData.map((group) => (
 								<Group

@@ -11,12 +11,13 @@ import {
 	DragEndEvent,
 	DragOverEvent,
 	TouchSensor,
+	pointerWithin,
 } from "@dnd-kit/core"
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
 
 import { editGroup, setBookmarkGroups } from "../redux/features/bookmarkSlice"
 
-import GroupContainer from "../components/GroupContainer"
+import GroupContainer from "../components/group/GroupContainer"
 import Bookmark from "../components/sortable/Bookmark"
 
 // get scroll event
@@ -107,9 +108,7 @@ export default function Home() {
 				bookmarks: [...overBookmarkGroup.bookmarks, activeBookmarkGroup.bookmarks[activeBookmarkIndex]],
 			}
 
-			if (scrolling) return
-
-			if (activeBookmarkGroup.id !== overBookmarkGroup.id) {
+			if (activeBookmarkGroup.id !== overBookmarkGroup.id && !scrolling) {
 				dispatch(
 					setBookmarkGroups(
 						bookmarkGroups.map((group) => {
@@ -168,16 +167,17 @@ export default function Home() {
 	)
 
 	return (
-		<main
-			className="overflow-y-auto bg-gradient-to-r from-[#0e0e0e] to-zinc-950"
-			ref={scrollRef}
+		<DndContext
+			sensors={sensors}
+			onDragStart={handleDragStart}
+			onDragEnd={handleDragEnd}
+			onDragOver={handleDragOver}
+			cancelDrop={() => scrolling}
+			collisionDetection={pointerWithin}
 		>
-			<DndContext
-				sensors={sensors}
-				onDragStart={handleDragStart}
-				onDragEnd={handleDragEnd}
-				onDragOver={handleDragOver}
-				id="bookmarksContext"
+			<main
+				className="overflow-y-auto scroll-auto bg-gradient-to-r from-[#0e0e0e] to-zinc-950"
+				ref={scrollRef}
 			>
 				{bookmarkGroups.map((bookmarkData, index) => (
 					<GroupContainer
@@ -198,7 +198,7 @@ export default function Home() {
 						/>
 					) : null}
 				</DragOverlay>
-			</DndContext>
-		</main>
+			</main>
+		</DndContext>
 	)
 }

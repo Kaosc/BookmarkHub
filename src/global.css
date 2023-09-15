@@ -4,15 +4,23 @@
 
 @layer components {
   .input {
-    @apply w-full h-11 mb-4 bg-transparent transition-all duration-300 ease-in-out text-white border-[0.5px] border-[#757575] outline-none pl-2 rounded-md hover:border-white focus:scale-[1.02] focus:border-white
+    @apply w-full h-11 mb-4 bg-transparent transition-all duration-300 ease-in-out 
+    text-white border-[0.5px] border-[#757575] outline-none pl-2 rounded-md
+    hover:border-white focus:scale-[1.02] focus:border-white
   }
 
   .button {
-    @apply items-center justify-center px-2 py-1 ring-1 ring-[#a5a5a5] rounded-md text-[#a5a5a5] hover:bg-[#f1f1f1ef] hover:text-black transition-all duration-100 ease-in-out
+    @apply items-center justify-center px-2 py-1 ring-1 ring-[#a5a5a5] rounded-md text-[#a5a5a5] 
+    hover:bg-[#f1f1f1ef] hover:text-black 
+    transition-all duration-100 ease-in-out 
   }
 
   .dropdownContainer {
-    @apply mt-[10px] flex-col px-2 items-center justify-center text-[#a5a5a5] rounded-lg border-[0.5px] border-zinc-700 bg-transparent bg-gradient-to-r from-[#141414] to-zinc-900 shadow-xl shadow-black transition-all duration-300 ease-in-out
+    @apply  mt-[10px]  flex-col px-2 items-center justify-center
+    text-[#a5a5a5] rounded-lg border-[0.5px] border-zinc-700 bg-transparent
+    bg-gradient-to-r from-[#141414] to-zinc-900
+    shadow-xl shadow-black
+    transition-all duration-300 ease-in-out
   }
 
   .basedShadow {
