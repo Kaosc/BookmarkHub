@@ -108,9 +108,15 @@ export default function Home() {
 				],
 			}
 
+			// change the groupId of the bookmark
+			const updatedBookmark = {
+				...activeBookmarkGroup.bookmarks[activeBookmarkIndex],
+				groupId: overBookmarkGroupId,
+			}
+
 			const updatedOverGroup = {
 				...overBookmarkGroup,
-				bookmarks: [...overBookmarkGroup.bookmarks, activeBookmarkGroup.bookmarks[activeBookmarkIndex]],
+				bookmarks: [...overBookmarkGroup.bookmarks, updatedBookmark],
 			}
 
 			if (activeBookmarkGroup.id !== overBookmarkGroup.id) {

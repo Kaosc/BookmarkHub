@@ -5,7 +5,7 @@ import { nanoid } from "nanoid"
 import Select from "react-select"
 
 import { BiCopy, BiUpload } from "react-icons/bi"
-import { MdDeleteForever } from "react-icons/md"
+import { MdDeleteForever, MdRefresh } from "react-icons/md"
 import { IoMdAdd } from "react-icons/io"
 
 import { addBookmark, deleteBookmark, editBookmark } from "../../redux/features/bookmarkSlice"
@@ -42,7 +42,7 @@ export default function BookmarkForm({
 			bookmarkData.find((bd) => bd.id === bookmark?.groupId)?.title || initGroupToAdd?.title || "Default",
 	})
 
-	const [loading, setLoading] = useState(false)
+	const [fetchingFavicon, setFetchingFavicon] = useState(false)
 	const [faviconList, setFaviconList] = useState<string[]>([])
 
 	const formTitle = bookmark ? "Edit Bookmark" : "Add Bookmark"
@@ -57,16 +57,35 @@ export default function BookmarkForm({
 	)
 
 	useEffect(() => {
-		if (url && !favicon?.startsWith("data")) {
-			if (url !== bookmark?.url) {
-				fetchFavicon(url).then((favicons) => {
-					setFaviconList(favicons)
-				})
+		let timeout: NodeJS.Timeout
+
+		timeout = setTimeout(() => {
+			if (url && !favicon?.startsWith("data")) {
+				if (url !== bookmark?.url) {
+					setFetchingFavicon(true)
+					fetchFavicon(url).then((favicons) => {
+						setFaviconList(favicons)
+						setFetchingFavicon(false)
+					})
+				}
+			} else {
+				setFaviconList([])
 			}
-		} else {
-			setFaviconList([])
-		}
+		}, 1500)
+
+		return () => clearTimeout(timeout)
 	}, [url, favicon, bookmark?.url])
+
+	const handleFaviconFetchManually = (e: React.MouseEvent<HTMLButtonElement>) => {
+		e.preventDefault()
+		if (url) {
+			setFetchingFavicon(true)
+			fetchFavicon(url).then((favicons) => {
+				setFaviconList(favicons)
+				setFetchingFavicon(false)
+			})
+		}
+	}
 
 	const handleFaviconChange = (imageList: ImageType[]) => setFavicon(imageList[0]?.dataURL || "")
 	const handleGroupChange = (option: any) => setGroup({ id: option.value, title: option.label })
@@ -75,7 +94,6 @@ export default function BookmarkForm({
 
 	const handleBookmarkAdd = async (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
-		setLoading(true)
 
 		let newBookmark: Bookmark = {
 			id: nanoid(),
@@ -95,7 +113,6 @@ export default function BookmarkForm({
 		if (!bookmark) return
 
 		e.preventDefault()
-		setLoading(true)
 
 		let newBookmark: Bookmark = {
 			id: bookmark.id,
@@ -112,7 +129,7 @@ export default function BookmarkForm({
 			})
 		)
 
-		notify("Bookmark Edited")
+		// notify("Bookmark Edited")
 		quitFrom(e)
 	}
 
@@ -136,7 +153,6 @@ export default function BookmarkForm({
 	const quitFrom = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
 		handleFormVisible()
-		setLoading(false)
 	}
 
 	const handleUrlCopy = (e: React.MouseEvent<SVGSVGElement>) => {
@@ -269,68 +285,83 @@ export default function BookmarkForm({
 					))}
 				</div>
 			)
+		} else if (fetchingFavicon) {
+			return (
+				<div className="flex w-full items-center justify-center mb-4">
+					<ActivityIndicator className="w-6 h-6" />
+				</div>
+			)
 		} else {
-			return null
+			return (
+				<div className="flex w-full items-center justify-center mb-4">
+					<p className="text-sm text-gray-400">Favicons will be appear here</p>
+					<button
+						onClick={handleFaviconFetchManually}
+						className={`outline-dashed h-8 w-8 flex items-center justify-center hover:opacity-80 transition-all ease-in-out duration-300 ml-1`}
+					>
+						<MdRefresh
+							size={23}
+							className="text-white"
+						/>
+					</button>
+				</div>
+			)
 		}
 	}
 
-	if (loading) {
-		return <ActivityIndicator className={"my-7"} />
-	} else {
-		return (
-			<Dialog
-				title={formTitle}
-				onClose={quitFrom}
-			>
-				<ImageUploadSection />
+	return (
+		<Dialog
+			title={formTitle}
+			onClose={quitFrom}
+		>
+			<ImageUploadSection />
 
-				<FaviconList />
+			<FaviconList />
 
-				<form className="flex flex-col items-center">
-					{/* TITLE */}
+			<form className="flex flex-col items-center">
+				{/* TITLE */}
+				<input
+					value={title}
+					className="input"
+					type="text"
+					title="Bookmark Title"
+					placeholder={"Title"}
+					onChange={handleTitleChange}
+				/>
+
+				{/* URL */}
+				<div className="relative flex w-full">
 					<input
-						value={title}
-						className="input"
-						type="text"
-						title="Bookmark Title"
-						placeholder={"Title"}
-						onChange={handleTitleChange}
-					/>
-
-					{/* URL */}
-					<div className="relative flex w-full">
-						<input
-							required
-							value={url}
-							className="input pr-10"
-							type="url"
-							title="Bookmark URL"
-							placeholder="URL*"
-							onChange={handleUrlChange}
-							autoFocus={bookmark ? false : true}
-						/>
-						<BiCopy
-							size={22}
-							title="Click to Copy URL"
-							className="absolute right-3 top-3 text-white transition-all duration-300 ease-in-out hover:opacity-50 cursor-pointer hover:animate-pulse"
-							onClick={handleUrlCopy}
-						/>
-					</div>
-
-					{/* GROUP */}
-					<SelectDropDown />
-
-					<FormButtons
-						handleCancel={quitFrom}
-						handleDelete={handleBookmarkDelete}
-						handleSubmit={handleSubmit}
-						prevValue={bookmark?.url}
+						required
 						value={url}
+						className="input pr-10"
+						type="url"
+						title="Bookmark URL"
+						placeholder="URL*"
+						onChange={handleUrlChange}
+						autoFocus={bookmark ? false : true}
 					/>
-				</form>
-			</Dialog>
-		)
-	}
+					<BiCopy
+						size={22}
+						title="Click to Copy URL"
+						className="absolute right-3 top-3 text-white transition-all duration-300 ease-in-out hover:opacity-50 cursor-pointer hover:animate-pulse"
+						onClick={handleUrlCopy}
+					/>
+				</div>
+
+				{/* GROUP */}
+				<SelectDropDown />
+
+				<FormButtons
+					handleCancel={quitFrom}
+					handleDelete={handleBookmarkDelete}
+					handleSubmit={handleSubmit}
+					prevValue={bookmark?.url}
+					value={url}
+				/>
+			</form>
+		</Dialog>
+	)
 }
 
 const SelectStyles: any = {
