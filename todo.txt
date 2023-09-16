@@ -1,6 +1,3 @@
-SETTINGS
-   - import/export bookmarks as json
-   - add https:// to url or not
 ABOUT
    - version
    - dev website
@@ -12,4 +9,4 @@ FEATURE
    - multiple selection (delete, move)
    - duplicate bookmark
 FIX
-   - bookmark from group dropdown overflow
+   - bookmark form dropdown overflow

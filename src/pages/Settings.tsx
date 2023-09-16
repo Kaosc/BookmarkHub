@@ -1,20 +1,35 @@
 import { useEffect } from "react"
 import { useDispatch, useSelector } from "react-redux"
+import { nanoid } from "nanoid"
 
-import { IoMdClose } from "react-icons/io"
-import { IoMdSettings } from "react-icons/io"
+import { BsGithub } from "react-icons/bs"
+import { FaGlobeAmericas } from "react-icons/fa"
+import { AiOutlineMail } from "react-icons/ai"
+import { IoMdClose, IoMdSettings } from "react-icons/io"
+import { BiMoon, BiSolidMoon, BiLinkExternal } from "react-icons/bi"
+import { TbLicense, TbMoonStars } from "react-icons/tb"
+import { PiArrowRight } from "react-icons/pi"
+import { CiExport, CiImport } from "react-icons/ci"
 
 import { setSettings, toggleSettings } from "../redux/features/settingsSlice"
-import { BiMoon, BiSolidMoon } from "react-icons/bi"
-import { TbMoonStars } from "react-icons/tb"
+import { setBookmarkGroups } from "../redux/features/bookmarkSlice"
+
 import Switch from "../components/ui/Switch"
-import { storeSettings } from "../utils/localStorage"
 import Divider from "../components/ui/Divider"
 import Text from "../components/ui/Text"
+import Button from "../components/ui/Button"
+
+import { notify } from "../utils/notify"
+import { storeSettings } from "../utils/localStorage"
 
 export default function Settings() {
+	const bookmarkGroups = useSelector((state: RootState) => state.bookmarks)
 	const settings = useSelector((state: RootState) => state.settings)
 	const dispatch = useDispatch()
+
+	useEffect(() => {
+		storeSettings(settings)
+	}, [settings])
 
 	const handleSettingsVisible = () => {
 		dispatch(toggleSettings())
@@ -43,9 +58,71 @@ export default function Settings() {
 		dispatch(setSettings({ theme: theme }))
 	}
 
-	useEffect(() => {
-		storeSettings(settings)
-	}, [settings])
+	const handleImport = () => {
+		const input = document.createElement("input")
+		input.type = "file"
+		input.accept = ".json"
+		input.onchange = (event) => {
+			const target = event.target as HTMLInputElement
+			const file: File = (target.files as FileList)[0]
+			const reader = new FileReader()
+			reader.readAsText(file)
+			reader.onload = (event) => {
+				const target = event.target as FileReader
+				const data = JSON.parse(target.result as string)
+
+				// Generate new ids
+				const newBookmarkGroups = data.map((bookmarkGroup: BookmarkData) => {
+					return {
+						id: nanoid(),
+						title: bookmarkGroup.title,
+						bookmarks: bookmarkGroup.bookmarks.map((bookmark: Bookmark) => {
+							return {
+								...bookmark,
+								id: nanoid(),
+							}
+						}),
+					}
+				})
+
+				dispatch(setBookmarkGroups([...newBookmarkGroups, ...bookmarkGroups]))
+				notify("Bookmarks imported")
+			}
+		}
+		input.click()
+	}
+
+	const handleExport = () => {
+		const exportableBookmarkGroups = bookmarkGroups.map((bookmarkGroup: BookmarkData) => {
+			return {
+				title: bookmarkGroup.title,
+				bookmarks: bookmarkGroup.bookmarks.map((bookmark: Bookmark) => {
+					return {
+						title: bookmark.title,
+						url: bookmark.url,
+						favicon: bookmark.favicon,
+						groupId: bookmark.groupId,
+					}
+				}),
+			}
+		})
+
+		const dataStr =
+			"data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportableBookmarkGroups))
+		const downloadAnchorNode = document.createElement("a")
+		downloadAnchorNode.setAttribute("href", dataStr)
+		downloadAnchorNode.setAttribute("download", "bookmarks.json")
+		document.body.appendChild(downloadAnchorNode) // required for firefox
+		downloadAnchorNode.click()
+		downloadAnchorNode.remove()
+
+		notify("Bookmarks exported")
+	}
+
+	const handleResetApp = () => {
+		localStorage.clear()
+		window.location.reload()
+	}
 
 	const ThemeIcon = () => {
 		if (settings.theme === "dark") {
@@ -74,7 +151,7 @@ export default function Settings() {
 
 	const SettingsHeader = () => (
 		<div
-			className="flex items-center justify-between w-full h-16 px-3 border-b-[1px] mb-3
+			className="flex items-center justify-between w-full h-16 px-3 border-b-[1px] mb-3 sticky top-0 left-0 z-30
 				bg-gradient-to-r from-zinc-200 to-zinc-50 dark:from-[#0e0e0e] dark:to-zinc-950 
 				border-b-[#d8d8d8] dark:border-b-[#1b1b1b] shadow-xl shadow-[#a0a0a069] dark:shadow-[#00000069]"
 		>
@@ -94,78 +171,192 @@ export default function Settings() {
 		</div>
 	)
 
+	const RightIcon = () => (
+		<PiArrowRight
+			size={24}
+			className="mr-1 hover:opacity-50 transition-all ease-in-out text-black dark:text-white"
+		/>
+	)
+
 	return (
 		<div
-			className={`absolute items-center justify-center z-50 top-0 left-0 w-[435px] h-[550px] bg-gradient-to-r 
+			className={`absolute z-50 top-0 left-0 overflow-y-auto w-[435px] h-[550px] bg-gradient-to-r 
 				from-zinc-200 to-zinc-50 dark:from-[#0e0e0e] dark:to-zinc-950 
-				${
-					settings.visible
-						? "visible animate-in fade-in-0 duration-300"
-						: "invisible animate-out fade-out-0 duration-300"
-				} `}
+				${settings.visible ? "visible animate-in fade-in-0 " : "invisible animate-out fade-out-0"} `}
 		>
 			<SettingsHeader />
 
-			<div className="flex flex-col items-center w-full h-full">
-				{/* THEME */}
-				<div className="group flex items-center justify-between w-2/3 mt-6 z-30">
-					<div className="flex items-center justify-center">
-						<ThemeIcon />
-						<Text className="ml-2">Theme</Text>
-					</div>
-					<button className="flex items-center justify-between">
-						<Text>{settings.theme?.toUpperCase()}</Text>
-					</button>
+			<Text className="text-center text-2xl mt-5 mb-4">General</Text>
 
-					<div
-						className="hidden absolute right-[70px] top-[100px] group-hover:flex group-hover:opacity-100 
-							transition-all ease-in-out animate-in fade-in-0 duration-300"
-					>
-						<div className="dropdownContainer">
-							<button
-								onClick={() => handleTheme("light")}
-								className="flex w-full items-center hover:opacity-50 my-[8px]"
-							>
-								<Text className="text-[12px]">LIGHT</Text>
-							</button>
-							<Divider />
-							<button
-								onClick={() => handleTheme("dark")}
-								className="flex w-full items-center hover:opacity-50 my-[8px]"
-							>
-								<Text className="text-[12px]">DARK</Text>
-							</button>
-							<Divider />
-							<button
-								onClick={() => handleTheme("system")}
-								className="flex w-full items-center hover:opacity-50 my-[8px]"
-							>
-								<Text className="text-[12px]">SYSTEM</Text>
-							</button>
+			<div className="flex flex-col items-center">
+				{/* THEME */}
+				<div className="flex flex-col items-center justify-between bg-[#d8d8d8] dark:bg-[#1f1e1eb7] w-[80%] rounded-lg p-3">
+					<div className="group flex items-center justify-between w-3/4 z-20 mt-3">
+						<div className="flex items-center justify-center">
+							<ThemeIcon />
+							<Text className="ml-2">Theme</Text>
+						</div>
+						<button className="flex items-center justify-between">
+							<Text>{settings.theme?.toUpperCase()}</Text>
+						</button>
+
+						<div
+							className="hidden absolute right-[70px] top-[160px] group-hover:flex group-hover:opacity-100 
+							transition-all ease-in-out animate-in fade-in-0"
+						>
+							<div className="dropdownContainer">
+								<button
+									onClick={() => handleTheme("light")}
+									className="flex w-full items-center hover:opacity-50 my-[8px]"
+								>
+									<Text className="text-[12px]">LIGHT</Text>
+								</button>
+								<Divider />
+								<button
+									onClick={() => handleTheme("dark")}
+									className="flex w-full items-center hover:opacity-50 my-[8px]"
+								>
+									<Text className="text-[12px]">DARK</Text>
+								</button>
+								<Divider />
+								<button
+									onClick={() => handleTheme("system")}
+									className="flex w-full items-center hover:opacity-50 my-[8px]"
+								>
+									<Text className="text-[12px]">SYSTEM</Text>
+								</button>
+							</div>
 						</div>
 					</div>
+
+					{/* SHOW TITLE TOGGLE */}
+					<div className="flex justify-between w-3/4 mt-5">
+						<div className="flex">
+							<Text>Show bookmark titles</Text>
+						</div>
+						<Switch
+							checked={settings.showBookmarksTitle}
+							onChange={handleShowBookmarksTitle}
+						/>
+					</div>
+
+					{/* SHOW TWO LINE TOGGLE */}
+					<div className="flex justify-between w-3/4 mt-1">
+						<div className="flex">
+							<Text>Allow two lines title</Text>
+						</div>
+						<Switch
+							checked={settings.allowTwoLineTitle}
+							onChange={handleAllowTwoLineTitle}
+						/>
+					</div>
 				</div>
 
-				{/* SHOW TITLE TOGGLE */}
-				<div className="flex justify-between w-2/3 mt-5">
-					<div className="flex">
-						<Text>Show bookmark titles</Text>
-					</div>
-					<Switch
-						checked={settings.showBookmarksTitle}
-						onChange={handleShowBookmarksTitle}
-					/>
+				<Text className="text-center text-2xl my-5">Export & Import</Text>
+
+				<div className="flex flex-col items-center justify-between bg-[#d8d8d8] dark:bg-[#1f1e1eb7] w-[80%] rounded-lg p-3 py-4">
+					{/* EXPORT */}
+					<Button
+						onClick={handleImport}
+						className="flex items-center text-center justify-center mt-1 w-3/4 "
+					>
+						<CiImport
+							size={20}
+							className="mr-2"
+						/>
+						Import bookmarks
+					</Button>
+					<Button
+						onClick={handleExport}
+						className="flex items-center text-center justify-center mt-3 w-3/4 "
+					>
+						<CiExport
+							size={20}
+							className="mr-2"
+						/>
+						Export bookmarks
+					</Button>
 				</div>
 
-				{/* SHOW TWO LINE TOGGLE */}
-				<div className="flex justify-between w-2/3 mt-1">
-					<div className="flex">
-						<Text>Allow two lines title</Text>
+				<Text className="text-center text-2xl my-5">About</Text>
+
+				<div className="flex flex-col items-center justify-between bg-[#d8d8d8] dark:bg-[#1f1e1eb7] w-[80%] rounded-lg p-3">
+					<div className="flex items-center justify-between w-3/4 my-1">
+						<Text> Version </Text>
+						<Text> 1.0.0 </Text>
 					</div>
-					<Switch
-						checked={settings.allowTwoLineTitle}
-						onChange={handleAllowTwoLineTitle}
-					/>
+
+					<div className="flex items-center justify-between w-3/4 my-1">
+						<div className="flex items-center">
+							<FaGlobeAmericas
+								size={13}
+								className="mr-1 text-black dark:text-white"
+							/>
+							<Text className=""> Website </Text>
+						</div>
+						<RightIcon />
+					</div>
+
+					<div className="flex items-center justify-between w-3/4 my-1">
+						<div className="flex items-center">
+							<AiOutlineMail
+								size={13}
+								className="mr-1 text-black dark:text-white"
+							/>
+							<Text> Contact </Text>
+						</div>
+						<RightIcon />
+					</div>
+
+					<div className="flex items-center justify-between w-3/4 my-1">
+						<div className="flex items-center">
+							<BsGithub
+								size={13}
+								className="mr-1 text-black dark:text-white"
+							/>
+							<Text> Github </Text>
+						</div>
+						<RightIcon />
+					</div>
+
+					<div className="flex items-center justify-between w-3/4 my-1">
+						<div className="flex items-center">
+							<BiLinkExternal
+								size={13}
+								className="mr-1 text-black dark:text-white"
+							/>
+							<Text> Other Apps </Text>
+						</div>
+						<RightIcon />
+					</div>
+
+					<div className="flex items-center justify-between w-3/4 my-1">
+						<div className="flex items-center">
+							<TbLicense
+								size={13}
+								className="mr-1 text-black dark:text-white"
+							/>
+							<Text> Open Source Licenses </Text>
+						</div>
+						<RightIcon />
+					</div>
+				</div>
+
+				{/* RESET */}
+				<Text className="text-center text-2xl my-5">Danger Zone</Text>
+				<div className="flex flex-col items-center justify-between bg-[#f3d0d0] dark:bg-[#3f2222] w-[80%] rounded-lg p-3 mb-10">
+					<Text className="w-3/4 text-sm text-center my-1">
+						This option deletes all your bookmarks and settings forever. Please export your bookmarks before
+						doing this.
+					</Text>
+
+					<Button
+						onClick={handleResetApp}
+						className="flex items-center text-center justify-center my-3 w-3/4
+								ring-red-500 bg-red-200 dark:bg-red-800 hover:dark:bg-red-600 hover:bg-red-600"
+					>
+						WIPE ALL DATA
+					</Button>
 				</div>
 			</div>
 		</div>

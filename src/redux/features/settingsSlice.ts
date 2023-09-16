@@ -3,8 +3,8 @@ import { getSettings } from "../../utils/localStorage"
 
 const initialState = {
 	visible: false,
-	theme: "light",
-	showBookmarksTitle: false,
+	theme: "system",
+	showBookmarksTitle: true,
 	allowTwoLineTitle: false,
 }
 
@@ -29,6 +29,13 @@ const setInitialState = (): Settings => {
 			visible: false,
 		}
 	} else {
+
+		if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+			document.documentElement.classList.add("dark")
+		} else {
+			document.documentElement.classList.remove("dark")
+		}
+
 		return initialState
 	}
 }
