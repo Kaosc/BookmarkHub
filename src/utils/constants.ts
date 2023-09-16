@@ -19,3 +19,6 @@ export const DUCK_FAVICON_API = "https://icons.duckduckgo.com/ip3/"
 https://icon.horse/icon/discord.com 
 */
 export const ICON_HORSE_API = "https://icon.horse/icon/"
+
+export const KAOSCWEB = "https://kaosc.vercel.app"
+export const GITHUBREPO = "https://github.com/Kaosc/BookmarkHub"

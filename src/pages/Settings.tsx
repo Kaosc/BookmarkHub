@@ -21,6 +21,7 @@ import Button from "../components/ui/Button"
 
 import { notify } from "../utils/notify"
 import { storeSettings } from "../utils/localStorage"
+import { GITHUBREPO, KAOSCWEB } from "../utils/constants"
 
 export default function Settings() {
 	const bookmarkGroups = useSelector((state: RootState) => state.bookmarks)
@@ -303,23 +304,29 @@ export default function Settings() {
 				<Text className="text-center text-2xl my-5">About</Text>
 
 				<div className="flex flex-col items-center justify-between bg-[#d8d8d8] dark:bg-[#1f1e1eb7] w-[80%] rounded-lg p-3">
-					<div className="flex items-center justify-between w-3/4 my-1">
+					<div className="flex items-center justify-between w-4/5 my-1 p-1">
 						<Text> Version </Text>
 						<Text> 1.0.0 </Text>
 					</div>
 
-					<div className="flex items-center justify-between w-3/4 my-1">
+					<button
+						onClick={() => window.open(KAOSCWEB, "_blank")}
+						className="flex items-center justify-between w-4/5 my-1 hover:opacity-80 hover:bg-[#383838] p-1 rounded-md hover:animate-pulse"
+					>
 						<div className="flex items-center">
 							<FaGlobeAmericas
 								size={13}
-								className="mr-1 text-black dark:text-white"
+								className="mr-2 text-black dark:text-white"
 							/>
 							<Text className=""> Website </Text>
 						</div>
 						<RightIcon />
-					</div>
+					</button>
 
-					<div className="flex items-center justify-between w-3/4 my-1">
+					<button
+						onClick={() => window.open(`${KAOSCWEB}/contact`, "_blank")}
+						className="flex items-center justify-between w-4/5 my-1 hover:opacity-80 hover:bg-[#383838] p-1 rounded-md hover:animate-pulse"
+					>
 						<div className="flex items-center">
 							<AiOutlineMail
 								size={13}
@@ -328,9 +335,12 @@ export default function Settings() {
 							<Text> Contact </Text>
 						</div>
 						<RightIcon />
-					</div>
+					</button>
 
-					<div className="flex items-center justify-between w-3/4 my-1">
+					<button
+						onClick={() => window.open(GITHUBREPO, "_blank")}
+						className="flex items-center justify-between w-4/5 my-1 hover:opacity-80 hover:bg-[#383838] p-1 rounded-md hover:animate-pulse"
+					>
 						<div className="flex items-center">
 							<BsGithub
 								size={13}
@@ -339,9 +349,12 @@ export default function Settings() {
 							<Text> Github </Text>
 						</div>
 						<RightIcon />
-					</div>
+					</button>
 
-					<div className="flex items-center justify-between w-3/4 my-1">
+					<button
+						onClick={() => window.open(`${KAOSCWEB}/#products`, "_blank")}
+						className="flex items-center justify-between w-4/5 my-1 hover:opacity-80 hover:bg-[#383838] p-1 rounded-md hover:animate-pulse"
+					>
 						<div className="flex items-center">
 							<BiLinkExternal
 								size={13}
@@ -350,9 +363,9 @@ export default function Settings() {
 							<Text> Other Apps </Text>
 						</div>
 						<RightIcon />
-					</div>
+					</button>
 
-					<div className="flex items-center justify-between w-3/4 my-1">
+					<button className="flex items-center justify-between w-4/5 my-1 hover:opacity-80 hover:bg-[#383838] p-1 rounded-md hover:animate-pulse">
 						<div className="flex items-center">
 							<TbLicense
 								size={13}
@@ -361,7 +374,7 @@ export default function Settings() {
 							<Text> Open Source Licenses </Text>
 						</div>
 						<RightIcon />
-					</div>
+					</button>
 				</div>
 
 				{/* RESET */}

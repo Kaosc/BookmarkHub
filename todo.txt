@@ -1,10 +1,5 @@
-ABOUT
-   - version
-   - dev website
-   - github
-   - report bug / contact
-   - other apps
-   - open source libraries
+ADD:
+   - confirmation dialog
 FEATURE
    - multiple selection (delete, move)
    - duplicate bookmark

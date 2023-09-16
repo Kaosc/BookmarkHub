@@ -100,6 +100,7 @@ export default function Navbar() {
 			{/* SEARCH BAR  */}
 			<div className="flex items-center justify-center">
 				<img
+					onClick={() => window.location.reload()}
 					src="/favicon.png"
 					alt="logo"
 					className="w-[24px] h-[24px] mr-2"
