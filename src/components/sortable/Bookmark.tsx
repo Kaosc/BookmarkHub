@@ -56,7 +56,7 @@ function Bookmark({
 				{...listeners}
 				{...attributes}
 				className={`
-					group relative flex flex-col items-center justify-center hover:bg-zinc-900 
+					group relative flex flex-col items-center justify-center hover:dark:bg-zinc-900 hover:bg-[#cacaca]
 					p-1 w-[70px] my-2 mx-[1px] transition-all ${opacity}
 					transition-all duration-500 ease-out animate-in fade-in-0 ${className}
 				`}

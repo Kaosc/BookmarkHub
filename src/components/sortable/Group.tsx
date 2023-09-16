@@ -44,14 +44,14 @@ function Group({
 				<div className="mr-auto flex items-center justify-start">
 					<RxDragHandleHorizontal
 						size={26}
-						className={`text-white`}
+						className={`text-black dark:text-white`}
 					/>
 					<Text className="ml-2 truncate max-w-[190px]">{group.title}</Text>
 				</div>
 
 				{/* delete */}
 				<button
-					className="ml-auto text-gray-400 hover:opacity-50 hover:animate-pulse"
+					className="ml-auto text-black dark-text-white hover:opacity-50 hover:animate-pulse"
 					onClick={handleClick}
 				>
 					<MdDeleteForever size={20} />

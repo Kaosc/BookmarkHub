@@ -18,7 +18,7 @@ export default function App() {
 	}, [bookmarks])
 
 	return (
-		<main className="flex">
+		<main className="flex from-zinc-200 to-zinc-50 dark:from-[#0e0e0e] dark:to-zinc-950">
 			<Navbar />
 			<Home />
 			<Search />

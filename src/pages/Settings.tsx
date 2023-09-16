@@ -74,7 +74,7 @@ export default function Settings() {
 
 	const SettingsHeader = () => (
 		<div
-			className="flex items-center justify-between w-full h-16 px-3 border-b-[1px] 
+			className="flex items-center justify-between w-full h-16 px-3 border-b-[1px] mb-3
 				bg-gradient-to-r from-zinc-200 to-zinc-50 dark:from-[#0e0e0e] dark:to-zinc-950 
 				border-b-[#d8d8d8] dark:border-b-[#1b1b1b] shadow-xl shadow-[#a0a0a069] dark:shadow-[#00000069]"
 		>
@@ -96,7 +96,7 @@ export default function Settings() {
 
 	return (
 		<div
-			className={`absolute items-center justify-center z-50 top-0 left-0 w-[435px] h-[494px] bg-gradient-to-r 
+			className={`absolute items-center justify-center z-50 top-0 left-0 w-[435px] h-[550px] bg-gradient-to-r 
 				from-zinc-200 to-zinc-50 dark:from-[#0e0e0e] dark:to-zinc-950 
 				${
 					settings.visible

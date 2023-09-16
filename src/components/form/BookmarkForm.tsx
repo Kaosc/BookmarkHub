@@ -28,6 +28,17 @@ export default function BookmarkForm({
 	initGroupToAdd?: GroupInfo
 	handleFormVisible: Function
 }) {
+	const { theme } = useSelector((state: RootState) => state.settings)
+	const darkMode = useMemo(
+		() =>
+			theme === "sysmtem"
+				? window.matchMedia("(prefers-color-scheme: dark)").matches
+				: theme === "dark"
+				? true
+				: false,
+		[theme]
+	)
+
 	const bookmarkData = useSelector((state: RootState) => state.bookmarks)
 	const dispatch = useDispatch()
 
@@ -168,15 +179,18 @@ export default function BookmarkForm({
 					...theme,
 					colors: {
 						...theme.colors,
-						primary25: "#575757",
-						primary: "#46474d",
-						primary50: "#202020",
+						neutral20: darkMode ? "#575757" : "#000000",
+						neutral30: darkMode ? "#575757" : "#000000",
+						neutral40: darkMode ? "#575757" : "#000000",
+						primary25: darkMode ? "#575757" : "#000000",
+						primary: darkMode ? "#46474d" : "#adadad",
+						primary50: darkMode ? "#202020" : "#aaaaaa",
 					},
 				})}
-				styles={SelectStyles}
+				styles={SelectStyles(darkMode)}
 			/>
 		)
-	}, [groupOptions, group])
+	}, [groupOptions, group, darkMode])
 
 	const ImageUploadSection = () => {
 		return (
@@ -208,7 +222,7 @@ export default function BookmarkForm({
 											>
 												<IoMdAdd size={20} />
 											</Button>
-											{!errors && <p className="text-sm text-gray-400 ml-3">Upload Favicon (optional)</p>}
+											{!errors && <p className="text-sm text-gray-500 ml-3">Upload Favicon (optional)</p>}
 										</div>
 									)}
 								</div>
@@ -233,20 +247,12 @@ export default function BookmarkForm({
 							</div>
 							{errors && (
 								<div className="ml-5">
-									{errors.maxNumber && (
-										<span className="text-red-500 text-sm">Number of selected images exceed maxNumber</span>
-									)}
 									{errors.acceptType && (
-										<span className="text-red-500 text-sm">Your selected file type is not allow</span>
+										<span className="text-red-500 text-sm">elected file type is not allowed</span>
 									)}
 									{errors.maxFileSize && (
 										<span className="text-red-500 text-sm">
 											Selected file size exceed {maxFileSize / 1024 / 1024} MB
-										</span>
-									)}
-									{errors.resolution && (
-										<span className="text-red-500 text-sm">
-											Selected file is not match your desired resolution
 										</span>
 									)}
 								</div>
@@ -289,11 +295,11 @@ export default function BookmarkForm({
 					<Text className="text-sm">Favicons will be appear here</Text>
 					<button
 						onClick={handleFaviconFetchManually}
-						className={`outline-dashed h-8 w-8 flex items-center justify-center hover:opacity-80 transition-all ease-in-out duration-300 ml-1`}
+						className={`h-8 w-8 flex items-center justify-center hover:opacity-80 hover:scale-110 hover:animate-spin transition-all ease-in-out duration-300 ml-1`}
 					>
 						<MdRefresh
 							size={23}
-							className="text-white"
+							className="text-black dark:text-white"
 						/>
 					</button>
 				</div>
@@ -336,7 +342,7 @@ export default function BookmarkForm({
 					<BiCopy
 						size={22}
 						title="Click to Copy URL"
-						className="absolute right-3 top-3 text-white transition-all duration-300 ease-in-out hover:opacity-50 cursor-pointer hover:animate-pulse"
+						className="absolute right-3 top-3 text-black dark:text-white transition-all duration-300 ease-in-out hover:opacity-50 cursor-pointer hover:animate-pulse"
 						onClick={handleUrlCopy}
 					/>
 				</div>
@@ -356,41 +362,46 @@ export default function BookmarkForm({
 	)
 }
 
-const SelectStyles: any = {
-	control: (provided: any) => ({
-		...provided,
-		backgroundColor: "#00000000",
-		borderRadius: 6,
-		borderWidth: 0.5,
-		borderColor: ["#757575", "#757575", "#757575", "#757575"],
-	}),
-	placeholder: (provided: any) => ({
-		...provided,
-		color: "#9c9c9c",
-		borderColor: "#3f3f46",
-	}),
-	menu: (provided: any) => ({
-		...provided,
-		backgroundColor: "#1c1c1d",
-		color: "#ffffff",
-	}),
-	option: (provided: any, state: any) => ({
-		...provided,
-		backgroundColor: state.isSelected ? "#3e4047" : "#1c1c1d",
-		overflow: "hidden",
-		textOverflow: "ellipsis",
-		whiteSpace: "nowrap",
-		color: "#ffffff",
-	}),
-	input: (provided: any) => ({
-		...provided,
-		borderColor: "#3f3f46",
-		borderWidth: 0,
-		color: "#ffffff",
-	}),
-	singleValue: (provided: any) => ({
-		...provided,
-		color: "#b9b9b9",
-		borderColor: "#3f3f46",
-	}),
+const SelectStyles: any = (darkMode: boolean) => {
+	return {
+		control: (provided: any) => ({
+			...provided,
+			backgroundColor: "#00000000",
+			borderRadius: 6,
+			borderWidth: 0.5,
+			borderColor: ["#757575", "#757575", "#757575", "#757575"],
+		}),
+		menu: (provided: any) => ({
+			...provided,
+			backgroundColor: darkMode ? "#1c1c1d" : "#dfdfdf",
+		}),
+		option: (provided: any, state: any) => ({
+			...provided,
+			backgroundColor: darkMode
+				? state.isSelected
+					? "#3e4047"
+					: "#1c1c1d"
+				: state.isSelected
+				? "#bdbdbd"
+				: "#dfdfdf",
+			overflow: "hidden",
+			textOverflow: "ellipsis",
+			whiteSpace: "nowrap",
+			color: darkMode ? "#ffffff" : "#000000",
+		}),
+		input: (provided: any) => ({
+			...provided,
+			borderColor: darkMode ? "#1c1c1d" : "#dfdfdf",
+			borderWidth: 0,
+			color: darkMode ? "#ffffff" : "#000000",
+		}),
+		indicatorSeparator: (provided: any) => ({
+			...provided,
+			backgroundColor: darkMode ? "#cccccc" : "#000000",
+		}),
+		indicator: (provided: any) => ({
+			...provided,
+			color: darkMode ? "#cccccc" : "#000000",
+		}),
+	}
 }

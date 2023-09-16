@@ -2,7 +2,7 @@ import React from "react"
 import { MdDeleteForever } from "react-icons/md"
 
 import Button from "./../ui/Button"
-import Text from './../ui/Text';
+import Text from "./../ui/Text"
 
 export default function FormButtons({
 	value,
@@ -37,7 +37,7 @@ export default function FormButtons({
 					onClick={handleCancel}
 					props={{ type: "reset" }}
 				>
-					<Text>Cancel</Text>
+					Cancel
 				</Button>
 
 				{/* EDIT & ADD */}
@@ -45,7 +45,7 @@ export default function FormButtons({
 					onClick={(e: React.MouseEvent<HTMLButtonElement>) => value && handleSubmit(e)}
 					props={{ type: "submit" }}
 				>
-					<Text>{prevValue ? "Save" : "Add"}</Text>
+					{prevValue ? "Save" : "Add"}
 				</Button>
 			</div>
 		</div>
