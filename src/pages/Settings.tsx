@@ -71,8 +71,10 @@ export default function Settings() {
 				const target = event.target as FileReader
 				const data = JSON.parse(target.result as string)
 
+				let newState = []
+
 				// Generate new ids
-				const newBookmarkGroups = data.map((bookmarkGroup: BookmarkData) => {
+				const importedBookmarkGroups = data.map((bookmarkGroup: BookmarkData) => {
 					return {
 						id: nanoid(),
 						title: bookmarkGroup.title,
@@ -85,7 +87,25 @@ export default function Settings() {
 					}
 				})
 
-				dispatch(setBookmarkGroups([...newBookmarkGroups, ...bookmarkGroups]))
+				newState = [
+					...bookmarkGroups.map((bookmarkGroup: BookmarkData) => {
+						if (bookmarkGroup.id === "default") {
+							return {
+								...bookmarkGroup,
+								bookmarks: [
+									...bookmarkGroup.bookmarks,
+									importedBookmarkGroups.find((bookmarkGroup: BookmarkData) => bookmarkGroup.id === "default")
+										.bookmarks,
+								],
+							}
+						} else {
+							return bookmarkGroup
+						}
+					}),
+					...importedBookmarkGroups.filter((bookmarkGroup: BookmarkData) => bookmarkGroup.id !== "default"),
+				]
+
+				dispatch(setBookmarkGroups(newState))
 				notify("Bookmarks imported")
 			}
 		}
