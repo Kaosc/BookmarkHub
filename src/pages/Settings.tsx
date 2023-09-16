@@ -75,28 +75,31 @@ export default function Settings() {
 
 				// Generate new ids
 				const importedBookmarkGroups = data.map((bookmarkGroup: BookmarkData) => {
+					const groupId = bookmarkGroup?.id === "default" ? "default" : nanoid()
 					return {
-						id: nanoid(),
+						id: groupId,
 						title: bookmarkGroup.title,
 						bookmarks: bookmarkGroup.bookmarks.map((bookmark: Bookmark) => {
+							const bookmarkId = nanoid()
 							return {
 								...bookmark,
-								id: nanoid(),
+								id: bookmarkId,
+								groupId: groupId,
 							}
 						}),
 					}
 				})
+
+				const importedDefaultBookmarks = importedBookmarkGroups.find(
+					(bookmarkGroup: BookmarkData) => bookmarkGroup.id === "default"
+				).bookmarks
 
 				newState = [
 					...bookmarkGroups.map((bookmarkGroup: BookmarkData) => {
 						if (bookmarkGroup.id === "default") {
 							return {
 								...bookmarkGroup,
-								bookmarks: [
-									...bookmarkGroup.bookmarks,
-									importedBookmarkGroups.find((bookmarkGroup: BookmarkData) => bookmarkGroup.id === "default")
-										.bookmarks,
-								],
+								bookmarks: [...bookmarkGroup.bookmarks, ...importedDefaultBookmarks],
 							}
 						} else {
 							return bookmarkGroup
@@ -115,13 +118,12 @@ export default function Settings() {
 	const handleExport = () => {
 		const exportableBookmarkGroups = bookmarkGroups.map((bookmarkGroup: BookmarkData) => {
 			return {
-				title: bookmarkGroup.title,
+				...bookmarkGroup,
 				bookmarks: bookmarkGroup.bookmarks.map((bookmark: Bookmark) => {
 					return {
 						title: bookmark.title,
 						url: bookmark.url,
 						favicon: bookmark.favicon,
-						groupId: bookmark.groupId,
 					}
 				}),
 			}

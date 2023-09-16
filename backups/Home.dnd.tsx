@@ -73,7 +73,6 @@ export {}
 // 			)
 
 // 			Object.keys(result).forEach((BookmarkID) => {
-// 				console.log(BookmarkID)
 // 				dispatch(
 // 					editGroup({
 // 						id: BookmarkID,
