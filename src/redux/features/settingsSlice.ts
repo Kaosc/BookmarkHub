@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit"
 import { getSettings } from "../../utils/localStorage"
 
-const initialState = {
+const initialState: Settings = {
 	visible: false,
 	theme: "system",
 	showBookmarksTitle: true,
@@ -29,7 +29,6 @@ const setInitialState = (): Settings => {
 			visible: false,
 		}
 	} else {
-
 		if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
 			document.documentElement.classList.add("dark")
 		} else {

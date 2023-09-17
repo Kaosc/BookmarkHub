@@ -10,14 +10,17 @@ import { IoMdAdd } from "react-icons/io"
 
 import { addBookmark, deleteBookmark, editBookmark } from "../../redux/features/bookmarkSlice"
 
-import Button from "../ui/Button"
-import ActivityIndicator from "../ui/ActivityIndicator"
-import Dialog from "../Dialog"
 import FormButtons from "./FormButtons"
-import { fetchFavicon } from "../../api/fetchFavicon"
+import Dialog from "../Dialog"
+import Confirmation from "../Confirmation"
+
+import ActivityIndicator from "../ui/ActivityIndicator"
+import Text from "../ui/Text"
+import Button from "../ui/Button"
+
 import { faviconPlaceHolder } from "../../utils/constants"
 import { notify } from "../../utils/notify"
-import Text from "../ui/Text"
+import { fetchFavicon } from "../../api/fetchFavicon"
 
 export default function BookmarkForm({
 	bookmark,
@@ -31,7 +34,7 @@ export default function BookmarkForm({
 	const { theme } = useSelector((state: RootState) => state.settings)
 	const darkMode = useMemo(
 		() =>
-			theme === "sysmtem"
+			theme === "system"
 				? window.matchMedia("(prefers-color-scheme: dark)").matches
 				: theme === "dark"
 				? true
@@ -53,6 +56,7 @@ export default function BookmarkForm({
 
 	const [fetchingFavicon, setFetchingFavicon] = useState(false)
 	const [faviconList, setFaviconList] = useState<string[]>([])
+	const [confirmFromVisible, setConfirmFromVisible] = useState(false)
 
 	const formTitle = bookmark ? "Edit Bookmark" : "Add Bookmark"
 	const maxFileSize = 1024 * 1024 * 3
@@ -84,6 +88,8 @@ export default function BookmarkForm({
 
 		return () => clearTimeout(timeout)
 	}, [url, favicon, bookmark?.url])
+
+	const handleConfirmFromVisible = () => setConfirmFromVisible((prev) => !prev)
 
 	const handleFaviconFetchManually = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
@@ -161,7 +167,7 @@ export default function BookmarkForm({
 	const handleUrlCopy = (e: React.MouseEvent<SVGSVGElement>) => {
 		e.preventDefault()
 		navigator.clipboard.writeText(url)
-		notify("URL Copied")
+		notify("URL Copied", theme)
 	}
 
 	const SelectDropDown = useCallback(() => {
@@ -308,57 +314,69 @@ export default function BookmarkForm({
 	}
 
 	return (
-		<Dialog
-			title={formTitle}
-			onClose={quitFrom}
-		>
-			<ImageUploadSection />
-
-			<FaviconList />
-
-			<form className="flex flex-col items-center">
-				{/* TITLE */}
-				<input
-					value={title}
-					className="input"
-					type="text"
-					title="Bookmark Title"
-					placeholder={"Title"}
-					onChange={handleTitleChange}
+		<>
+			{confirmFromVisible && (
+				<Confirmation
+					title="Delete"
+					onConfirm={handleBookmarkDelete}
+					onDecline={handleConfirmFromVisible}
+					onConfirmText="Delete"
 				/>
+			)}
 
-				{/* URL */}
-				<div className="relative flex w-full">
+			<Dialog
+				title={formTitle}
+				onClose={quitFrom}
+				className="z-40"
+			>
+				<ImageUploadSection />
+
+				<FaviconList />
+
+				<form className="flex flex-col items-center">
+					{/* TITLE */}
 					<input
-						required
+						value={title}
+						className="input"
+						type="text"
+						title="Bookmark Title"
+						placeholder={"Title"}
+						onChange={handleTitleChange}
+					/>
+
+					{/* URL */}
+					<div className="relative flex w-full">
+						<input
+							required
+							value={url}
+							className="input pr-10"
+							type="url"
+							title="Bookmark URL"
+							placeholder="URL*"
+							onChange={handleUrlChange}
+							autoFocus={bookmark ? false : true}
+						/>
+						<BiCopy
+							size={22}
+							title="Click to Copy URL"
+							className="absolute right-3 top-3 text-black dark:text-white transition-all duration-300 ease-in-out hover:opacity-50 cursor-pointer hover:animate-pulse"
+							onClick={handleUrlCopy}
+						/>
+					</div>
+
+					{/* GROUP */}
+					<SelectDropDown />
+
+					<FormButtons
+						handleCancel={quitFrom}
+						handleDelete={handleConfirmFromVisible}
+						handleSubmit={handleSubmit}
+						prevValue={bookmark?.url}
 						value={url}
-						className="input pr-10"
-						type="url"
-						title="Bookmark URL"
-						placeholder="URL*"
-						onChange={handleUrlChange}
-						autoFocus={bookmark ? false : true}
 					/>
-					<BiCopy
-						size={22}
-						title="Click to Copy URL"
-						className="absolute right-3 top-3 text-black dark:text-white transition-all duration-300 ease-in-out hover:opacity-50 cursor-pointer hover:animate-pulse"
-						onClick={handleUrlCopy}
-					/>
-				</div>
-
-				{/* GROUP */}
-				<SelectDropDown />
-
-				<FormButtons
-					handleCancel={quitFrom}
-					handleDelete={handleBookmarkDelete}
-					handleSubmit={handleSubmit}
-					prevValue={bookmark?.url}
-					value={url}
-				/>
-			</form>
-		</Dialog>
+				</form>
+			</Dialog>
+		</>
 	)
 }
 

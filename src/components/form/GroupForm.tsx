@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react"
+import React, { useCallback, useState, useMemo } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { nanoid } from "nanoid"
 
@@ -19,6 +19,7 @@ import { addGroup, deleteGroup, editGroupTitle, setBookmarkGroups } from "../../
 import Dialog from "../Dialog"
 import FormButtons from "./FormButtons"
 import Group from "../sortable/Group"
+import Confirmation from "../Confirmation"
 
 export default function GroupForm({
 	editMode,
@@ -29,13 +30,26 @@ export default function GroupForm({
 	prevGroup?: GroupInfo
 	handleFormVisible: Function
 }) {
+	const { selectionMode } = useSelector((state: RootState) => state.selection)
 	const bookmarkData = useSelector((state: RootState) => state.bookmarks)
 	const dispatch = useDispatch()
 
 	const [group, setGroup] = useState(prevGroup || { id: "default", title: "" })
 	const [activeGroup, setActiveGroup] = useState<BookmarkData>()
+	const [confirmFromVisible, setConfirmFromVisible] = useState(false)
 
 	const { setNodeRef } = useDroppable({ id: "groups" })
+
+	const formTitle = useMemo(() => {
+		if (editMode?.current && !selectionMode) return "Reorder Groups"
+		else if (prevGroup) return "Edit Group"
+		else if (selectionMode && editMode?.current) return "Select Group to Move"
+		else return "Add Group"
+	}, [editMode, prevGroup, selectionMode])
+
+	const isDragDisabled = useMemo(() => {
+		return bookmarkData.length === 1 || selectionMode
+	}, [bookmarkData, selectionMode])
 
 	const quitFrom = useCallback(
 		(e: React.MouseEvent<HTMLButtonElement>) => {
@@ -55,6 +69,8 @@ export default function GroupForm({
 		},
 		[group]
 	)
+
+	const handleConfirmFromVisible = () => setConfirmFromVisible((prev) => !prev)
 
 	const handleGroupEdit = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
@@ -141,56 +157,69 @@ export default function GroupForm({
 	}
 
 	return (
-		<Dialog
-			onClose={quitFrom}
-			title={editMode?.current ? "Reorder Groups" : prevGroup ? "Edit Group" : "Add Group"}
-		>
-			{!editMode?.current ? (
-				<form>
-					<input
-						value={group.title}
-						required
-						className="input"
-						type="text"
-						title="Enter the name of the new group"
-						placeholder={"Group Title"}
-						onChange={handleGroupTitleEdit}
-						autoFocus
-					/>
-					<FormButtons
-						value={group.title}
-						prevValue={prevGroup?.title}
-						handleSubmit={handleSubmit}
-						handleDelete={handleGroupDelete}
-						handleCancel={quitFrom}
-					/>
-				</form>
-			) : (
-				<DndContext
-					sensors={sensors}
-					onDragStart={handleDragStart}
-					onDragEnd={handleDragEnd}
-				>
-					<SortableContext
-						items={bookmarkData}
-						strategy={rectSortingStrategy}
-					>
-						<div
-							ref={setNodeRef}
-							className="overflow-y-auto scroll-auto max-h-96 px-3 py-1 rounded-xl"
-						>
-							{bookmarkData.map((group) => (
-								<Group
-									key={group.id}
-									group={group}
-									activeGroup={activeGroup}
-									handleGroupDelete={handleGroupDelete}
-								/>
-							))}
-						</div>
-					</SortableContext>
-				</DndContext>
+		<>
+			{confirmFromVisible && (
+				<Confirmation
+					title="Delete"
+					onConfirm={handleGroupDelete}
+					onDecline={handleConfirmFromVisible}
+					onConfirmText="Delete"
+				/>
 			)}
-		</Dialog>
+			<Dialog
+				onClose={quitFrom}
+				title={formTitle}
+				className="z-40"
+			>
+				{!editMode?.current ? (
+					<form>
+						<input
+							value={group.title}
+							required
+							className="input"
+							type="text"
+							title="Enter the name of the new group"
+							placeholder={"Group Title"}
+							onChange={handleGroupTitleEdit}
+							autoFocus
+						/>
+						<FormButtons
+							value={group.title}
+							prevValue={prevGroup?.title}
+							handleSubmit={handleSubmit}
+							handleDelete={handleConfirmFromVisible}
+							handleCancel={quitFrom}
+						/>
+					</form>
+				) : (
+					<DndContext
+						sensors={sensors}
+						onDragStart={handleDragStart}
+						onDragEnd={handleDragEnd}
+					>
+						<SortableContext
+							items={bookmarkData}
+							strategy={rectSortingStrategy}
+							disabled={isDragDisabled}
+						>
+							<div
+								ref={setNodeRef}
+								className="overflow-y-auto scroll-auto max-h-96 px-3 py-1 rounded-xl"
+							>
+								{bookmarkData.map((group) => (
+									<Group
+										key={group.id}
+										group={group}
+										activeGroup={activeGroup}
+										handleGroupDelete={handleGroupDelete}
+										quitFrom={quitFrom}
+									/>
+								))}
+							</div>
+						</SortableContext>
+					</DndContext>
+				)}
+			</Dialog>
+		</>
 	)
 }

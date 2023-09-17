@@ -2,7 +2,6 @@ import React from "react"
 import { MdDeleteForever } from "react-icons/md"
 
 import Button from "./../ui/Button"
-import Text from "./../ui/Text"
 
 export default function FormButtons({
 	value,
@@ -22,11 +21,14 @@ export default function FormButtons({
 			{/* DELETE */}
 			{prevValue && (
 				<Button
-					className={`px-[10px] text-red-600 rin-1 ring-red-600 rounded-md hover:bg-red-600 hover:text-white`}
+					className={`px-[10px] dangerButton`}
 					onClick={handleDelete}
 					props={{ title: "Delete Bookmark" }}
 				>
-					<MdDeleteForever size={20} />
+					<MdDeleteForever
+						size={20}
+						className=""
+					/>
 				</Button>
 			)}
 

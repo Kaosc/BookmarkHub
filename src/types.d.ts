@@ -2,6 +2,7 @@ interface RootState {
 	bookmarks: BookmarkGroups
 	search: string
 	settings: Settings
+	selection: SelectionState
 }
 
 type BookmarkGroups = BookmarkData[]
@@ -27,7 +28,15 @@ type Bookmark = {
 
 type Settings = {
 	visible: boolean
-	theme: string
+	theme: AppTheme
 	showBookmarksTitle: boolean
 	allowTwoLineTitle: boolean
+}
+
+type AppTheme = "light" | "dark" | "system"
+
+type SelectionState = {
+	selectionMode: boolean
+	selectedGroup: string | null
+	selectedBookmarks: Bookmark[] | []
 }

@@ -31,7 +31,7 @@ export const bookmarksSlice = createSlice({
 				if (group.id === bookmark.groupId) {
 					return {
 						...group,
-						bookmarks: [...group.bookmarks, bookmark],
+						bookmarks: [bookmark, ...group.bookmarks],
 					}
 				} else {
 					return group
@@ -108,8 +108,7 @@ export const bookmarksSlice = createSlice({
 		},
 		addGroup: (state, action: { payload: BookmarkData }) => {
 			const { payload } = action
-
-			return [...state, payload]
+			return [state[0], payload, ...state.slice(1)]
 		},
 		deleteGroup: (state, action: { payload: string }) => {
 			const { payload } = action
@@ -143,6 +142,51 @@ export const bookmarksSlice = createSlice({
 		setBookmarkGroups: (_, action: { payload: BookmarkGroups }) => {
 			return action.payload
 		},
+		deleteSelectedBookmarks: (
+			state,
+			action: {
+				payload: string[]
+			}
+		) => {
+			const selectedBookmarkIds = action.payload
+
+			return state.map((group: BookmarkData) => {
+				return {
+					...group,
+					bookmarks: group.bookmarks.filter((b: Bookmark) => !selectedBookmarkIds.includes(b.id)),
+				}
+			})
+		},
+		moveSelectedBookmarks: (
+			state,
+			action: {
+				payload: {
+					selectedBookmarks: Bookmark[]
+					toGroupId: string
+				}
+			}
+		) => {
+			const { selectedBookmarks, toGroupId } = action.payload
+			const selectedBookmarkIds = selectedBookmarks.map((b) => b.id)
+
+			let newState = state.map((group: BookmarkData) => {
+				return {
+					...group,
+					bookmarks: group.bookmarks.filter((b: Bookmark) => !selectedBookmarkIds.includes(b.id)),
+				}
+			})
+
+			return newState.map((group: BookmarkData) => {
+				if (group.id === toGroupId) {
+					return {
+						...group,
+						bookmarks: [...group.bookmarks, ...selectedBookmarks.map((b) => ({ ...b, groupId: toGroupId }))],
+					}
+				} else {
+					return group
+				}
+			})
+		},
 	},
 })
 
@@ -155,4 +199,6 @@ export const {
 	editGroup,
 	editGroupTitle,
 	setBookmarkGroups,
+	deleteSelectedBookmarks,
+	moveSelectedBookmarks,
 } = bookmarksSlice.actions

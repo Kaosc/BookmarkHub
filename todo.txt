@@ -1,7 +1,2 @@
-ADD:
-   - confirmation dialog
-FEATURE
-   - multiple selection (delete, move)
-   - duplicate bookmark
 FIX
    - bookmark form dropdown overflow

@@ -8,10 +8,12 @@ export default function Dialog({
 	title,
 	onClose,
 	children,
+	className,
 }: {
 	title: string
 	onClose: React.DOMAttributes<HTMLButtonElement>["onClick"]
 	children: React.ReactNode
+	className?: React.HTMLAttributes<HTMLDivElement>["className"]
 }) {
 	useEffect(() => {
 		const handleKeydown = (e: KeyboardEvent) => e.key === "Enter" && e.preventDefault()
@@ -21,7 +23,7 @@ export default function Dialog({
 
 	return (
 		<div
-			className={`absolute top-0 left-0 items-center justify-center flex-col w-[430px] h-[550px] z-30 bg-[#000000af] transition-all ease-in-out`}
+			className={`absolute top-0 left-0 items-center justify-center flex-col w-[435px] h-[550px] bg-[#000000af] transition-all ease-in-out ${className}`}
 		>
 			<div className={`flex w-full h-full items-center justify-center transition-all ease-in-out`}>
 				<div
@@ -32,7 +34,10 @@ export default function Dialog({
 						onClick={onClose}
 						title="Close Dialog"
 					>
-						<IoMdClose size={30} className="text-black dark:text-white"/>
+						<IoMdClose
+							size={30}
+							className="text-black dark:text-white"
+						/>
 					</button>
 
 					<Text className="text-2xl font-bold mb-4">{title}</Text>
