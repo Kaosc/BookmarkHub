@@ -1,13 +1,16 @@
 import { useState, memo } from "react"
+import { useDroppable } from "@dnd-kit/core"
 import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable"
+import { useSelector } from "react-redux"
 
-import Bookmark from "../sortable/Bookmark"
 import BookmarkForm from "../form/BookmarkForm"
 import GroupForm from "../form/GroupForm"
+
+import Bookmark from "../sortable/Bookmark"
 import GroupHeader from "./GroupHeader"
-import { useDroppable } from "@dnd-kit/core"
 
 function GroupContainer({ bookmarkData, groupIndex }: { bookmarkData: BookmarkData; groupIndex: number }) {
+	const { selectionMode } = useSelector((state: RootState) => state.selection)
 	const isGroupDefault = bookmarkData.id === "default"
 
 	const [bookmarkFormVisible, setBookmarkFormVisible] = useState(false)
@@ -47,6 +50,7 @@ function GroupContainer({ bookmarkData, groupIndex }: { bookmarkData: BookmarkDa
 				id={bookmarkData.id}
 				items={bookmarkData?.bookmarks}
 				strategy={rectSortingStrategy}
+				disabled={selectionMode}
 			>
 				<div
 					ref={setNodeRef}

@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useMemo } from "react"
+import React, { useCallback, useState, useMemo, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { nanoid } from "nanoid"
 
@@ -36,12 +36,13 @@ export default function GroupForm({
 
 	const [group, setGroup] = useState(prevGroup || { id: "default", title: "" })
 	const [activeGroup, setActiveGroup] = useState<BookmarkData>()
-	const [confirmFromVisible, setConfirmFromVisible] = useState(false)
+	const [confirmFormVisible, setConfirmFormVisible] = useState(false)
+	const groupIdToDelete = useRef("")
 
 	const { setNodeRef } = useDroppable({ id: "groups" })
 
 	const formTitle = useMemo(() => {
-		if (editMode?.current && !selectionMode) return "Reorder Groups"
+		if (editMode?.current && !selectionMode) return "Reorder & edit Groups"
 		else if (prevGroup) return "Edit Group"
 		else if (selectionMode && editMode?.current) return "Select Group to Move"
 		else return "Add Group"
@@ -51,7 +52,7 @@ export default function GroupForm({
 		return bookmarkData.length === 1 || selectionMode
 	}, [bookmarkData, selectionMode])
 
-	const quitFrom = useCallback(
+	const quitForm = useCallback(
 		(e: React.MouseEvent<HTMLButtonElement>) => {
 			handleFormVisible()
 			e.preventDefault()
@@ -70,27 +71,37 @@ export default function GroupForm({
 		[group]
 	)
 
-	const handleConfirmFromVisible = () => setConfirmFromVisible((prev) => !prev)
+	const handleConfirmFormVisible = (e?: React.MouseEvent<HTMLButtonElement>, groupId?: string) => {
+		if (e) e.preventDefault()
+
+		if (groupId) {
+			groupIdToDelete.current = groupId
+		} else {
+			groupIdToDelete.current = ""
+		}
+
+		setConfirmFormVisible((prev) => !prev)
+	}
 
 	const handleGroupEdit = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
 		dispatch(editGroupTitle({ id: group.id, title: group.title }))
-		quitFrom(e)
+		quitForm(e)
 	}
 
 	const handleGroupAdd = (e: React.MouseEvent<HTMLButtonElement>) => {
 		e.preventDefault()
 		dispatch(addGroup({ id: nanoid(), title: group.title, bookmarks: [] }))
-		quitFrom(e)
+		quitForm(e)
 	}
 
 	const handleGroupDelete = useCallback(
-		(e: React.MouseEvent<HTMLButtonElement>, groupId?: string) => {
+		(e: React.MouseEvent<HTMLButtonElement>) => {
 			e.preventDefault()
-			dispatch(deleteGroup(groupId || group.id))
-			if (!groupId) quitFrom(e)
+			dispatch(deleteGroup(groupIdToDelete.current || group.id))
+			quitForm(e)
 		},
-		[group, dispatch, quitFrom]
+		[dispatch, quitForm, group.id]
 	)
 
 	const handleSubmit = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -158,18 +169,18 @@ export default function GroupForm({
 
 	return (
 		<>
-			{confirmFromVisible && (
+			{confirmFormVisible && (
 				<Confirmation
 					title="Delete"
 					onConfirm={handleGroupDelete}
-					onDecline={handleConfirmFromVisible}
+					onDecline={handleConfirmFormVisible}
 					onConfirmText="Delete"
 				/>
 			)}
 			<Dialog
-				onClose={quitFrom}
+				onClose={quitForm}
 				title={formTitle}
-				className="z-40"
+				className="z-40 "
 			>
 				{!editMode?.current ? (
 					<form>
@@ -187,8 +198,8 @@ export default function GroupForm({
 							value={group.title}
 							prevValue={prevGroup?.title}
 							handleSubmit={handleSubmit}
-							handleDelete={handleConfirmFromVisible}
-							handleCancel={quitFrom}
+							handleDelete={handleConfirmFormVisible}
+							handleCancel={quitForm}
 						/>
 					</form>
 				) : (
@@ -211,10 +222,16 @@ export default function GroupForm({
 										key={group.id}
 										group={group}
 										activeGroup={activeGroup}
-										handleGroupDelete={handleGroupDelete}
-										quitFrom={quitFrom}
+										quitFrom={quitForm}
+										handleConfirmFormVisible={handleConfirmFormVisible}
 									/>
 								))}
+
+								{bookmarkData.length === 1 && (
+									<div className="flex items-center justify-center w-full h-full">
+										<p className="text-gray-500 text-sm">No group found</p>
+									</div>
+								)}
 							</div>
 						</SortableContext>
 					</DndContext>

@@ -77,7 +77,19 @@ export default function Settings() {
 			reader.readAsText(file)
 			reader.onload = (event) => {
 				const target = event.target as FileReader
-				const data = JSON.parse(target.result as string)
+				let data = null
+
+				try {
+					data = JSON.parse(target.result as string)
+				} catch (error) {
+					notify(
+						"Invalid file. Please make sure that file is a imported from the app",
+						settings.theme,
+						true,
+						10000
+					)
+					return
+				}
 
 				let newState = []
 
@@ -329,10 +341,10 @@ export default function Settings() {
 							onClick={() => window.open(KAOSCWEB, "_blank")}
 							className="flex items-center justify-between w-4/5 my-1 hover:opacity-80 hover:bg-[#383838] p-1 rounded-md hover:animate-pulse"
 						>
-							<div className="flex items-center">
+							<div className="flex items-center ">
 								<FaGlobeAmericas
-									size={13}
-									className="mr-2 text-black dark:text-white"
+									size={14}
+									className="mr-1 text-black dark:text-white"
 								/>
 								<Text className=""> Website </Text>
 							</div>
@@ -345,7 +357,7 @@ export default function Settings() {
 						>
 							<div className="flex items-center">
 								<AiOutlineMail
-									size={13}
+									size={14}
 									className="mr-1 text-black dark:text-white"
 								/>
 								<Text> Contact </Text>
@@ -359,7 +371,7 @@ export default function Settings() {
 						>
 							<div className="flex items-center">
 								<BsGithub
-									size={13}
+									size={14}
 									className="mr-1 text-black dark:text-white"
 								/>
 								<Text> Github </Text>
@@ -373,7 +385,7 @@ export default function Settings() {
 						>
 							<div className="flex items-center">
 								<BiLinkExternal
-									size={13}
+									size={14}
 									className="mr-1 text-black dark:text-white"
 								/>
 								<Text> Other Apps </Text>
@@ -384,7 +396,7 @@ export default function Settings() {
 						<button className="flex items-center justify-between w-4/5 my-1 hover:opacity-80 hover:bg-[#383838] p-1 rounded-md hover:animate-pulse">
 							<div className="flex items-center">
 								<TbLicense
-									size={13}
+									size={14}
 									className="mr-1 text-black dark:text-white"
 								/>
 								<Text> Open Source Licenses </Text>

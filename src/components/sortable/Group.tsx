@@ -15,12 +15,12 @@ import { toggleSelectionMode } from "../../redux/features/selectionSlice"
 function Group({
 	group,
 	activeGroup,
-	handleGroupDelete,
+	handleConfirmFormVisible,
 	quitFrom,
 }: {
 	group: BookmarkData
 	activeGroup?: BookmarkData
-	handleGroupDelete: (e: React.MouseEvent<HTMLButtonElement>, id: string) => void
+	handleConfirmFormVisible: (e?: React.MouseEvent<HTMLButtonElement>, groupId?: string) => void
 	quitFrom: (e: React.MouseEvent<HTMLButtonElement>) => void
 }) {
 	const dispatch = useDispatch()
@@ -37,7 +37,7 @@ function Group({
 		transition,
 	}
 
-	const handleOnGroupDelete = (e: React.MouseEvent<HTMLButtonElement>) => handleGroupDelete(e, group.id)
+	const handleOnGroupDelete = (e: React.MouseEvent<HTMLButtonElement>) => handleConfirmFormVisible(e, group.id)
 
 	const handleMoveSelectedBookmarks = (e: React.MouseEvent<HTMLButtonElement>) => {
 		dispatch(
@@ -60,7 +60,7 @@ function Group({
 				className={`
 					flex items-center justify-start w-full p-1 my-2 ring-1 ring-zinc-500 rounded-md 
 					${activeGroup?.id === group.id && "bg-zinc-800 ring-[2px]"} 
-					${activeGroup ? "cursor-grabbing" : "cursor-grab"}
+					${!selectionMode ? (activeGroup ? "cursor-grabbing" : "cursor-grab") : "cursor-pointer"}
 				`}
 			>
 				<div className="mr-auto flex items-center justify-start">

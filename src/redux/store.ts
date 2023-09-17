@@ -2,7 +2,7 @@ import { configureStore } from "@reduxjs/toolkit"
 import { bookmarksSlice } from "./features/bookmarkSlice"
 import { searchSlice } from "./features/searchSlice"
 import { settingsSlice } from "./features/settingsSlice"
-import {selectionSlice} from "./features/selectionSlice"
+import { selectionSlice } from "./features/selectionSlice"
 
 export const store = configureStore({
 	reducer: {

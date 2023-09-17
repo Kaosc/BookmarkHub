@@ -9,11 +9,13 @@ export default function Dialog({
 	onClose,
 	children,
 	className,
+	dialogClassName,
 }: {
 	title: string
 	onClose: React.DOMAttributes<HTMLButtonElement>["onClick"]
 	children: React.ReactNode
 	className?: React.HTMLAttributes<HTMLDivElement>["className"]
+	dialogClassName?: React.HTMLAttributes<HTMLDivElement>["className"]
 }) {
 	useEffect(() => {
 		const handleKeydown = (e: KeyboardEvent) => e.key === "Enter" && e.preventDefault()
@@ -23,11 +25,11 @@ export default function Dialog({
 
 	return (
 		<div
-			className={`absolute top-0 left-0 items-center justify-center flex-col w-[435px] h-[550px] bg-[#000000af] transition-all ease-in-out ${className}`}
+			className={`absolute top-0 left-0 flex-col w-[435px] h-[550px] bg-[#000000af] transition-all ease-in-out ${className}`}
 		>
 			<div className={`flex w-full h-full items-center justify-center transition-all ease-in-out`}>
 				<div
-					className={`relative flex-col w-4/5 bg-gradient-to-r from-zinc-200 to-zinc-50 dark:from-[#0e0e0e] dark:to-zinc-950 p-5 rounded-lg animate-in fade-in-0 slide-in-from-top-20 duration-300`}
+					className={`relative flex-col w-[75%] bg-gradient-to-r from-zinc-200 to-zinc-50 dark:from-[#0e0e0e] dark:to-zinc-950 p-5 rounded-lg animate-in fade-in-0 slide-in-from-top-20 duration-300 ${dialogClassName}`}
 				>
 					<button
 						className="absolute top-3 right-3 text-white hover:opacity-50 hover:animate-pulse cursor-pointer"
@@ -40,7 +42,7 @@ export default function Dialog({
 						/>
 					</button>
 
-					<Text className="text-2xl font-bold mb-4">{title}</Text>
+					<Text className="text-[22px] font-bold mb-4">{title}</Text>
 					{children}
 				</div>
 			</div>

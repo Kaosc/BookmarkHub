@@ -57,6 +57,7 @@ export default function BookmarkForm({
 	const [fetchingFavicon, setFetchingFavicon] = useState(false)
 	const [faviconList, setFaviconList] = useState<string[]>([])
 	const [confirmFromVisible, setConfirmFromVisible] = useState(false)
+	const [drowDownOpen, setDrowDownOpen] = useState(false)
 
 	const formTitle = bookmark ? "Edit Bookmark" : "Add Bookmark"
 	const maxFileSize = 1024 * 1024 * 3
@@ -175,6 +176,8 @@ export default function BookmarkForm({
 			<Select
 				className="w-full mb-4"
 				placeholder="Group"
+				onMenuOpen={() => setDrowDownOpen(true)}
+				onMenuClose={() => setDrowDownOpen(false)}
 				noOptionsMessage={() => "No Group Found"}
 				required
 				isSearchable={true}
@@ -328,6 +331,7 @@ export default function BookmarkForm({
 				title={formTitle}
 				onClose={quitFrom}
 				className="z-40"
+				dialogClassName={`${drowDownOpen ? bookmarkData.length > 3 && "translate-y-[-60px]" : ""}`}
 			>
 				<ImageUploadSection />
 
@@ -420,6 +424,11 @@ const SelectStyles: any = (darkMode: boolean) => {
 		indicator: (provided: any) => ({
 			...provided,
 			color: darkMode ? "#cccccc" : "#000000",
+		}),
+		// max height of dropdown menu
+		menuList: (provided: any) => ({
+			...provided,
+			maxHeight: 190,
 		}),
 	}
 }

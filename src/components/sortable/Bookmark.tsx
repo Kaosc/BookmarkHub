@@ -1,6 +1,7 @@
 import { memo, useState, useMemo } from "react"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
+import { LazyLoadImage } from "react-lazy-load-image-component"
 
 import { AiFillEdit } from "react-icons/ai"
 
@@ -101,11 +102,12 @@ function Bookmark({
 
 				<button
 					onClick={selectionMode ? handleSelectBookmark : redirect}
-					className="flex  flex-col justify-center items-center hover:scale-[1.04] transition-all hover:animate-pulse"
+					className="flex flex-col justify-center items-center hover:scale-[1.04] transition-all hover:animate-pulse"
 				>
-					<img
+					<LazyLoadImage
 						src={favicon}
-						alt={title}
+						alt="favicon"
+						sizes="29px"
 						width={29}
 						height={29}
 						className={`mb-[5px]`}

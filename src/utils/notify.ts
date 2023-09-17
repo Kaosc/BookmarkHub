@@ -1,15 +1,20 @@
 import { toast } from "react-toastify"
 
-export const notify = (message: string, theme: AppTheme, error?: boolean) => {
+export const notify = (message: string, theme: AppTheme, error?: boolean, timeout?: number) => {
 	toast[error ? "error" : "success"](message, {
 		position: "bottom-center",
-		autoClose: 2000,
+		autoClose: timeout || 2500,
 		hideProgressBar: true,
 		closeOnClick: true,
 		pauseOnHover: false,
 		draggable: false,
 		progress: undefined,
-		theme: theme === "system" ? (document.body.classList.contains("dark") ? "dark" : "light") : theme,
+		theme:
+			theme === "system"
+				? window.matchMedia("(prefers-color-scheme: dark)").matches
+					? "dark"
+					: "light"
+				: theme,
 		className: "w-[60%] text-sm",
 		role: "alert",
 	})
