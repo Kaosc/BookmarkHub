@@ -25,11 +25,13 @@ function Group({
 }) {
 	const dispatch = useDispatch()
 	const { selectionMode, selectedBookmarks } = useSelector((state: RootState) => state.selection)
-	
+
 	const [title, setTitle] = useState(group.title)
 	const [titleEditMode, setTitleEditMode] = useState(false)
 
+	const prevGroupTitle = useRef(group.title)
 	const inputRef = useRef<HTMLInputElement>(null)
+	const inputReset = useRef(false)
 
 	const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: group.id })
 	const style = {
@@ -56,22 +58,48 @@ function Group({
 		quitFrom(e)
 	}
 
+	const toggleTitleEditMode = () => {
+		const t = setTimeout(() => {
+			if (titleEditMode) {
+				inputRef.current?.blur()
+			} else {
+				inputRef.current?.focus()
+			}
+		}, 50)
+
+		setTitleEditMode((prev) => !prev)
+
+		return () => clearTimeout(t)
+	}
+
 	const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setTitle(e.target.value)
 	}
 
-	const toggleTitleEditMode = () => {
-		setTitleEditMode((prev) => !prev)
-		inputRef.current?.focus()
-	}
-
 	const saveTitleChanges = () => {
-		dispatch(editGroupTitle({ id: group.id, title: title }))
-		toggleTitleEditMode()
+		if (title.trim() === "") {
+			setTitle(prevGroupTitle.current)
+			toggleTitleEditMode()
+			return
+		}
+
+		const t = setTimeout(() => {
+			if (inputReset.current) {
+				inputReset.current = false
+				return
+			}
+
+			prevGroupTitle.current = title
+			dispatch(editGroupTitle({ id: group.id, title: title }))
+			toggleTitleEditMode()
+		}, 150)
+
+		return () => clearTimeout(t)
 	}
 
 	const resetTitleChange = () => {
-		setTitle(group.title)
+		inputReset.current = true
+		setTitle(prevGroupTitle.current)
 		toggleTitleEditMode()
 	}
 
@@ -84,11 +112,11 @@ function Group({
 				{...attributes}
 				className={`
 					flex items-center justify-start w-full p-1 my-2 ring-1 ring-zinc-500 rounded-md 
-					${activeGroup?.id === group.id && "bg-zinc-800 ring-[2px]"} 
+					${activeGroup?.id === group.id && "bg-zinc-400 dark:bg-zinc-800 ring-[2px]"} 
 					${!selectionMode ? (activeGroup ? "cursor-grabbing" : "cursor-grab") : "cursor-pointer"}
 				`}
 			>
-				<div className="flex items-center justify-start w-52">
+				<div className="flex w-full items-center justify-start">
 					{!selectionMode && (
 						<RxDragHandleHorizontal
 							size={26}
@@ -96,73 +124,74 @@ function Group({
 						/>
 					)}
 					<input
-						className="ml-1 pl-1 rounded-md truncate max-w-[190px] bg-transparent text-black dark:text-white enabled:bg-zinc-800"
+						className="pl-1 w-full focus:outline-none rounded-md truncate transition-colors duration-300 ease-in-out
+						bg-transparent text-black dark:text-white dark:enabled:bg-zinc-800 enabled:bg-zinc-300"
 						type="text"
 						ref={inputRef}
 						disabled={!titleEditMode}
 						value={title}
 						onChange={handleTitleChange}
+						onBlur={saveTitleChanges}
 					/>
 				</div>
 
 				{/* delete */}
-				{selectionMode ? (
-					<button
-						className="ml-auto text-black dark-text-white hover:opacity-50 hover:animate-pulse"
-						onClick={handleMoveSelectedBookmarks}
-					>
-						<RiFolderTransferLine
-							size={20}
-							className="text-black dark:text-white"
-						/>
-					</button>
-				) : (
-					<div className="flex items-center justify-end w-full">
-						{titleEditMode ? (
-							<button
-								className="ml-auto text-black dark-text-white hover:opacity-50 hover:animate-pulse"
-								onClick={saveTitleChanges}
-							>
-								<AiOutlineSave
-									size={20}
-									className="text-black dark:text-white"
-								/>
-							</button>
-						) : (
-							<button
-								className="ml-auto text-black dark-text-white hover:opacity-50 hover:animate-pulse"
-								onClick={toggleTitleEditMode}
-							>
-								<AiFillEdit
-									size={20}
-									className="text-black dark:text-white"
-								/>
-							</button>
-						)}
+				<div className={`flex ${!selectionMode ? "w-[23%]" : "w-[10%]"} items-center justify-evenly`}>
+					{selectionMode ? (
+						<button
+							className="ml-auto text-black dark-text-white hover:opacity-50 hover:animate-pulse"
+							onClick={handleMoveSelectedBookmarks}
+						>
+							<RiFolderTransferLine
+								size={25}
+								className="text-black dark:text-white"
+							/>
+						</button>
+					) : (
+						<div className="flex items-center justify-end w-full">
+							{titleEditMode ? (
+								<button className="ml-auto text-black dark-text-white hover:opacity-50 hover:animate-pulse">
+									<AiOutlineSave
+										size={22}
+										className="text-black dark:text-white"
+									/>
+								</button>
+							) : (
+								<button
+									className="ml-auto text-black dark-text-white hover:opacity-50 hover:animate-pulse"
+									onClick={toggleTitleEditMode}
+								>
+									<AiFillEdit
+										size={22}
+										className="text-black dark:text-white"
+									/>
+								</button>
+							)}
 
-						{titleEditMode ? (
-							<button
-								className="ml-auto text-black dark-text-white hover:opacity-50 hover:animate-pulse"
-								onClick={resetTitleChange}
-							>
-								<MdOutlineCancel
-									size={20}
-									className="text-black dark:text-white"
-								/>
-							</button>
-						) : (
-							<button
-								className="ml-auto text-black dark-text-white hover:opacity-50 hover:animate-pulse"
-								onClick={handleOnGroupDelete}
-							>
-								<MdDeleteForever
-									size={20}
-									className="text-black dark:text-white"
-								/>
-							</button>
-						)}
-					</div>
-				)}
+							{titleEditMode ? (
+								<button
+									className="ml-auto text-black dark-text-white hover:opacity-50 hover:animate-pulse"
+									onClick={resetTitleChange}
+								>
+									<MdOutlineCancel
+										size={22}
+										className="text-black dark:text-white"
+									/>
+								</button>
+							) : (
+								<button
+									className="ml-auto text-black dark-text-white hover:opacity-50 hover:animate-pulse"
+									onClick={handleOnGroupDelete}
+								>
+									<MdDeleteForever
+										size={22}
+										className="text-black dark:text-white"
+									/>
+								</button>
+							)}
+						</div>
+					)}
+				</div>
 			</div>
 		)
 	} else {
