@@ -4,10 +4,9 @@ import { nanoid } from "nanoid"
 
 import { IoMdSettings } from "react-icons/io"
 import { IoAddCircleOutline } from "react-icons/io5"
-import { LuFolderPlus } from "react-icons/lu"
+import { LuFolderEdit, LuFolderPlus } from "react-icons/lu"
 import { BiBookmarkPlus, BiSelectMultiple } from "react-icons/bi"
 import { LiaFileImportSolid } from "react-icons/lia"
-import { AiOutlineOrderedList } from "react-icons/ai"
 
 import { addBookmark } from "../redux/features/bookmarkSlice"
 import { toggleSettings } from "../redux/features/settingsSlice"
@@ -190,7 +189,7 @@ export default function Navbar() {
 								className={styles.button}
 								onClick={(e) => handleGroupFormVisible(e, true)}
 							>
-								<AiOutlineOrderedList
+								<LuFolderEdit
 									size={25}
 									className="text-black dark:text-white"
 								/>

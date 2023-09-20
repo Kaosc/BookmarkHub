@@ -7,7 +7,7 @@ import { FaGlobeAmericas } from "react-icons/fa"
 import { AiOutlineMail } from "react-icons/ai"
 import { IoMdClose, IoMdSettings } from "react-icons/io"
 import { BiMoon, BiSolidMoon, BiLinkExternal } from "react-icons/bi"
-import { TbLicense, TbMoonStars } from "react-icons/tb"
+import { TbMoonStars } from "react-icons/tb"
 import { PiArrowRight } from "react-icons/pi"
 import { CiExport, CiImport } from "react-icons/ci"
 
@@ -393,7 +393,7 @@ export default function Settings() {
 							<RightIcon />
 						</button>
 
-						<button className="flex items-center justify-between w-4/5 my-1 hover:opacity-80 hover:bg-[#383838] p-1 rounded-md hover:animate-pulse">
+						{/* <button className="flex items-center justify-between w-4/5 my-1 hover:opacity-80 hover:bg-[#383838] p-1 rounded-md hover:animate-pulse">
 							<div className="flex items-center">
 								<TbLicense
 									size={14}
@@ -402,7 +402,7 @@ export default function Settings() {
 								<Text> Open Source Licenses </Text>
 							</div>
 							<RightIcon />
-						</button>
+						</button> */}
 					</div>
 
 					{/* RESET */}
