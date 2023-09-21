@@ -180,7 +180,10 @@ export const bookmarksSlice = createSlice({
 				if (group.id === toGroupId) {
 					return {
 						...group,
-						bookmarks: [...group.bookmarks, ...selectedBookmarks.map((b) => ({ ...b, groupId: toGroupId }))],
+						bookmarks: [
+							...selectedBookmarks.map((b) => ({ ...b, groupId: toGroupId, editedTime: Date.now() })),
+							...group.bookmarks,
+						],
 					}
 				} else {
 					return group

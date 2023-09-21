@@ -66,6 +66,7 @@ export default function Navbar() {
 					title: activeTab[0]?.title || "Untitled",
 					url: activeTab[0]?.url,
 					groupId: "default",
+					editedTime: Date.now(),
 				})
 			)
 		} else {

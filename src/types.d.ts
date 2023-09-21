@@ -24,6 +24,7 @@ type Bookmark = {
 	url: string
 	favicon: string
 	groupId: string
+	editedTime: number
 }
 
 type Settings = {

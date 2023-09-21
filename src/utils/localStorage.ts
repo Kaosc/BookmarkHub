@@ -45,3 +45,27 @@ export const storeSettings = (settings: Settings) => {
 		console.error(e)
 	}
 }
+
+export const getAccessToken = () => {
+	let accessToken = null
+
+	try {
+		accessToken = localStorage.getItem("accessToken")
+	} catch (e) {
+		console.error(e)
+	}
+
+	if (accessToken) {
+		return accessToken
+	}
+
+	return null
+}
+
+export const storeAccessToken = (accessToken: string) => {
+	try {
+		localStorage.setItem("accessToken", accessToken)
+	} catch (e) {
+		console.error(e)
+	}
+}

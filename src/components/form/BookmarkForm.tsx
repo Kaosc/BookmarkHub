@@ -117,6 +117,7 @@ export default function BookmarkForm({
 			title: title,
 			url: url,
 			groupId: group.id,
+			editedTime: Date.now(),
 		}
 
 		dispatch(addBookmark(newBookmark))
@@ -134,6 +135,7 @@ export default function BookmarkForm({
 			title: title,
 			url: url,
 			groupId: group.id,
+			editedTime: Date.now(),
 		}
 
 		dispatch(
