@@ -21,9 +21,8 @@ import Button from "../components/ui/Button"
 import Confirmation from "../components/Confirmation"
 
 import { notify } from "../utils/notify"
-import { getAccessToken, storeAccessToken, storeSettings } from "../utils/localStorage"
+import { storeSettings } from "../utils/localStorage"
 import { GITHUBREPO, KAOSCWEB } from "../utils/constants"
-import Sync from "../api/Sync"
 
 export default function Settings() {
 	const bookmarkGroups = useSelector((state: RootState) => state.bookmarks)
@@ -31,7 +30,7 @@ export default function Settings() {
 	const dispatch = useDispatch()
 
 	const [confirmFromVisible, setConfirmFromVisible] = useState(false)
-	const [token, setToken] = useState(getAccessToken())
+	// const [token, setToken] = useState(getAccessToken())
 
 	useEffect(() => {
 		storeSettings(settings)
@@ -168,29 +167,29 @@ export default function Settings() {
 		window.location.reload()
 	}
 
-	const handleSignIn = () => {
-		chrome.identity.getAuthToken({ interactive: true }, function (token) {
-			if (chrome.runtime.lastError) {
-				alert(chrome.runtime.lastError.message)
-				return
-			} else {
-				if (token) {
-					setToken(token)
-					storeAccessToken(token)
-				}
-			}
-		})
-	}
+	// const handleSignIn = () => {
+	// 	chrome.identity.getAuthToken({ interactive: true }, function (token) {
+	// 		if (chrome.runtime.lastError) {
+	// 			alert(chrome.runtime.lastError.message)
+	// 			return
+	// 		} else {
+	// 			if (token) {
+	// 				setToken(token)
+	// 				storeAccessToken(token)
+	// 			}
+	// 		}
+	// 	})
+	// }
 
-	const handleSync = () => {
-		if (token) {
-			Sync(token, bookmarkGroups).then((res) => {
-				if (res) {
-					notify("Bookmarks synced", settings.theme)
-				}
-			})
-		}
-	}
+	// const handleSync = () => {
+	// 	if (token) {
+	// 		Sync(token, bookmarkGroups).then((res) => {
+	// 			if (res) {
+	// 				notify("Bookmarks synced", settings.theme)
+	// 			}
+	// 		})
+	// 	}
+	// }
 
 	const ThemeIcon = () => {
 		if (settings.theme === "dark") {
@@ -263,10 +262,10 @@ export default function Settings() {
 			>
 				<SettingsHeader />
 
-				<div className="flex items-center justify-center">
+				{/* <div className="flex items-center justify-center">
 					<Button onClick={handleSignIn}>{token ? "Signed In" : "Sign In"}</Button>
 					<Button onClick={handleSync}>Sync Bookmarks</Button>
-				</div>
+				</div> */}
 
 				<Text className="text-center text-2xl mt-5 mb-4">General</Text>
 
