@@ -407,7 +407,7 @@ export default function Settings() {
 
 					{/* RESET */}
 					<Text className="text-center text-2xl my-5">Danger Zone</Text>
-					<div className="flex flex-col items-center justify-between bg-[#f3d0d0] dark:bg-[#3f2222] w-[80%] rounded-lg p-3 mb-10">
+					<div className="flex flex-col items-center justify-between bg-[#fd44445e] dark:bg-[#ff000027] w-[80%] rounded-lg p-3 mb-10">
 						<Text className=" text-sm text-center my-1">
 							This option deletes all your bookmarks and settings forever. Please export your bookmarks before
 							doing this.
