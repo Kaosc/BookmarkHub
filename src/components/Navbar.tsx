@@ -4,7 +4,7 @@ import { nanoid } from "nanoid"
 
 import { IoMdSettings } from "react-icons/io"
 import { IoAddCircleOutline } from "react-icons/io5"
-import { LuFolderEdit, LuFolderPlus } from "react-icons/lu"
+import { LuFolderCog, LuFolderPlus } from "react-icons/lu"
 import { BiBookmarkPlus, BiSelectMultiple } from "react-icons/bi"
 import { LiaFileImportSolid } from "react-icons/lia"
 
@@ -66,6 +66,7 @@ export default function Navbar() {
 					title: activeTab[0]?.title || "Untitled",
 					url: activeTab[0]?.url,
 					groupId: "default",
+					createdTime: Date.now(),
 					editedTime: Date.now(),
 				})
 			)
@@ -125,7 +126,7 @@ export default function Navbar() {
 								onClick={handleReload}
 								src="/favicon.png"
 								alt="logo"
-								className="w-[24px] h-[24px] mr-2"
+								className="w-[24px] h-[24px] mr-2 cursor-pointer"
 							/>
 							{/* SEARCH BAR  */}
 							<SearchBar />
@@ -137,10 +138,11 @@ export default function Navbar() {
 							<button
 								className={styles.button}
 								onClick={addActiveTabToBookmark}
+								title="Add Active Tab"
 							>
 								<LiaFileImportSolid
 									size={25}
-									className="text-black dark:text-white"
+									className="themed"
 								/>
 							</button>
 
@@ -149,13 +151,13 @@ export default function Navbar() {
 								<button className={styles.button}>
 									<IoAddCircleOutline
 										size={25}
-										className="text-black dark:text-white"
+										className="themed"
 									/>
 								</button>
 
 								{/* DROPDOWN */}
 								<div
-									className="hidden absolute right-[30px] top-9 w-[130px] group-hover:flex group-hover:opacity-100 
+									className="hidden absolute right-[60px] top-9 w-[130px] group-hover:flex group-hover:opacity-100 
 									transition-all ease-in-out animate-in fade-in-0 duration-300
 									"
 								>
@@ -166,7 +168,7 @@ export default function Navbar() {
 										>
 											<BiBookmarkPlus
 												size={20}
-												className="text-black dark:text-white mr-2"
+												className="themed mr-2"
 											/>
 											<Text className="text-[12px]">{texts.addBookmark}</Text>
 										</button>
@@ -177,7 +179,7 @@ export default function Navbar() {
 										>
 											<LuFolderPlus
 												size={19}
-												className="text-black dark:text-white mr-2"
+												className="themed mr-2"
 											/>
 											<Text className="text-[12px]">{texts.addGroup}</Text>
 										</button>
@@ -185,14 +187,15 @@ export default function Navbar() {
 								</div>
 							</div>
 
-							{/* REORDER GROUPS */}
+							{/* EDIT GROUPS */}
 							<button
 								className={styles.button}
 								onClick={(e) => handleGroupFormVisible(e, true)}
+								title="Edit Groups"
 							>
-								<LuFolderEdit
+								<LuFolderCog
 									size={25}
-									className="text-black dark:text-white"
+									className="themed"
 								/>
 							</button>
 
@@ -200,10 +203,11 @@ export default function Navbar() {
 							<button
 								className={styles.button}
 								onClick={handleSelectionMode}
+								title="Select Multiple"
 							>
 								<BiSelectMultiple
 									size={24}
-									className="text-black dark:text-white"
+									className="themed"
 								/>
 							</button>
 
@@ -211,10 +215,11 @@ export default function Navbar() {
 							<button
 								className={styles.button}
 								onClick={handleSettingsVisible}
+								title="Settings"
 							>
 								<IoMdSettings
 									size={24}
-									className="text-black dark:text-white"
+									className="themed"
 								/>
 							</button>
 						</div>

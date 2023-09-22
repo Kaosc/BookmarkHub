@@ -22,3 +22,5 @@ export const ICON_HORSE_API = "https://icon.horse/icon/"
 
 export const KAOSCWEB = "https://kaosc.vercel.app"
 export const GITHUBREPO = "https://github.com/Kaosc/BookmarkHub"
+
+export const THEMES: AppTheme[] = ["system", "light", "dark"]

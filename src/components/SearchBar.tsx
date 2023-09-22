@@ -32,14 +32,14 @@ export default function SearchBar() {
 		<div
 			className="
 				relative flex flex-row w-48 h-8 items-center justify-center rounded-full focus:ring-2 
-				bg-[#dddddd6c] dark:bg-[#1B1B1C] hover:dark:bg-zinc-800 hover:bg-slate-200 focus:ring-slate-500 basedShadow
+				bg-[#dddddd6c] dark:bg-[#1B1B1C] hover:dark:bg-zinc-800 hover:bg-zinc-300 focus:ring-slate-500 basedShadow
 				focus:ring-opacity-50 transition-all ease-in-out duration-300
 			"
 		>
 			<div className="absolute left-3 bottom-[5px] hover:scale-110 transition-all ease-in-out">
 				<BiSearchAlt2
 					size={19}
-					className="text-black dark:text-white hover:text-white"
+					className="themed hover:text-white"
 				/>
 			</div>
 			<input
@@ -59,7 +59,7 @@ export default function SearchBar() {
 				>
 					<IoIosClose
 						size={30}
-						className="text-black dark:text-white hover:text-white"
+						className="themed hover:text-white"
 					/>
 				</button>
 			)}

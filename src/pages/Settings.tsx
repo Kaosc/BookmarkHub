@@ -2,27 +2,28 @@ import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { nanoid } from "nanoid"
 
-import { BsGithub } from "react-icons/bs"
+import { BiMoon, BiSolidMoon, BiLinkExternal } from "react-icons/bi"
+import { IoMdClose, IoMdSettings } from "react-icons/io"
+import { CiExport, CiImport } from "react-icons/ci"
 import { FaGlobeAmericas } from "react-icons/fa"
 import { AiOutlineMail } from "react-icons/ai"
-import { IoMdClose, IoMdSettings } from "react-icons/io"
-import { BiMoon, BiSolidMoon, BiLinkExternal } from "react-icons/bi"
-import { TbMoonStars } from "react-icons/tb"
 import { PiArrowRight } from "react-icons/pi"
-import { CiExport, CiImport } from "react-icons/ci"
+import { TbMoonStars } from "react-icons/tb"
+import { BsGithub } from "react-icons/bs"
 
 import { setSettings, toggleSettings } from "../redux/features/settingsSlice"
 import { setBookmarkGroups } from "../redux/features/bookmarkSlice"
 
-import Switch from "../components/ui/Switch"
-import Divider from "../components/ui/Divider"
-import Text from "../components/ui/Text"
-import Button from "../components/ui/Button"
 import Confirmation from "../components/Confirmation"
+import Divider from "../components/ui/Divider"
+import Switch from "../components/ui/Switch"
+import Button from "../components/ui/Button"
+import Text from "../components/ui/Text"
 
-import { notify } from "../utils/notify"
+import { GITHUBREPO, KAOSCWEB, THEMES } from "../utils/constants"
 import { storeSettings } from "../utils/localStorage"
-import { GITHUBREPO, KAOSCWEB } from "../utils/constants"
+import { setTheme } from "../utils/setTheme"
+import { notify } from "../utils/notify"
 
 export default function Settings() {
 	const bookmarkGroups = useSelector((state: RootState) => state.bookmarks)
@@ -52,18 +53,8 @@ export default function Settings() {
 		dispatch(setSettings({ allowTwoLineTitle: !settings.allowTwoLineTitle }))
 	}
 
-	const handleTheme = (theme: string) => {
-		if (theme === "dark") {
-			document.documentElement.classList.add("dark")
-		} else if (theme === "light") {
-			document.documentElement.classList.remove("dark")
-		} else {
-			if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-				document.documentElement.classList.add("dark")
-			} else {
-				document.documentElement.classList.remove("dark")
-			}
-		}
+	const handleTheme = (theme: AppTheme) => {
+		setTheme(theme)
 		dispatch(setSettings({ theme: theme }))
 	}
 
@@ -183,9 +174,10 @@ export default function Settings() {
 
 	// const handleSync = () => {
 	// 	if (token) {
-	// 		Sync(token, bookmarkGroups).then((res) => {
-	// 			if (res) {
-	// 				notify("Bookmarks synced", settings.theme)
+	// 		Sync(token, bookmarkGroups).then((syncedBookmarks: BookmarkGroups) => {
+	// 			notify("Bookmarks synced", settings.theme)
+	// 			if (syncedBookmarks) {
+	// 				dispatch(setBookmarkGroups(syncedBookmarks))
 	// 			}
 	// 		})
 	// 	}
@@ -217,20 +209,16 @@ export default function Settings() {
 	}
 
 	const SettingsHeader = () => (
-		<div
-			className="flex items-center justify-between w-full h-16 px-3 border-b-[1px] mb-3 sticky top-0 left-0 z-30
-				bg-gradient-to-r from-zinc-200 to-zinc-50 dark:from-[#0e0e0e] dark:to-zinc-950 
-				border-b-[#d8d8d8] dark:border-b-[#1b1b1b] shadow-xl shadow-[#a0a0a069] dark:shadow-[#00000069]"
-		>
+		<div className="settingsHeader">
 			<div className="flex items-center justify-center">
 				<IoMdSettings
 					size={25}
-					className="text-black dark:text-white"
+					className="themed"
 				/>
 				<Text className="ml-2 text-xl">Settings</Text>
 			</div>
 			<button
-				className="text-black dark:text-white"
+				className="themed"
 				onClick={handleSettingsVisible}
 			>
 				<IoMdClose size={25} />
@@ -241,8 +229,14 @@ export default function Settings() {
 	const RightIcon = () => (
 		<PiArrowRight
 			size={24}
-			className="mr-1 hover:opacity-50 transition-all ease-in-out text-black dark:text-white"
+			className="mr-1 hover:opacity-50 animated themed"
 		/>
+	)
+
+	const SettingContainer = ({ children }: { children: React.ReactNode }) => (
+		<section className="flex flex-col items-center justify-between bg-[#d8d8d8] dark:bg-[#1f1e1eb7] w-[80%] rounded-lg p-3">
+			{children}
+		</section>
 	)
 
 	return (
@@ -256,8 +250,8 @@ export default function Settings() {
 				/>
 			)}
 			<div
-				className={`absolute z-40 top-0 left-0 overflow-y-auto w-[435px] h-[550px] bg-gradient-to-r 
-				from-zinc-200 to-zinc-50 dark:from-[#0e0e0e] dark:to-zinc-950 
+				className={`absolute z-40 top-0 left-0 overflow-y-auto w-[435px] h-[550px] 
+				bg-gradient-to-r from-zinc-200 to-zinc-50 dark:from-[#0e0e0e] dark:to-zinc-950 
 				${settings.visible ? "visible animate-in fade-in-0 " : "invisible animate-out fade-out-0"} `}
 			>
 				<SettingsHeader />
@@ -267,11 +261,11 @@ export default function Settings() {
 					<Button onClick={handleSync}>Sync Bookmarks</Button>
 				</div> */}
 
-				<Text className="text-center text-2xl mt-5 mb-4">General</Text>
-
 				<div className="flex flex-col items-center">
-					{/* THEME */}
-					<div className="flex flex-col items-center justify-between bg-[#d8d8d8] dark:bg-[#1f1e1eb7] w-[80%] rounded-lg p-3">
+					{/* GENERAL */}
+					<Text className="text-center text-2xl mt-2 mb-4">General</Text>
+					<SettingContainer>
+						{/* THEME */}
 						<div className="group flex items-center justify-between w-3/4 z-20 mt-3">
 							<div className="flex items-center justify-center">
 								<ThemeIcon />
@@ -281,36 +275,24 @@ export default function Settings() {
 								<Text>{settings.theme?.toUpperCase()}</Text>
 							</button>
 
-							<div
-								className="hidden absolute right-[90px] top-[170px] group-hover:flex group-hover:opacity-100 
-							transition-all ease-in-out animate-in fade-in-0"
-							>
+							<div className="hidden absolute right-[90px] top-[170px] group-hover:flex group-hover:opacity-100 animated animate-in fade-in-0">
 								<div className="dropdownContainer">
-									<button
-										onClick={() => handleTheme("light")}
-										className="flex w-full items-center hover:opacity-50 my-[8px]"
-									>
-										<Text className="text-[12px]">LIGHT</Text>
-									</button>
-									<Divider />
-									<button
-										onClick={() => handleTheme("dark")}
-										className="flex w-full items-center hover:opacity-50 my-[8px]"
-									>
-										<Text className="text-[12px]">DARK</Text>
-									</button>
-									<Divider />
-									<button
-										onClick={() => handleTheme("system")}
-										className="flex w-full items-center hover:opacity-50 my-[8px]"
-									>
-										<Text className="text-[12px]">SYSTEM</Text>
-									</button>
+									{THEMES.map((theme: AppTheme, index) => (
+										<>
+											{index ? <Divider /> : ""}
+											<button
+												onClick={() => handleTheme(theme)}
+												className="flex w-full items-center hover:opacity-50 my-[8px]"
+											>
+												<Text className="text-[12px]">{theme.toUpperCase()}</Text>
+											</button>
+										</>
+									))}
 								</div>
 							</div>
 						</div>
 
-						{/* SHOW TITLE TOGGLE */}
+						{/* SHOW TITLE */}
 						<div className="flex justify-between w-3/4 mt-5">
 							<div className="flex">
 								<Text>Show bookmark titles</Text>
@@ -321,7 +303,7 @@ export default function Settings() {
 							/>
 						</div>
 
-						{/* SHOW TWO LINE TOGGLE */}
+						{/* SHOW TWO LINE */}
 						<div className="flex justify-between w-3/4 mt-1">
 							<div className="flex">
 								<Text>Allow two lines title</Text>
@@ -331,109 +313,77 @@ export default function Settings() {
 								onChange={handleAllowTwoLineTitle}
 							/>
 						</div>
-					</div>
+					</SettingContainer>
 
+					{/* EXPORT & IMPORT */}
 					<Text className="text-center text-2xl my-5">Export & Import</Text>
+					<SettingContainer>
+						{["Import", "Export"].map((item, index) => (
+							<Button
+								onClick={index ? handleExport : handleImport}
+								className={`flex items-center text-center justify-center mt-1 w-3/4 ${index && "mt-3"}`}
+							>
+								{index ? (
+									<CiExport
+										size={20}
+										className="mr-2"
+									/>
+								) : (
+									<CiImport
+										size={20}
+										className="mr-2"
+									/>
+								)}
+								{item} Bookmarks
+							</Button>
+						))}
+					</SettingContainer>
 
-					<div className="flex flex-col items-center justify-between bg-[#d8d8d8] dark:bg-[#1f1e1eb7] w-[80%] rounded-lg p-3 py-4">
-						{/* EXPORT */}
-						<Button
-							onClick={handleImport}
-							className="flex items-center text-center justify-center mt-1 w-3/4 "
-						>
-							<CiImport
-								size={20}
-								className="mr-2"
-							/>
-							Import bookmarks
-						</Button>
-						<Button
-							onClick={handleExport}
-							className="flex items-center text-center justify-center mt-3 w-3/4 "
-						>
-							<CiExport
-								size={20}
-								className="mr-2"
-							/>
-							Export bookmarks
-						</Button>
-					</div>
-
+					{/* ABOUT */}
 					<Text className="text-center text-2xl my-5">About</Text>
-
-					<div className="flex flex-col items-center justify-between bg-[#d8d8d8] dark:bg-[#1f1e1eb7] w-[80%] rounded-lg p-3">
-						<div className="flex items-center justify-between w-4/5 my-1 p-1">
+					<SettingContainer>
+						<div className="flex items-center justify-between w-4/5 px-3 py-1">
 							<Text> Version </Text>
-							<Text> 1.0.0 </Text>
+							<Text> 1.0.4 </Text>
 						</div>
+						<Divider className="w-4/5" />
 
-						<button
-							onClick={() => window.open(KAOSCWEB, "_blank")}
-							className="flex items-center justify-between w-4/5 my-1 hover:opacity-80 hover:bg-[#383838] p-1 rounded-md hover:animate-pulse"
-						>
-							<div className="flex items-center ">
-								<FaGlobeAmericas
-									size={14}
-									className="mr-1 text-black dark:text-white"
-								/>
-								<Text className=""> Website </Text>
-							</div>
-							<RightIcon />
-						</button>
-
-						<button
-							onClick={() => window.open(`${KAOSCWEB}/contact`, "_blank")}
-							className="flex items-center justify-between w-4/5 my-1 hover:opacity-80 hover:bg-[#383838] p-1 rounded-md hover:animate-pulse"
-						>
-							<div className="flex items-center">
-								<AiOutlineMail
-									size={14}
-									className="mr-1 text-black dark:text-white"
-								/>
-								<Text> Contact </Text>
-							</div>
-							<RightIcon />
-						</button>
-
-						<button
-							onClick={() => window.open(GITHUBREPO, "_blank")}
-							className="flex items-center justify-between w-4/5 my-1 hover:opacity-80 hover:bg-[#383838] p-1 rounded-md hover:animate-pulse"
-						>
-							<div className="flex items-center">
-								<BsGithub
-									size={14}
-									className="mr-1 text-black dark:text-white"
-								/>
-								<Text> Github </Text>
-							</div>
-							<RightIcon />
-						</button>
-
-						<button
-							onClick={() => window.open(`${KAOSCWEB}/#products`, "_blank")}
-							className="flex items-center justify-between w-4/5 my-1 hover:opacity-80 hover:bg-[#383838] p-1 rounded-md hover:animate-pulse"
-						>
-							<div className="flex items-center">
-								<BiLinkExternal
-									size={14}
-									className="mr-1 text-black dark:text-white"
-								/>
-								<Text> Other Apps </Text>
-							</div>
-							<RightIcon />
-						</button>
-
-						{/* <button className="flex items-center justify-between w-4/5 my-1 hover:opacity-80 hover:bg-[#383838] p-1 rounded-md hover:animate-pulse">
-							<div className="flex items-center">
-								<TbLicense
-									size={14}
-									className="mr-1 text-black dark:text-white"
-								/>
-								<Text> Open Source Licenses </Text>
-							</div>
-							<RightIcon />
-						</button> */}
-					</div>
+						{[
+							{
+								title: "Website",
+								url: KAOSCWEB,
+								icon: <FaGlobeAmericas size={14} />,
+							},
+							{
+								title: "Github",
+								url: GITHUBREPO,
+								icon: <BsGithub size={14} />,
+							},
+							{
+								title: "Contact",
+								url: `${KAOSCWEB}/contact`,
+								icon: <AiOutlineMail size={14} />,
+							},
+							{
+								title: "Other Apps",
+								url: `${KAOSCWEB}/#products`,
+								icon: <BiLinkExternal size={14} />,
+							},
+						].map(({ title, url, icon }) => (
+							<>
+								<button
+									onClick={() => window.open(url, "_blank")}
+									className="flex items-center justify-between w-4/5 hover:bg-zinc-400 dark:hover:bg-zinc-700 p-1 rounded-md hover:animate-pulse hover:opacity-80"
+								>
+									<div className="flex items-center">
+										<div className="themed mr-2 text-[14px]">{icon}</div>
+										<Text> {title} </Text>
+									</div>
+									<RightIcon />
+								</button>
+							</>
+						))}
+					</SettingContainer>
 
 					{/* RESET */}
 					<Text className="text-center text-2xl my-5">Danger Zone</Text>
@@ -442,9 +392,8 @@ export default function Settings() {
 							This option deletes all your bookmarks and settings forever. Please export your bookmarks before
 							doing this.
 						</Text>
-
 						<Button
-							onClick={() => setConfirmFromVisible(true)}
+							onClick={handleConfirmFromVisible}
 							className="flex items-center text-center justify-center my-3 w-3/4 dangerButton"
 						>
 							WIPE ALL DATA

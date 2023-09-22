@@ -54,7 +54,7 @@ export default function Search() {
 					<img
 						src="assets/kitty-dark.png"
 						alt="search"
-						className="w-[150px] h-[150px]"
+						className="w-[150px] h-[150px] opacity-100 dark:opacity-40"
 					/>
 					<Text className="text-center text-lg">No bookmark found</Text>
 				</div>

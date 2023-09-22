@@ -60,7 +60,7 @@ function GroupHeader({
 					>
 						<AiOutlineArrowUp
 							size={17}
-							className="text-black dark:text-white mr-[2px]"
+							className="themed mr-[2px]"
 						/>
 					</button>
 				)}
@@ -74,7 +74,7 @@ function GroupHeader({
 					>
 						<AiOutlineArrowDown
 							size={17}
-							className="text-black dark:text-white mr-[2px]"
+							className="themed mr-[2px]"
 						/>
 					</button>
 				)}
@@ -88,7 +88,7 @@ function GroupHeader({
 					>
 						<AiFillEdit
 							size={17}
-							className="text-black dark:text-white mr-[1px]"
+							className="themed mr-[1px]"
 						/>
 					</button>
 				)}
@@ -101,7 +101,7 @@ function GroupHeader({
 				>
 					<IoIosAdd
 						size={26}
-						className="text-black dark:text-white"
+						className="themed"
 					/>
 				</button>
 			</div>

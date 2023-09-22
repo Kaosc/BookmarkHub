@@ -120,12 +120,12 @@ function Group({
 					{!selectionMode && (
 						<RxDragHandleHorizontal
 							size={26}
-							className={`text-black dark:text-white`}
+							className={`themed`}
 						/>
 					)}
 					<input
 						className="pl-1 w-full focus:outline-none rounded-md truncate transition-colors duration-300 ease-in-out
-						bg-transparent text-black dark:text-white dark:enabled:bg-zinc-800 enabled:bg-zinc-300"
+						bg-transparent themed dark:enabled:bg-zinc-800 enabled:bg-zinc-300"
 						type="text"
 						ref={inputRef}
 						disabled={!titleEditMode}
@@ -144,7 +144,7 @@ function Group({
 						>
 							<RiFolderTransferLine
 								size={25}
-								className="text-black dark:text-white"
+								className="themed"
 							/>
 						</button>
 					) : (
@@ -153,7 +153,7 @@ function Group({
 								<button className="ml-auto text-black dark-text-white hover:opacity-50 hover:animate-pulse">
 									<AiOutlineSave
 										size={22}
-										className="text-black dark:text-white"
+										className="themed"
 									/>
 								</button>
 							) : (
@@ -163,7 +163,7 @@ function Group({
 								>
 									<AiFillEdit
 										size={22}
-										className="text-black dark:text-white"
+										className="themed"
 									/>
 								</button>
 							)}
@@ -175,7 +175,7 @@ function Group({
 								>
 									<MdOutlineCancel
 										size={22}
-										className="text-black dark:text-white"
+										className="themed"
 									/>
 								</button>
 							) : (
@@ -185,7 +185,7 @@ function Group({
 								>
 									<MdDeleteForever
 										size={22}
-										className="text-black dark:text-white"
+										className="themed"
 									/>
 								</button>
 							)}

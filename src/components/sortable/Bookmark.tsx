@@ -1,16 +1,17 @@
 import { memo, useState, useMemo } from "react"
+import { useDispatch, useSelector } from "react-redux"
 import { useSortable } from "@dnd-kit/sortable"
 import { CSS } from "@dnd-kit/utilities"
 import { LazyLoadImage } from "react-lazy-load-image-component"
 
 import { AiFillEdit } from "react-icons/ai"
 
+import { removeSelectedBookmark, setSelectedBookmarks } from "../../redux/features/selectionSlice"
+
+import Text from "../ui/Text"
+import CheckBox from "../ui/CheckBox"
 import BookmarkForm from "../form/BookmarkForm"
 import { notify } from "../../utils/notify"
-import { useDispatch, useSelector } from "react-redux"
-import Text from "../ui/Text"
-import { removeSelectedBookmark, setSelectedBookmarks } from "../../redux/features/selectionSlice"
-import CheckBox from "../ui/CheckBox"
 
 function Bookmark({
 	bookmark,
@@ -93,7 +94,7 @@ function Bookmark({
 					<div className={`absolute flex invisible top-0 right-0 justify-end group-hover:visible z-10`}>
 						<button
 							onClick={handleFormVisible}
-							className="p-[3px] rounded-full text-black dark:text-white dark:hover:bg-[#acacac] hover:bg-[#6b696d] hover:text-white dark:hover:text-black transition-all"
+							className="p-[3px] rounded-full themed dark:hover:bg-[#acacac] hover:bg-[#6b696d] hover:text-white dark:hover:text-black transition-all"
 						>
 							<AiFillEdit size={13} />
 						</button>

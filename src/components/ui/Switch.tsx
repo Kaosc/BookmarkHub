@@ -15,7 +15,12 @@ export default function Switch({
 				className="sr-only peer"
 				onChange={onChange}
 			/>
-			<div className="w-10 h-5 bg-[#2b2b2b] peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[4px] after:bg-white after:border after:rounded-full after:h-[16px] after:w-[16px] after:transition-all peer-checked:bg-[#575757]"></div>
+			<div
+				className="w-10 h-5 bg-[#2b2b2b] peer-focus:outline-none rounded-full 
+				peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] 
+				after:left-[4px] after:bg-white after:border after:rounded-full after:h-[16px] after:w-[16px] 
+				after:transition-all peer-checked:bg-[#575757]"
+			></div>
 		</label>
 	)
 }

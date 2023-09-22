@@ -3,16 +3,29 @@
 @tailwind utilities;
 
 @layer components {
+  .animated {
+    @apply transition-all ease-in-out 
+  }
+
+  .themed {
+    @apply text-black dark:text-white
+  }
+
   .input {
-    @apply w-full h-11 mb-4 bg-transparent transition-all duration-300 ease-in-out text-black dark:text-white border-[0.5px] border-[#757575] outline-none pl-2 pr-1 rounded-md truncate dark:hover:border-white focus:scale-[1.02] dark:focus:border-white hover:border-black
+    @apply w-full h-11 mb-4 bg-transparent transition-all duration-300 ease-in-out themed 
+    border-[0.5px] border-[#757575] outline-none pl-2 pr-1 rounded-md truncate dark:hover:border-white 
+    focus:scale-[1.02] dark:focus:border-white hover:border-black
   }
 
   .button {
-    @apply items-center justify-center px-2 py-1 ring-1 rounded-md ring-[#a5a5a5] dark:text-[#a5a5a5] dark:hover:bg-[#f1f1f1ef] dark:hover:text-black hover:bg-black hover:text-white transition-all duration-100 ease-in-out
+    @apply items-center justify-center px-2 py-1 ring-1 rounded-md ring-[#a5a5a5] dark:text-[#a5a5a5] 
+    dark:hover:bg-[#f1f1f1ef] dark:hover:text-black hover:bg-black hover:text-white transition-all duration-100 ease-in-out
   }
 
   .dropdownContainer {
-    @apply mt-[10px] flex-col px-2 items-center justify-center text-black dark:text-[#a5a5a5] rounded-lg border-[0.5px] border-zinc-700 bg-transparent bg-gradient-to-r dark:from-[#141414] dark:to-zinc-900 dark:shadow-xl shadow-md shadow-[#444444] dark:shadow-black transition-all duration-300 ease-in-out
+    @apply mt-[10px] flex-col px-2 items-center justify-center text-black dark:text-[#a5a5a5] rounded-lg border-[0.5px] 
+    border-zinc-700 bg-transparent bg-gradient-to-r dark:from-[#141414] dark:to-zinc-900 dark:shadow-xl shadow-md shadow-[#444444] 
+    dark:shadow-black transition-all duration-300 ease-in-out
   }
 
   .basedShadow {
@@ -20,15 +33,35 @@
   }
 
   .dangerButton {
-    @apply font-semibold ring-red-600 hover:bg-red-400 hover:dark:bg-red-950 hover:dark:text-red-500 text-red-600 dark:text-red-600 hover:text-red-900 hover:scale-105 transition-all ease-in-out
+    @apply font-semibold ring-red-600 hover:bg-red-400 hover:dark:bg-red-950 hover:dark:text-red-500
+    text-red-600 dark:text-red-600 hover:text-red-900 hover:scale-105
   }
 
   .checkBox {
     @apply 
-    relative bg-opacity-70 mr-[0.15rem] mt-[0.15rem] h-[1rem] w-[1rem] appearance-none rounded-[0.25rem] border-[0.125rem] border-solid outline-none before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:before:opacity-[0.16] checked:after:absolute checked:after:-mt-px checked:after:ml-[0.2rem] checked:after:block checked:after:h-[0.7125rem] checked:after:w-[0.375rem] checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 checked:after:border-solid checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 checked:focus:after:border-solid  checked:focus:after:bg-transparent
+    relative bg-opacity-70 mr-[0.15rem] mt-[0.15rem] h-[1rem] w-[1rem] appearance-none rounded-[0.25rem] border-[0.125rem] border-solid outline-none 
+    before:pointer-events-none before:absolute before:h-[0.875rem] before:w-[0.875rem] before:scale-0 before:rounded-full before:bg-transparent 
+    before:opacity-0 before:shadow-[0px_0px_0px_13px_transparent] before:content-[''] checked:before:opacity-[0.16] checked:after:absolute 
+    checked:after:-mt-px checked:after:ml-[0.2rem] checked:after:block checked:after:h-[0.7125rem] checked:after:w-[0.375rem] 
+    checked:after:rotate-45 checked:after:border-[0.125rem] checked:after:border-l-0 checked:after:border-t-0 
+    checked:after:border-solid checked:after:content-[''] hover:cursor-pointer hover:before:opacity-[0.04] 
+    hover:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:shadow-none focus:transition-[border-color_0.2s] focus:before:scale-100 
+    focus:before:opacity-[0.12] focus:before:shadow-[0px_0px_0px_13px_rgba(0,0,0,0.6)] focus:before:transition-[box-shadow_0.2s,transform_0.2s] 
+    focus:after:absolute focus:after:z-[1] focus:after:block focus:after:h-[0.875rem] focus:after:w-[0.875rem] focus:after:rounded-[0.125rem] 
+    focus:after:content-[''] checked:focus:before:scale-100 checked:focus:before:transition-[box-shadow_0.2s,transform_0.2s] 
+    checked:focus:after:-mt-px checked:focus:after:ml-[0.25rem] checked:focus:after:h-[0.8125rem] 
+    checked:focus:after:w-[0.375rem] checked:focus:after:rotate-45 checked:focus:after:rounded-none 
+    checked:focus:after:border-[0.125rem] checked:focus:after:border-l-0 checked:focus:after:border-t-0 
+    checked:focus:after:border-solid  checked:focus:after:bg-transparent
     bg-transparent checked:bg-stone-100 dark:checked:bg-stone-500
     border-stone-400 checked:after:border-stone-800 
     dark:border-stone-300 dark:checked:after:border-stone-50 
+  }
+
+  .settingsHeader {
+    @apply flex items-center justify-between w-full h-16 px-3 border-b-[1px] mb-3 sticky top-0 left-0 z-30
+    bg-gradient-to-r from-zinc-200 to-zinc-50 dark:from-[#0e0e0e] dark:to-zinc-950 
+    border-b-[#d8d8d8] dark:border-b-[#1b1b1b] shadow-xl shadow-[#a0a0a069] dark:shadow-[#00000069]
   }
 }
 

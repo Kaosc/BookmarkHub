@@ -117,6 +117,7 @@ export default function BookmarkForm({
 			title: title,
 			url: url,
 			groupId: group.id,
+			createdTime: Date.now(),
 			editedTime: Date.now(),
 		}
 
@@ -135,6 +136,7 @@ export default function BookmarkForm({
 			title: title,
 			url: url,
 			groupId: group.id,
+			createdTime: bookmark.createdTime,
 			editedTime: Date.now(),
 		}
 
@@ -310,7 +312,7 @@ export default function BookmarkForm({
 					>
 						<MdRefresh
 							size={23}
-							className="text-black dark:text-white"
+							className="themed"
 						/>
 					</button>
 				</div>
@@ -365,7 +367,7 @@ export default function BookmarkForm({
 						<BiCopy
 							size={22}
 							title="Click to Copy URL"
-							className="absolute right-3 top-3 text-black dark:text-white transition-all duration-300 ease-in-out hover:opacity-50 cursor-pointer hover:animate-pulse"
+							className="absolute right-3 top-3 themed transition-all duration-300 ease-in-out hover:opacity-50 cursor-pointer hover:animate-pulse"
 							onClick={handleUrlCopy}
 						/>
 					</div>

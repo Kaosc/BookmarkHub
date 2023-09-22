@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react"
+import { useState, useCallback, useRef, useMemo } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { useScrolling } from "react-use"
 import {
@@ -64,8 +64,8 @@ export default function Home() {
 	)
 
 	const debouncedHandleDragOver = debounce((event) => {
-		handleDragOver(event) // Dispatch your actions here
-	}, 10) // Adjust the delay as needed
+		handleDragOver(event)
+	}, 10)
 
 	const handleDragOver = useCallback(
 		(event: DragOverEvent) => {
@@ -178,6 +178,11 @@ export default function Home() {
 		[bookmarkGroups, dispatch, scrolling]
 	)
 
+	const darkMode = useMemo(() => {
+		return document.documentElement.classList.contains("dark")
+	}, [])
+	console.log(darkMode)
+
 	return (
 		<DndContext
 			sensors={sensors}
@@ -193,13 +198,23 @@ export default function Home() {
 					"
 				ref={scrollRef}
 			>
-				{bookmarkGroups.map((bookmarkData, index) => (
-					<GroupContainer
-						groupIndex={index}
-						key={bookmarkData.id}
-						bookmarkData={bookmarkData}
-					/>
-				))}
+				{bookmarkGroups.length === 1 && !bookmarkGroups[0].bookmarks.length ? (
+					<div className="flex items-center justify-center h-screen">
+						<img
+							src="assets/kitty-dark.png"
+							alt="empty"
+							className="w-1/2 opacity-100 dark:opacity-40"
+						/>
+					</div>
+				) : (
+					bookmarkGroups.map((bookmarkData, index) => (
+						<GroupContainer
+							groupIndex={index}
+							key={bookmarkData.id}
+							bookmarkData={bookmarkData}
+						/>
+					))
+				)}
 				<DragOverlay>
 					{activeBookmark ? (
 						<Bookmark
