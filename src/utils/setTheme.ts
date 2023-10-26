@@ -4,6 +4,7 @@ export const setTheme = (theme: AppTheme) => {
 	} else if (theme === "light") {
 		document.documentElement.classList.remove("dark")
 	} else {
+		// system
 		if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
 			document.documentElement.classList.add("dark")
 		} else {
@@ -12,10 +13,10 @@ export const setTheme = (theme: AppTheme) => {
 	}
 }
 
-export const setDefaultTheme = () => {
-   if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      document.documentElement.classList.add("dark")
-   } else {
-      document.documentElement.classList.remove("dark")
-   }
+export const setDefaultTheme = () => { // set system theme as default
+	if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+		document.documentElement.classList.add("dark")
+	} else {
+		document.documentElement.classList.remove("dark")
+	}
 }
