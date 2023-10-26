@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Bookmark Hub",
   "description": "A simple chrome extension to hold your bookmarks together.",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "action": {
     "default_popup": "index.html",
     "default_title": "Bookmark Hub"
@@ -14,7 +14,6 @@
     "128": "/icons/icon_128.png"
   },
   "permissions": [
-    "activeTab",
-    "storage"
+    "activeTab"
   ]
 }
