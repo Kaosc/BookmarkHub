@@ -145,7 +145,7 @@ export default function Settings() {
 			"data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportableBookmarkGroups))
 		const downloadAnchorNode = document.createElement("a")
 		downloadAnchorNode.setAttribute("href", dataStr)
-		downloadAnchorNode.setAttribute("download", "bookmarks.json")
+		downloadAnchorNode.setAttribute("download", "BookmarkHub-Backup.json")
 		document.body.appendChild(downloadAnchorNode) // required for firefox
 		downloadAnchorNode.click()
 		downloadAnchorNode.remove()

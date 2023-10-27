@@ -88,7 +88,7 @@ export const InitialBookmarks: BookmarkGroups = [
 	},
 	{
 		id: "kaosc-groupId",
-		title: "Koosc Dev",
+		title: "Kaosc Dev",
 		bookmarks: [
 			{
 				id: "kaosc-1",
