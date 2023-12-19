@@ -3,9 +3,9 @@ import { useDispatch, useSelector } from "react-redux"
 import { nanoid } from "nanoid"
 
 import { BiMoon, BiSolidMoon, BiLinkExternal } from "react-icons/bi"
-import { IoMdClose, IoMdSettings } from "react-icons/io"
+import { IoMdClose, IoMdSettings, IoMdStar } from "react-icons/io"
 import { CiExport, CiImport } from "react-icons/ci"
-import { FaGlobeAmericas } from "react-icons/fa"
+import { FaGlobeAmericas, FaStar } from "react-icons/fa"
 import { AiOutlineMail } from "react-icons/ai"
 import { PiArrowRight } from "react-icons/pi"
 import { TbMoonStars } from "react-icons/tb"
@@ -31,7 +31,6 @@ export default function Settings() {
 	const dispatch = useDispatch()
 
 	const [confirmFromVisible, setConfirmFromVisible] = useState(false)
-	// const [token, setToken] = useState(getAccessToken())
 
 	useEffect(() => {
 		storeSettings(settings)
@@ -158,31 +157,6 @@ export default function Settings() {
 		window.location.reload()
 	}
 
-	// const handleSignIn = () => {
-	// 	chrome.identity.getAuthToken({ interactive: true }, function (token) {
-	// 		if (chrome.runtime.lastError) {
-	// 			alert(chrome.runtime.lastError.message)
-	// 			return
-	// 		} else {
-	// 			if (token) {
-	// 				setToken(token)
-	// 				storeAccessToken(token)
-	// 			}
-	// 		}
-	// 	})
-	// }
-
-	// const handleSync = () => {
-	// 	if (token) {
-	// 		Sync(token, bookmarkGroups).then((syncedBookmarks: BookmarkGroups) => {
-	// 			notify("Bookmarks synced", settings.theme)
-	// 			if (syncedBookmarks) {
-	// 				dispatch(setBookmarkGroups(syncedBookmarks))
-	// 			}
-	// 		})
-	// 	}
-	// }
-
 	const ThemeIcon = () => {
 		if (settings.theme === "dark") {
 			return (
@@ -255,11 +229,6 @@ export default function Settings() {
 				${settings.visible ? "visible animate-in fade-in-0 " : "invisible animate-out fade-out-0"} `}
 			>
 				<SettingsHeader />
-
-				{/* <div className="flex items-center justify-center">
-					<Button onClick={handleSignIn}>{token ? "Signed In" : "Sign In"}</Button>
-					<Button onClick={handleSync}>Sync Bookmarks</Button>
-				</div> */}
 
 				<div className="flex flex-col items-center">
 					{/* GENERAL */}
@@ -344,15 +313,15 @@ export default function Settings() {
 					<SettingContainer>
 						<div className="flex items-center justify-between w-4/5 px-3 py-1">
 							<Text> Version </Text>
-							<Text> 1.0.4 </Text>
+							<Text> 1.0.5 </Text>
 						</div>
 						<Divider className="w-4/5" />
 
 						{[
 							{
-								title: "Website",
+								title: "Rate the app",
 								url: KAOSCWEB,
-								icon: <FaGlobeAmericas size={14} />,
+								icon: <FaStar size={14} />
 							},
 							{
 								title: "Github",
@@ -363,6 +332,11 @@ export default function Settings() {
 								title: "Contact",
 								url: `${KAOSCWEB}/contact`,
 								icon: <AiOutlineMail size={14} />,
+							},
+							{
+								title: "Website",
+								url: KAOSCWEB,
+								icon: <FaGlobeAmericas size={14} />,
 							},
 							{
 								title: "Other Apps",

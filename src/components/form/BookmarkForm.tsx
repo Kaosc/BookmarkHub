@@ -335,7 +335,7 @@ export default function BookmarkForm({
 				title={formTitle}
 				onClose={quitFrom}
 				className="z-40"
-				dialogClassName={`${drowDownOpen ? bookmarkData.length > 3 && "translate-y-[-60px]" : ""}`}
+				dialogClassName={`${drowDownOpen ? bookmarkData.length > 3 && "translate-y-[-50px]" : ""}`}
 			>
 				<ImageUploadSection />
 
