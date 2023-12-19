@@ -20,7 +20,8 @@ https://icon.horse/icon/discord.com
 */
 export const ICON_HORSE_API = "https://icon.horse/icon/"
 
-export const KAOSCWEB = "https://kaosc.vercel.app"
-export const GITHUBREPO = "https://github.com/Kaosc/BookmarkHub"
+export const WEBSITE = "https://kaosc.vercel.app"
+export const GITHUB_REPO = "https://github.com/Kaosc/BookmarkHub"
+export const CHROME_STORE_URL = "https://chromewebstore.google.com/detail/bookmark-hub/eikgkolbokmiboemcnhdpfcpnilkomhd"
 
 export const THEMES: AppTheme[] = ["system", "light", "dark"]

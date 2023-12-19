@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { nanoid } from "nanoid"
 
 import { BiMoon, BiSolidMoon, BiLinkExternal } from "react-icons/bi"
-import { IoMdClose, IoMdSettings, IoMdStar } from "react-icons/io"
+import { IoMdClose, IoMdSettings } from "react-icons/io"
 import { CiExport, CiImport } from "react-icons/ci"
 import { FaGlobeAmericas, FaStar } from "react-icons/fa"
 import { AiOutlineMail } from "react-icons/ai"
@@ -20,8 +20,7 @@ import Switch from "../components/ui/Switch"
 import Button from "../components/ui/Button"
 import Text from "../components/ui/Text"
 
-import { GITHUBREPO, KAOSCWEB, THEMES } from "../utils/constants"
-import { storeSettings } from "../utils/localStorage"
+import { GITHUB_REPO, WEBSITE, THEMES, CHROME_STORE_URL } from "../utils/constants"
 import { setTheme } from "../utils/setTheme"
 import { notify } from "../utils/notify"
 
@@ -31,10 +30,6 @@ export default function Settings() {
 	const dispatch = useDispatch()
 
 	const [confirmFromVisible, setConfirmFromVisible] = useState(false)
-
-	useEffect(() => {
-		storeSettings(settings)
-	}, [settings])
 
 	const handleConfirmFromVisible = () => {
 		setConfirmFromVisible((prev) => !prev)
@@ -224,7 +219,7 @@ export default function Settings() {
 				/>
 			)}
 			<div
-				className={`absolute z-40 top-0 left-0 overflow-y-auto w-[435px] h-[550px] 
+				className={`absolute z-40 top-0 left-0 overflow-y-auto w-[450px] h-[565px] 
 				bg-gradient-to-r from-zinc-200 to-zinc-50 dark:from-[#0e0e0e] dark:to-zinc-950 
 				${settings.visible ? "visible animate-in fade-in-0 " : "invisible animate-out fade-out-0"} `}
 			>
@@ -247,7 +242,7 @@ export default function Settings() {
 							<div className="hidden absolute right-[90px] top-[170px] group-hover:flex group-hover:opacity-100 animated animate-in fade-in-0">
 								<div className="dropdownContainer">
 									{THEMES.map((theme: AppTheme, index) => (
-										<>
+										<div key={index}>
 											{index ? <Divider /> : ""}
 											<button
 												onClick={() => handleTheme(theme)}
@@ -255,7 +250,7 @@ export default function Settings() {
 											>
 												<Text className="text-[12px]">{theme.toUpperCase()}</Text>
 											</button>
-										</>
+										</div>
 									))}
 								</div>
 							</div>
@@ -289,6 +284,7 @@ export default function Settings() {
 					<SettingContainer>
 						{["Import", "Export"].map((item, index) => (
 							<Button
+								key={item}
 								onClick={index ? handleExport : handleImport}
 								className={`flex items-center text-center justify-center mt-1 w-3/4 ${index && "mt-3"}`}
 							>
@@ -313,50 +309,56 @@ export default function Settings() {
 					<SettingContainer>
 						<div className="flex items-center justify-between w-4/5 px-3 py-1">
 							<Text> Version </Text>
-							<Text> 1.0.5 </Text>
+							<Text> 1.0.6 </Text>
 						</div>
 						<Divider className="w-4/5" />
 
 						{[
 							{
 								title: "Rate the app",
-								url: KAOSCWEB,
-								icon: <FaStar size={14} />
+								url: CHROME_STORE_URL,
+								icon: <FaStar size={14} />,
 							},
 							{
 								title: "Github",
-								url: GITHUBREPO,
+								url: GITHUB_REPO,
 								icon: <BsGithub size={14} />,
 							},
 							{
 								title: "Contact",
-								url: `${KAOSCWEB}/contact`,
+								url: `${WEBSITE}/contact`,
 								icon: <AiOutlineMail size={14} />,
 							},
 							{
 								title: "Website",
-								url: KAOSCWEB,
+								url: WEBSITE,
 								icon: <FaGlobeAmericas size={14} />,
 							},
 							{
 								title: "Other Apps",
-								url: `${KAOSCWEB}/#products`,
+								url: `${WEBSITE}/#products`,
 								icon: <BiLinkExternal size={14} />,
 							},
-						].map(({ title, url, icon }) => (
-							<>
-								<button
-									onClick={() => window.open(url, "_blank")}
+						].map(({ title, url, icon }) => {
+							const handleClick = () => window.open(url, "_blank")
+							return (
+								<div
+									key={title}
 									className="flex items-center justify-between w-4/5 hover:bg-zinc-400 dark:hover:bg-zinc-700 p-1 rounded-md hover:animate-pulse hover:opacity-80"
 								>
-									<div className="flex items-center">
-										<div className="themed mr-2 text-[14px]">{icon}</div>
-										<Text> {title} </Text>
-									</div>
-									<RightIcon />
-								</button>
-							</>
-						))}
+									<button
+										onClick={handleClick}
+										className="flex items-center justify-between w-full"
+									>
+										<div className="flex items-center">
+											<div className="themed mr-2 text-[14px]">{icon}</div>
+											<Text> {title} </Text>
+										</div>
+										<RightIcon />
+									</button>
+								</div>
+							)
+						})}
 					</SettingContainer>
 
 					{/* RESET */}

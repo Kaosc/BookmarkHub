@@ -77,8 +77,8 @@ body {
 main {
   display: flex;
   flex-direction: column;
-  width: 435px;
-  height: 550px;
+  width: 450px;
+  height: 565px;
 }
 
 /* Scrollbar */

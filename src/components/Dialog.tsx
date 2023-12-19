@@ -25,7 +25,7 @@ export default function Dialog({
 
 	return (
 		<div
-			className={`absolute top-0 left-0 flex-col w-[435px] h-[550px] bg-[#000000af] transition-all ease-in-out ${className}`}
+			className={`absolute top-0 left-0 flex-col w-[450px] h-[565px] bg-[#000000af] transition-all ease-in-out ${className}`}
 		>
 			<div className={`flex w-full h-full items-center justify-center transition-all ease-in-out`}>
 				<div

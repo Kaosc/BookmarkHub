@@ -335,7 +335,7 @@ export default function BookmarkForm({
 				title={formTitle}
 				onClose={quitFrom}
 				className="z-40"
-				dialogClassName={`${drowDownOpen ? bookmarkData.length > 3 && "translate-y-[-50px]" : ""}`}
+				dialogClassName={`${drowDownOpen ? bookmarkData.length > 3 && `translate-y-[-40px]` : ""}`}
 			>
 				<ImageUploadSection />
 
@@ -432,7 +432,7 @@ const SelectStyles: any = (darkMode: boolean) => {
 		// max height of dropdown menu
 		menuList: (provided: any) => ({
 			...provided,
-			maxHeight: 190,
+			maxHeight: 140,
 		}),
 	}
 }
