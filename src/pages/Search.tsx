@@ -33,12 +33,12 @@ export default function Search() {
 
 	return (
 		<div
-			className={`flex flex-row absolute overflow-y-auto top-0 left-0 z-10 mt-[59px] w-[450px] h-[506px] p-[2px] bg-gradient-to-r from-zinc-200 to-zinc-50 dark:from-[#0e0e0e] dark:to-zinc-950  ${
+			className={`flex-row absolute overflow-y-auto top-0 left-0 z-10 mt-[59px] w-[450px] h-[506px] p-[2px] bg-gradient-to-r from-zinc-200 to-zinc-50 dark:from-[#0e0e0e] dark:to-zinc-950  ${
 				search ? "visible animate-in fade-in-0 duration-300" : "invisible animate-out fade-out-0 duration-300"
 			}`}
 		>
 			{filteredBookmarks.length > 0 && (
-				<div className="flex flex-row flex-wrap items-start justify-start">
+				<div className="flex flex-row flex-wrap items-start">
 					{filteredBookmarks.map((bookmark) => (
 						<Bookmark
 							key={bookmark.id}

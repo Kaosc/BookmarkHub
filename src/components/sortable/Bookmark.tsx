@@ -105,14 +105,13 @@ function Bookmark({
 					onClick={selectionMode ? handleSelectBookmark : redirect}
 					className="flex flex-col justify-center items-center hover:scale-[1.04] transition-all hover:animate-pulse"
 				>
-					<div className="w-[29px] h-[29px]">
+					<div className="w-[29px] h-[29px] mb-[6px]">
 						<LazyLoadImage
 							src={favicon}
 							alt="favicon"
 							sizes="29px"
 							width={29}
 							height={29}
-							className={`mb-[5px]`}
 						/>
 					</div>
 					{showBookmarksTitle && (
