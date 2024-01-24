@@ -109,7 +109,7 @@ export default function Navbar() {
 				/>
 			)}
 			<div
-				className="z-20 sticky flex h-16 px-3 border-b-[1px]
+				className="z-30 sticky flex h-16 px-3 border-b-[1px]
 				bg-gradient-to-r from-zinc-200 to-zinc-50 dark:from-[#0e0e0e] dark:to-zinc-950 
 				border-b-[#d8d8d8] dark:border-b-[#1b1b1b] shadow-xl shadow-[#a0a0a069] dark:shadow-[#00000069]"
 			>

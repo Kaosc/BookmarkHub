@@ -23,6 +23,7 @@ import Bookmark from "../components/sortable/Bookmark"
 
 export default function Home() {
 	const bookmarkGroups = useSelector((state: RootState) => state.bookmarks)
+	const search = useSelector((state: RootState) => state.search)
 	const dispatch = useDispatch()
 
 	const [activeBookmark, setActiveBookmark] = useState<Bookmark>()
@@ -181,7 +182,6 @@ export default function Home() {
 	const darkMode = useMemo(() => {
 		return document.documentElement.classList.contains("dark")
 	}, [])
-	console.log(darkMode)
 
 	return (
 		<DndContext
@@ -192,10 +192,12 @@ export default function Home() {
 			collisionDetection={pointerWithin}
 		>
 			<main
-				className="
-						overflow-y-auto scroll-auto bg-gradient-to-r 
-					 from-zinc-200 to-zinc-50 dark:from-[#0e0e0e] dark:to-zinc-950
-					"
+				overflow-y-auto
+				scroll-auto
+				bg-gradient-to-r
+				className={`overflow-y-auto scroll-auto bg-gradient-to-r from-zinc-200 to-zinc-50 dark:from-[#0e0e0e] dark:to-zinc-950 ${
+					search && "hidden"
+				}`}
 				ref={scrollRef}
 			>
 				{bookmarkGroups.length === 1 && !bookmarkGroups[0].bookmarks.length ? (
