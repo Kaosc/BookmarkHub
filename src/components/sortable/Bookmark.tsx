@@ -77,14 +77,13 @@ function Bookmark({
 				{...listeners}
 				{...attributes}
 				className={`
-					group relative flex flex-col items-center justify-center hover:dark:bg-zinc-900 hover:bg-[#cacaca]
-					p-1 w-[70px] my-2 mx-[1px] transition-all ${opacity}
-					transition-all duration-500 ease-out animate-in fade-in-0 ${className}
-					${isChecked ? "dark:bg-[#3a3a3a] bg-[#cfcfcf]" : ""}
+					group relative flex flex-col items-center justify-center hover:dark:bg-zinc-900 hover:bg-[#cacaca] transition-all duration-500 ease-out animate-in fade-in-0 ${opacity} ${className} ${
+					isChecked ? "dark:bg-[#3a3a3a] bg-[#cfcfcf]" : ""
+				}
 				`}
 			>
 				{selectionMode ? (
-					<div className={`absolute flex top-0 right-0 justify-end group-hover:visible z-10`}>
+					<div className={`absolute p-[1px] flex top-0 right-0 justify-end group-hover:visible z-10`}>
 						<CheckBox
 							onChange={handleSelectBookmark}
 							checked={isChecked}
@@ -94,16 +93,15 @@ function Bookmark({
 					<div className={`absolute flex invisible top-0 right-0 justify-end group-hover:visible z-10`}>
 						<button
 							onClick={handleFormVisible}
-							className="p-[3px] rounded-full themed dark:hover:bg-[#acacac] hover:bg-[#6b696d] hover:text-white dark:hover:text-black transition-all"
+							className="p-[4px] rounded-full themed dark:hover:bg-[#acacac] hover:bg-[#6b696d] hover:text-white dark:hover:text-black transition-all"
 						>
 							<AiFillEdit size={13} />
 						</button>
 					</div>
 				)}
-
 				<button
 					onClick={selectionMode ? handleSelectBookmark : redirect}
-					className="flex flex-col justify-center items-center hover:scale-[1.04] transition-all hover:animate-pulse"
+					className="flex mx-[1px] w-[70px] py-3 p-1 flex-col justify-center items-center hover:scale-[1.04] transition-all hover:animate-pulse"
 				>
 					<div className="w-[29px] h-[29px] mb-[6px]">
 						<LazyLoadImage

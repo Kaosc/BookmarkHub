@@ -33,7 +33,7 @@ export default function Search() {
 
 	return (
 		<div
-			className={`flex-row flex overflow-y-auto top-0 left-0 z-30 w-full h-full p-[2px] bg-gradient-to-r from-zinc-200 to-zinc-50 dark:from-[#0e0e0e] dark:to-zinc-950  ${
+			className={`flex-row  overflow-y-auto top-0 left-0 z-30 w-full h-full p-[2px] bg-gradient-to-r from-zinc-200 to-zinc-50 dark:from-[#0e0e0e] dark:to-zinc-950  ${
 				search ? "visible animate-in fade-in-0 duration-300" : "hidden animate-out fade-out-0 duration-300"
 			}`}
 		>
