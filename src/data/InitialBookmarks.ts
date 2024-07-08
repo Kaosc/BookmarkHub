@@ -1,3 +1,5 @@
+import { BASE_PRODUCTS_URL } from "../utils/constants"
+
 export const InitialBookmarks: BookmarkGroups = [
 	{
 		id: "default",
@@ -94,7 +96,7 @@ export const InitialBookmarks: BookmarkGroups = [
 				id: "kaosc-1",
 				title: "Kaosc",
 				url: "https://kaosc.vercel.app",
-				favicon: "https://kaosc.vercel.app/favicon.ico",
+				favicon: BASE_PRODUCTS_URL + "/favicon.ico",
 				groupId: "kaosc-groupId",
 				createdTime: 1,
 				editedTime: 1,
@@ -103,7 +105,7 @@ export const InitialBookmarks: BookmarkGroups = [
 				id: "kaosc-2",
 				title: "Quick Copy",
 				url: "https://play.google.com/store/apps/details?id=com.Kaosc.SrcKitab",
-				favicon: "https://raw.githubusercontent.com/Kaosc/Kaosc/main/public/assets/products/quickcopy/logo.png",
+				favicon: BASE_PRODUCTS_URL + "products/quickcopy/logo.png",
 				groupId: "kaosc-groupId",
 				createdTime: 1,
 				editedTime: 1,
@@ -112,7 +114,7 @@ export const InitialBookmarks: BookmarkGroups = [
 				id: "kaosc-3",
 				title: "Driver Book",
 				url: "https://play.google.com/store/apps/details?id=com.Kaosc.SrcKitab",
-				favicon: "https://raw.githubusercontent.com/Kaosc/Kaosc/main/public/assets/products/driverbook/logo.png",
+				favicon: BASE_PRODUCTS_URL + "products/driverbook/logo.png",
 				groupId: "kaosc-groupId",
 				createdTime: 1,
 				editedTime: 1,
@@ -130,7 +132,7 @@ export const InitialBookmarks: BookmarkGroups = [
 				id: "kaosc-5",
 				title: "Sunset Sunrise",
 				url: "https://chrome.google.com/webstore/detail/sunset-sunrise/gkfelccnlfiipepkjfmgbkaebppelfma",
-				favicon: "https://github.com/Kaosc/Kaosc/raw/main/public/assets/products/sunsetsunrise/logo.png",
+				favicon: BASE_PRODUCTS_URL + "products/sunsetsunrise/logo.png",
 				groupId: "kaosc-groupId",
 				createdTime: 1,
 				editedTime: 1,
@@ -148,7 +150,7 @@ export const InitialBookmarks: BookmarkGroups = [
 				id: "kaosc-7",
 				title: "Hyle Theme",
 				url: "https://marketplace.visualstudio.com/items?itemName=Kaosc.hyle",
-				favicon: "https://github.com/Kaosc/Kaosc/raw/main/public/assets/products/hyletheme/logo.png",
+				favicon: BASE_PRODUCTS_URL + "products/hyletheme/logo.png",
 				groupId: "kaosc-groupId",
 				createdTime: 1,
 				editedTime: 1,

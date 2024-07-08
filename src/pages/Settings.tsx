@@ -184,7 +184,7 @@ export default function Settings() {
 					size={25}
 					className="themed"
 				/>
-				<Text className="ml-2 text-xl">Settings</Text>
+				<Text className="ml-3 mb-1 text-xl">Settings</Text>
 			</div>
 			<button
 				className="themed"
@@ -309,7 +309,7 @@ export default function Settings() {
 					<SettingContainer>
 						<div className="flex items-center justify-between w-4/5 px-3 py-1">
 							<Text> Version </Text>
-							<Text> 1.0.9 </Text>
+							<Text> 1.1.0 </Text>
 						</div>
 						<Divider className="w-4/5" />
 

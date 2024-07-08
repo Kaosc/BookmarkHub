@@ -22,6 +22,9 @@ export const ICON_HORSE_API = "https://icon.horse/icon/"
 
 export const WEBSITE = "https://kaosc.vercel.app"
 export const GITHUB_REPO = "https://github.com/Kaosc/BookmarkHub"
-export const CHROME_STORE_URL = "https://chromewebstore.google.com/detail/bookmark-hub/eikgkolbokmiboemcnhdpfcpnilkomhd"
+export const CHROME_STORE_URL =
+	"https://chromewebstore.google.com/detail/bookmark-hub/eikgkolbokmiboemcnhdpfcpnilkomhd"
 
 export const THEMES: AppTheme[] = ["system", "light", "dark"]
+
+export const BASE_PRODUCTS_URL = "https://raw.githubusercontent.com/Kaosc/product-assets/main/"
