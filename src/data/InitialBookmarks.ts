@@ -95,7 +95,7 @@ export const InitialBookmarks: BookmarkGroups = [
 			{
 				id: "kaosc-1",
 				title: "Kaosc",
-				url: "https://kaosc.vercel.app",
+				url: "https://kaosc.dev",
 				favicon: BASE_PRODUCTS_URL + "/favicon.ico",
 				groupId: "kaosc-groupId",
 				createdTime: 1,

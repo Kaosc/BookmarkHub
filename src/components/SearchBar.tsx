@@ -36,14 +36,16 @@ export default function SearchBar() {
 				focus:ring-opacity-50 transition-all ease-in-out duration-300
 			"
 		>
-			<div className="absolute left-3 bottom-[5px] hover:scale-110 transition-all ease-in-out">
-				<BiSearchAlt2
-					size={19}
-					className="themed hover:text-white"
-				/>
-			</div>
+			{!visible && (
+				<div className="absolute pb-[1px] right-3 bottom-[5px] hover:scale-110 transition-all ease-in-out">
+					<BiSearchAlt2
+						size={19}
+						className="themed hover:text-white"
+					/>
+				</div>
+			)}
 			<input
-				className="ml-[37px] mr-9 overflow-hidden dark:text-gray-300 text-[#242424] text-base outline-none bg-transparent"
+				className="ml-[50px] pb-[2px] mr-9 overflow-hidden dark:text-gray-300 text-[#242424] text-base outline-none bg-transparent"
 				ref={inputRef}
 				required
 				autoFocus={true}
@@ -58,7 +60,7 @@ export default function SearchBar() {
 					title="Clear Search"
 				>
 					<IoIosClose
-						size={30}
+						size={31}
 						className="themed hover:text-white"
 					/>
 				</button>
