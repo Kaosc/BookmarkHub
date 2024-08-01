@@ -34,6 +34,18 @@ export const selectionSlice = createSlice({
 				selectedBookmarks: state.selectedBookmarks.filter((b) => b.id !== action.payload),
 			}
 		},
+		removeSelectedBookmarksWithIDs: (
+			state,
+			action: {
+				payload: string[]
+			}
+		) => {
+			return {
+				...state,
+				selectedGroup: null,
+				selectedBookmarks: state.selectedBookmarks.filter((b) => !action.payload.includes(b.id)),
+			}
+		},
 		clearAllSelections: (state) => {
 			return {
 				...state,
@@ -44,5 +56,10 @@ export const selectionSlice = createSlice({
 	},
 })
 
-export const { toggleSelectionMode, setSelectedBookmarks, removeSelectedBookmark, clearAllSelections } =
-	selectionSlice.actions
+export const {
+	toggleSelectionMode,
+	setSelectedBookmarks,
+	removeSelectedBookmark,
+	clearAllSelections,
+	removeSelectedBookmarksWithIDs,
+} = selectionSlice.actions
