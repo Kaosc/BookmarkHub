@@ -1,4 +1,4 @@
-import React, { memo, useState } from "react"
+import React, { memo, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { arrayMove } from "@dnd-kit/sortable"
 
@@ -30,6 +30,12 @@ function GroupHeader({
 	const [checkBoxToggle, setCheckBoxToggle] = useState(false)
 
 	const dispatch = useDispatch()
+
+	useEffect(() => {
+		if (!selectionMode) {
+			setCheckBoxToggle(false)
+		}
+	}, [selectionMode])
 
 	const moveGroupTo = (to: string) => {
 		const toIndex = to === "up" ? -1 : 1
