@@ -309,7 +309,7 @@ export default function Settings() {
 					<SettingContainer>
 						<div className="flex items-center justify-between w-4/5 px-3 py-1">
 							<Text> Version </Text>
-							<Text> 1.2.0 </Text>
+							<Text> 1.2.1 </Text>
 						</div>
 						<Divider className="w-4/5" />
 

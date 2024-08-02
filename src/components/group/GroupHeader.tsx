@@ -65,7 +65,7 @@ function GroupHeader({
 	return (
 		<div
 			className={`
-				flex items-center justify-between mx-2 px-2 py-[3px] my-2 rounded-full shadow-lg transition-all ease-in-out 
+				flex items-center justify-between mx-2 px-2 py-[5px] my-2 rounded-full shadow-lg transition-all ease-in-out 
 				dark:bg-[#1B1B1C] bg-[#e7e7e7] dark:shadow-[rgba(0, 0, 0, 0.603)] shadow-[#2e2e2e34]
 			`}
 		>
@@ -132,12 +132,11 @@ function GroupHeader({
 					</button>
 				</div>
 			) : (
-				<div className={`p-1 pb-0`}>
-					<CheckBox
-						onChange={selectAllGroupBookmarks}
-						checked={checkBoxToggle}
-					/>
-				</div>
+				<CheckBox
+					onChange={selectAllGroupBookmarks}
+					checked={checkBoxToggle}
+					className={"m-[5px]"}
+				/>
 			)}
 		</div>
 	)

@@ -3,13 +3,15 @@ import React, { memo } from "react"
 function CheckBox({
 	onChange,
 	checked = false,
+	className,
 }: {
 	onChange: React.ChangeEventHandler<HTMLInputElement>
 	checked?: boolean
+	className?: string
 }) {
 	return (
 		<input
-			className="checkBox"
+			className={`checkBox ${className}`}
 			type="checkbox"
 			value=""
 			checked={checked}
