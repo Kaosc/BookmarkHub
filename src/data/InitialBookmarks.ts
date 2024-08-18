@@ -141,7 +141,7 @@ export const InitialBookmarks: BookmarkGroups = [
 				id: "kaosc-6",
 				title: "Cat Bot",
 				url: "https://top.gg/bot/1052869011366477844",
-				favicon: "https://raw.githubusercontent.com/Kaosc/discord-cat-bot/master/assets/cat_128.png",
+				favicon: "https://raw.githubusercontent.com/Kaosc/discord-cat-bot-public/master/assets/cat_128.png",
 				groupId: "kaosc-groupId",
 				createdTime: 1,
 				editedTime: 1,
