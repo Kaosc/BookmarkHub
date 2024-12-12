@@ -179,10 +179,6 @@ export default function Home() {
 		[bookmarkGroups, dispatch, scrolling]
 	)
 
-	const darkMode = useMemo(() => {
-		return document.documentElement.classList.contains("dark")
-	}, [])
-
 	return (
 		<DndContext
 			sensors={sensors}
