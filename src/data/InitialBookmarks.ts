@@ -96,7 +96,7 @@ export const InitialBookmarks: BookmarkGroups = [
 				id: "kaosc-1",
 				title: "Kaosc",
 				url: "https://kaosc.dev",
-				favicon: BASE_PRODUCTS_URL + "/favicon.ico",
+				favicon: "https://kaosc.dev/images/logo-bg.png",
 				groupId: "kaosc-groupId",
 				createdTime: 1,
 				editedTime: 1,
@@ -104,8 +104,9 @@ export const InitialBookmarks: BookmarkGroups = [
 			{
 				id: "kaosc-2",
 				title: "Quick Copy",
-				url: "https://play.google.com/store/apps/details?id=com.Kaosc.SrcKitab",
-				favicon: BASE_PRODUCTS_URL + "products/quickcopy/logo.png",
+				url: "https://kaosc.dev/quickcopy",
+				favicon:
+					"https://play-lh.googleusercontent.com/cigk4g5HlmZdDajjMVWlHq7dbJ27t-XW2Cbmj4XObPjTkYttaw_yZUrkS_hW6hMUDQ=w240-h480-rw",
 				groupId: "kaosc-groupId",
 				createdTime: 1,
 				editedTime: 1,
@@ -113,17 +114,19 @@ export const InitialBookmarks: BookmarkGroups = [
 			{
 				id: "kaosc-3",
 				title: "Driver Book",
-				url: "https://play.google.com/store/apps/details?id=com.Kaosc.SrcKitab",
-				favicon: BASE_PRODUCTS_URL + "products/driverbook/logo.png",
+				url: "https://kaosc.dev/driverbook",
+				favicon:
+					"https://play-lh.googleusercontent.com/G88arG_WBP0zgCfXsA-sZI1ouHJRirZ37kjI0WhnUgPV4KpUGhiNAQyzveTvE2Gshw=w240-h480-rw",
 				groupId: "kaosc-groupId",
 				createdTime: 1,
 				editedTime: 1,
 			},
 			{
-				id: "kaosc-4",
-				title: "Kavaklakerda",
-				url: "https://kavaklakerda.vercel.app",
-				favicon: BASE_PRODUCTS_URL + "products/kavaklakerda/logo.png",
+				id: "kaosc-3",
+				title: "One Word",
+				url: "https://kaosc.dev/oneword",
+				favicon:
+					"https://play-lh.googleusercontent.com/JHPyN4HfWxssoxcZ6LhpqI_MFThlCLQdOgeirkgb9RSTC1cvY3GmHpEPVQ5lACp2T5ujIUjqxIwMQqvHdvOVuA=w240-h480-rw",
 				groupId: "kaosc-groupId",
 				createdTime: 1,
 				editedTime: 1,
@@ -131,8 +134,9 @@ export const InitialBookmarks: BookmarkGroups = [
 			{
 				id: "kaosc-5",
 				title: "Sunset Sunrise",
-				url: "https://chrome.google.com/webstore/detail/sunset-sunrise/gkfelccnlfiipepkjfmgbkaebppelfma",
-				favicon: BASE_PRODUCTS_URL + "products/sunsetsunrise/logo.png",
+				url: "https://kaosc.dev/sunsetsunrise",
+				favicon:
+					"https://lh3.googleusercontent.com/PFta7M6CCporSkfaWGRIuW-DMk17NzNqmRnd8yK1uda220vn9S_baLgm4nLmlC3RSHkY78gUQk4pfQiivz4cDmPsWQ=s60",
 				groupId: "kaosc-groupId",
 				createdTime: 1,
 				editedTime: 1,
@@ -140,17 +144,18 @@ export const InitialBookmarks: BookmarkGroups = [
 			{
 				id: "kaosc-6",
 				title: "Cat Bot",
-				url: "https://top.gg/bot/1052869011366477844",
-				favicon: BASE_PRODUCTS_URL + "products/catbot/logo.png",
+				url: "https://kaosc.dev/catbot",
+				favicon: "https://cdn.discordapp.com/avatars/1052869011366477844/2199842be7adbc385b2b70d683cc6e6d.png",
 				groupId: "kaosc-groupId",
 				createdTime: 1,
 				editedTime: 1,
 			},
 			{
-				id: "kaosc-7",
-				title: "Hyle Theme",
-				url: "https://marketplace.visualstudio.com/items?itemName=Kaosc.hyle",
-				favicon: BASE_PRODUCTS_URL + "products/hyletheme/logo.png",
+				id: "kaosc-6",
+				title: "Night City Theme",
+				url: "https://kaosc.dev/nightcitytheme",
+				favicon:
+					"https://lh3.googleusercontent.com/ak-3vc_3akW-gNaXSWtzMzbEhyUiSj7DfSn93ssFyZPhGsFZZTmT6lkXe-bw9azifLUgB272tP1vBte-axssG6ELySQ=s60",
 				groupId: "kaosc-groupId",
 				createdTime: 1,
 				editedTime: 1,

@@ -10,6 +10,7 @@ import { AiOutlineMail } from "react-icons/ai"
 import { PiArrowRight } from "react-icons/pi"
 import { TbMoonStars } from "react-icons/tb"
 import { BsGithub } from "react-icons/bs"
+import { BiSolidDonateHeart } from "react-icons/bi";
 
 import { setSettings, toggleSettings } from "../redux/features/settingsSlice"
 import { setBookmarkGroups } from "../redux/features/bookmarkSlice"
@@ -20,7 +21,7 @@ import Switch from "../components/ui/Switch"
 import Button from "../components/ui/Button"
 import Text from "../components/ui/Text"
 
-import { GITHUB_REPO, WEBSITE, THEMES, CHROME_STORE_URL } from "../utils/constants"
+import { GITHUB_REPO, WEBSITE, THEMES, CHROME_STORE_URL, BUY_ME_A_COFFEE_URL } from "../utils/constants"
 import { setTheme } from "../utils/setTheme"
 import { notify } from "../utils/notify"
 
@@ -309,11 +310,16 @@ export default function Settings() {
 					<SettingContainer>
 						<div className="flex items-center justify-between w-4/5 px-3 py-1">
 							<Text> Version </Text>
-							<Text> 1.2.1 </Text>
+							<Text> 1.2.3 </Text>
 						</div>
 						<Divider className="w-4/5" />
 
 						{[
+							{
+								title: "Donate",
+								url: BUY_ME_A_COFFEE_URL,
+								icon: <BiSolidDonateHeart size={14} />,
+							},
 							{
 								title: "Rate the app",
 								url: CHROME_STORE_URL,
