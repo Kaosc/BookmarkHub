@@ -26,6 +26,4 @@ export const CHROME_STORE_URL = "https://chromewebstore.google.com/detail/bookma
 
 export const THEMES: AppTheme[] = ["system", "light", "dark"]
 
-export const BASE_PRODUCTS_URL = "https://raw.githubusercontent.com/Kaosc/product-assets/main/"
-
 export const BUY_ME_A_COFFEE_URL = "https://www.buymeacoffee.com/kaoscdev"

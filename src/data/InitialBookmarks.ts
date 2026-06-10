@@ -1,5 +1,3 @@
-import { BASE_PRODUCTS_URL } from "../utils/constants"
-
 export const InitialBookmarks: BookmarkGroups = [
 	{
 		id: "default",
