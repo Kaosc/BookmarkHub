@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef, useMemo } from "react"
+import { useState, useCallback, useRef } from "react"
 import { useSelector, useDispatch } from "react-redux"
 import { useScrolling } from "react-use"
 import {
@@ -46,7 +46,7 @@ export default function Home() {
 				delay: 100,
 				tolerance: 5,
 			},
-		})
+		}),
 	)
 
 	const handleDragStart = useCallback(
@@ -58,10 +58,10 @@ export default function Home() {
 				bookmarkGroups
 					.map((group) => group.bookmarks)
 					.flat()
-					.find((bookmark) => bookmark.id === id)
+					.find((bookmark) => bookmark.id === id),
 			)
 		},
-		[bookmarkGroups]
+		[bookmarkGroups],
 	)
 
 	const debouncedHandleDragOver = debounce((event) => {
@@ -93,9 +93,7 @@ export default function Home() {
 
 			if (!overBookmarkGroup || !activeBookmarkGroup) return
 
-			const activeBookmarkIndex = activeBookmarkGroup.bookmarks.findIndex(
-				(bookmark) => bookmark.id === activeBookmarkId
-			)
+			const activeBookmarkIndex = activeBookmarkGroup.bookmarks.findIndex((bookmark) => bookmark.id === activeBookmarkId)
 
 			if (activeBookmarkIndex === -1) {
 				return
@@ -131,12 +129,12 @@ export default function Home() {
 							} else {
 								return group
 							}
-						})
-					)
+						}),
+					),
 				)
 			}
 		},
-		[bookmarkGroups, dispatch, scrolling]
+		[bookmarkGroups, dispatch, scrolling],
 	)
 
 	const handleDragEnd = useCallback(
@@ -155,11 +153,7 @@ export default function Home() {
 			const overBookmarkGroupId = over?.data.current?.sortable.containerId
 			const overBookmarkGroup = bookmarkGroups.find((group) => group.id === overBookmarkGroupId)
 
-			if (
-				!activeBookmarkIndex !== undefined &&
-				overBookmarkIndex === undefined &&
-				activeBookmarkIndex === overBookmarkIndex
-			) {
+			if (!activeBookmarkIndex !== undefined && overBookmarkIndex === undefined && activeBookmarkIndex === overBookmarkIndex) {
 				return
 			}
 
@@ -170,13 +164,13 @@ export default function Home() {
 						id: overBookmarkGroupId,
 						title: overBookmarkGroup.title,
 						bookmarks: newGroup,
-					})
+					}),
 				)
 			}
 
 			setActiveBookmark(undefined)
 		},
-		[bookmarkGroups, dispatch, scrolling]
+		[bookmarkGroups, dispatch, scrolling],
 	)
 
 	return (

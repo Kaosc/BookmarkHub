@@ -71,7 +71,7 @@ export default function BookmarkForm({
 	)
 
 	useEffect(() => {
-		let timeout: NodeJS.Timeout
+		let timeout: any
 
 		timeout = setTimeout(() => {
 			if (url && !favicon?.startsWith("data")) {
