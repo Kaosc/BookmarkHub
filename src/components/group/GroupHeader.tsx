@@ -76,7 +76,7 @@ function GroupHeader({
 
 			{/* BUTTONS */}
 			{!selectionMode ? (
-				<div className="flex items-center justify-between">
+				<div className="flex items-center justify-between gap-1">
 					{/* MOVE UP */}
 					{groupIndex !== 1 && (
 						<button

@@ -66,7 +66,7 @@ export default function Search() {
 						))}
 					</div>
 				) : (
-					<div className="flex flex-row flex-wrap items-start p-1">
+					<div className="grid grid-cols-6 items-start gap-x-0.5 gap-y-0.5">
 						{filteredBookmarks.map((bookmark) => (
 							<Bookmark
 								key={bookmark.id}

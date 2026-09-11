@@ -191,7 +191,6 @@ export default function BookmarkForm({
 				theme={(theme: any) => ({
 					...theme,
 					colors: {
-						...theme.colors,
 						neutral20: darkMode ? "#575757" : "#000000",
 						neutral30: darkMode ? "#575757" : "#000000",
 						neutral40: darkMode ? "#575757" : "#000000",
@@ -395,10 +394,12 @@ const SelectStyles: any = (darkMode: boolean) => {
 			backgroundColor: "#00000000",
 			borderRadius: 6,
 			borderWidth: 0.5,
+			color: darkMode ? "#ffffff" : "#000000",
 			borderColor: ["#757575", "#757575", "#757575", "#757575"],
 		}),
 		menu: (provided: any) => ({
 			...provided,
+			color: darkMode ? "#ffffff" : "#000000",
 			backgroundColor: darkMode ? "#1c1c1d" : "#dfdfdf",
 		}),
 		option: (provided: any, state: any) => ({
@@ -423,6 +424,7 @@ const SelectStyles: any = (darkMode: boolean) => {
 		}),
 		indicatorSeparator: (provided: any) => ({
 			...provided,
+			color: darkMode ? "#ffffff" : "#000000",
 			backgroundColor: darkMode ? "#cccccc" : "#000000",
 		}),
 		indicator: (provided: any) => ({
@@ -432,6 +434,8 @@ const SelectStyles: any = (darkMode: boolean) => {
 		// max height of dropdown menu
 		menuList: (provided: any) => ({
 			...provided,
+			color: darkMode ? "#ffffff" : "#000000",
+
 			maxHeight: 140,
 		}),
 	}
