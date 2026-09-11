@@ -98,10 +98,10 @@ function Bookmark({
 				ref={setNodeRef}
 				onDragStart={handleNativeDragStart}
 				className={`
-					group draggable relative items-center flex ${
+					group draggable relative flex ${
 						headlineView
 							? "flex-row items-center w-full break-inside-avoid my-[3px] px-1 py-[4px] rounded-md"
-							: "flex-col items-center justify-center"
+							: "flex-col items-center justify-start w-[70px] shrink-0 py-1"
 					} hover:dark:bg-zinc-900 hover:bg-[#cacaca] transition-all duration-500 ease-out animate-in fade-in-0 ${opacity} ${className} ${
 						isChecked ? "dark:bg-[#3a3a3a] bg-[#cfcfcf]" : ""
 					}
@@ -112,7 +112,7 @@ function Bookmark({
 					className={`flex transition-all ${
 						headlineView
 							? "flex-row items-center ml-1 w-full min-w-0 text-left hover:opacity-70"
-							: "mx-[1px] w-[70px] py-3 p-1 flex-col justify-center items-center hover:scale-[1.04] hover:animate-pulse"
+							: "mx-[1px] w-full py-2 px-1 flex-col justify-start items-center hover:scale-[1.04] hover:animate-pulse"
 					}`}
 				>
 					{headlineView ? (
@@ -130,7 +130,7 @@ function Bookmark({
 						</>
 					) : (
 						<>
-							<div className="w-[29px] h-[29px] mb-[6px]">
+							<div className="flex items-center justify-center w-[29px] h-[29px] mb-[6px] shrink-0">
 								<LazyLoadImage
 									src={favicon}
 									alt="favicon"
@@ -140,9 +140,19 @@ function Bookmark({
 								/>
 							</div>
 							{showBookmarksTitle && (
-								<Text className={`text-[11px] text-center max-w-[57px] ${allowTwoLineTitle ? "line-clamp-2" : "truncate"}`}>
-									{title}
-								</Text>
+								<div
+									className={`flex justify-center w-full ${
+										allowTwoLineTitle ? "min-h-[28px]" : "min-h-[16px]"
+									}`}
+								>
+									<Text
+										className={`text-[11px] text-center max-w-[57px] leading-[14px] break-words ${
+											allowTwoLineTitle ? "line-clamp-2" : "truncate block"
+										}`}
+									>
+										{title}
+									</Text>
+								</div>
 							)}
 						</>
 					)}

@@ -80,56 +80,48 @@ video {
 	-webkit-touch-callout: none;
 }
 
-/* Scrollbar */
+/* Scrollbar - custom, theme aware (light / dark via `html.dark`) */
+
+:root {
+  color-scheme: light;
+  --scroll-track: #e4e4e7;
+  --scroll-thumb: #a1a1aa;
+  --scroll-thumb-hover: #71717a;
+}
+
+html.dark {
+  color-scheme: dark;
+  --scroll-track: #09090b;
+  --scroll-thumb: #27272a;
+  --scroll-thumb-hover: #3f3f46;
+}
 
 * {
   scroll-behavior: smooth;
-}
-
-* {
-  --scroll-bg: #e4e4e4;
-  --scroll-fg: #c2c2c2;
-  --scroll-fg-hover: #a5a5a5;
-  --scroll-bg-dark: #09090b;
-  --scroll-fg-dark: #18181b;
-  --scroll-fg-hover-dark: #202024;
-}
-
-/* Firefox */
-* {
   scrollbar-width: thin;
-  scrollbar-color: var(#0096C7) var(--scroll-bg-dark);
+  scrollbar-color: var(--scroll-thumb) var(--scroll-track);
 }
 
 /* Chrome, Edge, and Safari */
 *::-webkit-scrollbar {
-  width: 13px;
+  width: 10px;
+  height: 10px;
 }
 
 *::-webkit-scrollbar-track {
-  background: var(--scroll-bg);
+  background: var(--scroll-track);
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: var(--scroll-fg);
+  background-color: var(--scroll-thumb);
   border-radius: 20px;
-  border: 3px solid var(--scroll-bg);
+  border: 3px solid var(--scroll-track);
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background-color: var(--scroll-fg-hover);
+  background-color: var(--scroll-thumb-hover);
 }
 
-*.dark ::-webkit-scrollbar-track {
-  background: var(--scroll-bg-dark);
-}
-
-*.dark ::-webkit-scrollbar-thumb {
-  background-color: var(--scroll-fg-dark);
-  border-radius: 20px;
-  border: 3px solid var(--scroll-bg-dark);
-}
-
-*.dark::-webkit-scrollbar-thumb:hover {
-  background-color: var(--scroll-fg-hover-dark);
+*::-webkit-scrollbar-corner {
+  background: transparent;
 }

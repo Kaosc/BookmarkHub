@@ -90,7 +90,7 @@ function GroupContainer({ bookmarkData, groupIndex }: { bookmarkData: BookmarkDa
 							})}
 						</div>
 					) : (
-						<div className="grid grid-cols-6">
+						<div className="grid grid-cols-6 items-start gap-y-1">
 							{bookmarkData.bookmarks.map((bookmark, bookmarkIndex) => (
 								<Bookmark
 									key={bookmark.id}
