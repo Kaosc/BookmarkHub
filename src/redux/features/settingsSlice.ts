@@ -7,6 +7,7 @@ const initialState: Settings = {
 	theme: "system",
 	showBookmarksTitle: true,
 	allowTwoLineTitle: false,
+	headlineView: false,
 }
 
 const setInitialState = (): Settings => {

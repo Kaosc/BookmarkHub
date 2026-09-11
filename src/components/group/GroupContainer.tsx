@@ -1,6 +1,6 @@
 import { useState, useMemo, memo } from "react"
 import { useDroppable } from "@dnd-kit/core"
-import { SortableContext, rectSortingStrategy } from "@dnd-kit/sortable"
+import { SortableContext, rectSortingStrategy, verticalListSortingStrategy } from "@dnd-kit/sortable"
 import { useSelector } from "react-redux"
 
 import BookmarkForm from "../form/BookmarkForm"
@@ -11,6 +11,7 @@ import GroupHeader from "./GroupHeader"
 
 function GroupContainer({ bookmarkData, groupIndex }: { bookmarkData: BookmarkData; groupIndex: number }) {
 	const { selectionMode } = useSelector((state: RootState) => state.selection)
+	const { headlineView } = useSelector((state: RootState) => state.settings)
 	const isGroupDefault = useMemo(() => bookmarkData.id === "default", [bookmarkData.id])
 
 	const [bookmarkFormVisible, setBookmarkFormVisible] = useState(false)
@@ -20,6 +21,17 @@ function GroupContainer({ bookmarkData, groupIndex }: { bookmarkData: BookmarkDa
 
 	const handleBookmarkFormVisible = () => setBookmarkFormVisible((prev) => !prev)
 	const handleGroupFormVisible = () => setGroupFormVisible((prev) => !prev)
+
+	// Headline view: fill the LEFT column first, then the right one.
+	// CSS columns balance by height (can put more on the right), so split manually.
+	const headlineColumns = useMemo(() => {
+		if (!headlineView) return [[], []] as [Bookmark[], Bookmark[]]
+		const mid = Math.ceil(bookmarkData.bookmarks.length / 2)
+		return [
+			bookmarkData.bookmarks.slice(0, mid),
+			bookmarkData.bookmarks.slice(mid),
+		] as [Bookmark[], Bookmark[]]
+	}, [headlineView, bookmarkData.bookmarks])
 
 	return (
 		<>
@@ -49,19 +61,39 @@ function GroupContainer({ bookmarkData, groupIndex }: { bookmarkData: BookmarkDa
 			<SortableContext
 				id={bookmarkData.id}
 				items={bookmarkData?.bookmarks}
-				strategy={rectSortingStrategy}
+				strategy={headlineView ? verticalListSortingStrategy : rectSortingStrategy}
 				disabled={selectionMode}
 			>
 				<div
 					ref={setNodeRef}
-					className={`grid grid-cols-6 px-1 ${bookmarkData.bookmarks.length > 0 ? "" : "min-h-[20px]"}`}
+					className={`px-1 ${bookmarkData.bookmarks.length > 0 ? "" : "min-h-[20px]"}`}
 				>
-					{bookmarkData.bookmarks.map((bookmark) => (
-						<Bookmark
-							key={bookmark.id}
-							bookmark={bookmark}
-						/>
-					))}
+					{headlineView ? (
+						<div className="flex flex-row items-start gap-2">
+							{headlineColumns.map((column, colIndex) => (
+								<div
+									key={colIndex}
+									className="flex flex-col items-start flex-1 min-w-0"
+								>
+									{column.map((bookmark) => (
+										<Bookmark
+											key={bookmark.id}
+											bookmark={bookmark}
+										/>
+									))}
+								</div>
+							))}
+						</div>
+					) : (
+						<div className="grid grid-cols-6">
+							{bookmarkData.bookmarks.map((bookmark) => (
+								<Bookmark
+									key={bookmark.id}
+									bookmark={bookmark}
+								/>
+							))}
+						</div>
+					)}
 				</div>
 			</SortableContext>
 		</>

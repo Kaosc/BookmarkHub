@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { useSelector } from "react-redux"
 
 import Bookmark from "../components/sortable/Bookmark"
@@ -7,6 +7,7 @@ import Text from "../components/ui/Text"
 export default function Search() {
 	const bookmarkGroups = useSelector((state: RootState) => state.bookmarks)
 	const search = useSelector((state: RootState) => state.search)
+	const { headlineView } = useSelector((state: RootState) => state.settings)
 
 	const [filteredBookmarks, setFilteredBookmarks] = useState<Bookmark[]>([])
 
@@ -31,6 +32,16 @@ export default function Search() {
 		}
 	}, [search, bookmarkGroups])
 
+	// Headline view: fill the LEFT column first, then the right one.
+	const headlineColumns = useMemo(() => {
+		if (!headlineView) return [[], []] as [Bookmark[], Bookmark[]]
+		const mid = Math.ceil(filteredBookmarks.length / 2)
+		return [
+			filteredBookmarks.slice(0, mid),
+			filteredBookmarks.slice(mid),
+		] as [Bookmark[], Bookmark[]]
+	}, [headlineView, filteredBookmarks])
+
 	return (
 		<div
 			className={`flex-row overflow-y-auto top-0 left-0 z-30 w-full h-full p-[2px] bg-gradient-to-r from-zinc-200 to-zinc-50 dark:from-[#0e0e0e] dark:to-zinc-950  ${
@@ -38,14 +49,32 @@ export default function Search() {
 			}`}
 		>
 			{filteredBookmarks.length > 0 && (
-				<div className="flex flex-row flex-wrap items-start">
-					{filteredBookmarks.map((bookmark) => (
-						<Bookmark
-							key={bookmark.id}
-							bookmark={bookmark}
-						/>
-					))}
-				</div>
+				headlineView ? (
+					<div className="flex flex-row items-start gap-2 p-1">
+						{headlineColumns.map((column, colIndex) => (
+							<div
+								key={colIndex}
+								className="flex flex-col items-start flex-1 min-w-0"
+							>
+								{column.map((bookmark) => (
+									<Bookmark
+										key={bookmark.id}
+										bookmark={bookmark}
+									/>
+								))}
+							</div>
+						))}
+					</div>
+				) : (
+					<div className="flex flex-row flex-wrap items-start p-1">
+						{filteredBookmarks.map((bookmark) => (
+							<Bookmark
+								key={bookmark.id}
+								bookmark={bookmark}
+							/>
+						))}
+					</div>
+				)
 			)}
 
 			{filteredBookmarks.length === 0 && (

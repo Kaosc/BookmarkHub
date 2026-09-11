@@ -34,6 +34,7 @@ type Settings = {
 	theme: AppTheme
 	showBookmarksTitle: boolean
 	allowTwoLineTitle: boolean
+	headlineView: boolean
 }
 
 type AppTheme = "light" | "dark" | "system"

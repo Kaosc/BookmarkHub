@@ -24,7 +24,7 @@ function Bookmark({
 }) {
 	const dispatch = useDispatch()
 
-	const { allowTwoLineTitle, showBookmarksTitle, theme } = useSelector((state: RootState) => state.settings)
+	const { allowTwoLineTitle, showBookmarksTitle, headlineView, theme } = useSelector((state: RootState) => state.settings)
 	const { selectionMode, selectedBookmarks } = useSelector((state: RootState) => state.selection)
 
 	const { id, title, url, favicon } = bookmark
@@ -33,10 +33,7 @@ function Bookmark({
 	const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: id })
 	const style = { transform: CSS.Transform.toString(transform), transition }
 
-	const isChecked = useMemo(
-		() => selectedBookmarks.map((b) => b.id).includes(bookmark.id),
-		[selectedBookmarks, bookmark]
-	)
+	const isChecked = useMemo(() => selectedBookmarks.map((b) => b.id).includes(bookmark.id), [selectedBookmarks, bookmark])
 
 	const handleSelectBookmark = () => {
 		if (selectedBookmarks.map((b) => b.id).includes(bookmark.id)) {
@@ -84,20 +81,72 @@ function Bookmark({
 				{...listeners}
 				{...attributes}
 				className={`
-					group draggable relative flex flex-col items-center justify-center hover:dark:bg-zinc-900 hover:bg-[#cacaca] transition-all duration-500 ease-out animate-in fade-in-0 ${opacity} ${className} ${
-					isChecked ? "dark:bg-[#3a3a3a] bg-[#cfcfcf]" : ""
-				}
+					group draggable relative items-center flex ${
+						headlineView
+							? "flex-row items-center w-full break-inside-avoid my-[3px] px-1 py-[4px] rounded-md"
+							: "flex-col items-center justify-center"
+					} hover:dark:bg-zinc-900 hover:bg-[#cacaca] transition-all duration-500 ease-out animate-in fade-in-0 ${opacity} ${className} ${
+						isChecked ? "dark:bg-[#3a3a3a] bg-[#cfcfcf]" : ""
+					}
 				`}
 			>
+				<button
+					onClick={selectionMode ? handleSelectBookmark : redirect}
+					className={`flex transition-all ${
+						headlineView
+							? "flex-row items-center ml-1 w-full min-w-0 text-left hover:opacity-70"
+							: "mx-[1px] w-[70px] py-3 p-1 flex-col justify-center items-center hover:scale-[1.04] hover:animate-pulse"
+					}`}
+				>
+					{headlineView ? (
+						<>
+							<div className="w-[18px] h-[18px] mr-[10px] shrink-0">
+								<LazyLoadImage
+									src={favicon}
+									alt="favicon"
+									sizes="18px"
+									width={18}
+									height={18}
+								/>
+							</div>
+							{showBookmarksTitle && <Text className="text-[14px] text-left truncate flex-1 min-w-0">{title}</Text>}
+						</>
+					) : (
+						<>
+							<div className="w-[29px] h-[29px] mb-[6px]">
+								<LazyLoadImage
+									src={favicon}
+									alt="favicon"
+									sizes="29px"
+									width={29}
+									height={29}
+								/>
+							</div>
+							{showBookmarksTitle && (
+								<Text className={`text-[11px] text-center max-w-[57px] ${allowTwoLineTitle ? "line-clamp-2" : "truncate"}`}>
+									{title}
+								</Text>
+							)}
+						</>
+					)}
+				</button>
 				{selectionMode ? (
-					<div className={`absolute p-[1px] flex top-0 right-0 justify-end group-hover:visible z-10`}>
+					<div
+						className={`flex justify-end group-hover:visible z-10 ${
+							headlineView ? "ml-auto p-[1px]" : "absolute top-0 right-0 p-[1px]"
+						}`}
+					>
 						<CheckBox
 							onChange={handleSelectBookmark}
 							checked={isChecked}
 						/>
 					</div>
 				) : (
-					<div className={`absolute flex invisible top-0 right-0 justify-end group-hover:visible z-10`}>
+					<div
+						className={`flex justify-end invisible group-hover:visible z-10 ${
+							headlineView ? "ml-auto p-[2px]" : "absolute top-0 right-0"
+						}`}
+					>
 						<button
 							onClick={handleFormVisible}
 							className="p-[4px] rounded-full themed dark:hover:bg-[#acacac] hover:bg-[#6b696d] hover:text-white dark:hover:text-black transition-all"
@@ -106,29 +155,6 @@ function Bookmark({
 						</button>
 					</div>
 				)}
-				<button
-					onClick={selectionMode ? handleSelectBookmark : redirect}
-					className="flex mx-[1px] w-[70px] py-3 p-1 flex-col justify-center items-center hover:scale-[1.04] transition-all hover:animate-pulse"
-				>
-					<div className="w-[29px] h-[29px] mb-[6px]">
-						<LazyLoadImage
-							src={favicon}
-							alt="favicon"
-							sizes="29px"
-							width={29}
-							height={29}
-						/>
-					</div>
-					{showBookmarksTitle && (
-						<Text
-							className={`text-[11px] text-center max-w-[57px] ${
-								allowTwoLineTitle ? "line-clamp-2" : "truncate"
-							}`}
-						>
-							{title}
-						</Text>
-					)}
-				</button>
 			</div>
 		</>
 	)

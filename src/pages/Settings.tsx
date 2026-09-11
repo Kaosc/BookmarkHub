@@ -2,7 +2,7 @@ import { useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { nanoid } from "nanoid"
 
-import { BiMoon, BiSolidMoon, BiLinkExternal } from "react-icons/bi"
+import { BiMoon, BiSun, BiLinkExternal } from "react-icons/bi"
 import { IoMdClose, IoMdSettings } from "react-icons/io"
 import { CiExport, CiImport } from "react-icons/ci"
 import { FaGlobeAmericas, FaStar } from "react-icons/fa"
@@ -46,6 +46,10 @@ export default function Settings() {
 
 	const handleAllowTwoLineTitle = () => {
 		dispatch(setSettings({ allowTwoLineTitle: !settings.allowTwoLineTitle }))
+	}
+
+	const handleHeadlineView = () => {
+		dispatch(setSettings({ headlineView: !settings.headlineView }))
 	}
 
 	const handleTheme = (theme: AppTheme) => {
@@ -163,7 +167,7 @@ export default function Settings() {
 			)
 		} else if (settings.theme === "light") {
 			return (
-				<BiSolidMoon
+				<BiSun
 					size={20}
 					className="text-black"
 				/>
@@ -276,6 +280,17 @@ export default function Settings() {
 							<Switch
 								checked={settings.allowTwoLineTitle}
 								onChange={handleAllowTwoLineTitle}
+							/>
+						</div>
+
+						{/* HEADLINE VIEW */}
+						<div className="flex justify-between w-3/4 mt-1">
+							<div className="flex">
+								<Text>Headline view</Text>
+							</div>
+							<Switch
+								checked={settings.headlineView}
+								onChange={handleHeadlineView}
 							/>
 						</div>
 					</SettingContainer>
