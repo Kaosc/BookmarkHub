@@ -6,8 +6,10 @@ import { nanoid } from "nanoid"
 
 const setInitialState = () => {
 	const initialState: BookmarkGroups = InitialBookmarks.map((group: any) => {
+		const initialGroupId = group.id || nanoid()
 		return {
 			...group,
+			id: initialGroupId,
 			bookmarks: group.bookmarks.map((bookmark: any) => ({
 				...bookmark,
 				id: nanoid(),

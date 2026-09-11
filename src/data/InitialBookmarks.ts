@@ -54,7 +54,6 @@ export const InitialBookmarks: any = [
 		],
 	},
 	{
-		id: "kaosc",
 		title: "Kaosc Dev",
 		bookmarks: [
 			{
