@@ -8,13 +8,13 @@ import {
 	PointerSensor,
 	useSensor,
 	useSensors,
+	DragStartEvent,
 	DragEndEvent,
 	DragOverEvent,
 	TouchSensor,
 	pointerWithin,
 } from "@dnd-kit/core"
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
-import { debounce } from "lodash"
 
 import { editGroup, setBookmarkGroups } from "../redux/features/bookmarkSlice"
 
@@ -50,7 +50,7 @@ export default function Home() {
 	)
 
 	const handleDragStart = useCallback(
-		(event: DragEndEvent) => {
+		(event: DragStartEvent) => {
 			const { active } = event
 			const { id } = active
 
@@ -63,10 +63,6 @@ export default function Home() {
 		},
 		[bookmarkGroups],
 	)
-
-	const debouncedHandleDragOver = debounce((event) => {
-		handleDragOver(event)
-	}, 10)
 
 	const handleDragOver = useCallback(
 		(event: DragOverEvent) => {
@@ -153,7 +149,7 @@ export default function Home() {
 			const overBookmarkGroupId = over?.data.current?.sortable.containerId
 			const overBookmarkGroup = bookmarkGroups.find((group) => group.id === overBookmarkGroupId)
 
-			if (!activeBookmarkIndex !== undefined && overBookmarkIndex === undefined && activeBookmarkIndex === overBookmarkIndex) {
+			if (activeBookmarkIndex === undefined || overBookmarkIndex === undefined || activeBookmarkIndex === overBookmarkIndex) {
 				return
 			}
 
@@ -178,7 +174,7 @@ export default function Home() {
 			sensors={sensors}
 			onDragStart={handleDragStart}
 			onDragEnd={handleDragEnd}
-			onDragOver={debouncedHandleDragOver}
+			onDragOver={handleDragOver}
 			collisionDetection={pointerWithin}
 		>
 			<main

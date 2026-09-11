@@ -58,6 +58,12 @@ function Group({
 		quitFrom(e)
 	}
 
+	const handleNativeDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+		// Block the browser's native drag (favicon icons, selectable input text,
+		// etc.). It cancels the pointer events dnd-kit needs, breaking DnD.
+		e.preventDefault()
+	}
+
 	const toggleTitleEditMode = () => {
 		const t = setTimeout(() => {
 			if (titleEditMode) {
@@ -108,10 +114,11 @@ function Group({
 			<div
 				ref={setNodeRef}
 				style={style}
+				onDragStart={handleNativeDragStart}
 				{...listeners}
 				{...attributes}
 				className={`
-					flex items-center justify-start w-full p-1 my-2 ring-1 ring-zinc-500 rounded-md 
+					draggable flex items-center justify-start w-full p-1 my-2 ring-1 ring-zinc-500 rounded-md 
 					${activeGroup?.id === group.id && "bg-zinc-400 dark:bg-zinc-800 ring-[2px]"} 
 					${!selectionMode ? (activeGroup ? "cursor-grabbing" : "cursor-grab") : "cursor-pointer"}
 				`}
@@ -200,5 +207,8 @@ function Group({
 }
 
 export default memo(Group, (prevProps, nextProps) => {
-	return prevProps.activeGroup?.id === nextProps.activeGroup?.id
+	return (
+		prevProps.group === nextProps.group &&
+		prevProps.activeGroup?.id === nextProps.activeGroup?.id
+	)
 })

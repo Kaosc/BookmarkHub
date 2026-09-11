@@ -56,6 +56,30 @@ main {
   height: 565px;
 }
 
+/* ---------------------------------------------------------------------------
+   Drag & drop (dnd-kit)
+
+   Keep the browser's native image/text drag from stealing pointer events.
+   In current Chrome/Firefox, mousedown + drag over an <img> (favicon) or
+   selectable text starts the browser's own drag gesture, which cancels the
+   pointer events dnd-kit's PointerSensor relies on — the drag never starts
+   (or dies instantly). This is the #1 reason dnd-kit "stopped working".
+--------------------------------------------------------------------------- */
+img,
+svg,
+canvas,
+video {
+	-webkit-user-drag: none;
+	user-select: none;
+	-webkit-user-select: none;
+}
+
+.draggable {
+	user-select: none;
+	-webkit-user-select: none;
+	-webkit-touch-callout: none;
+}
+
 /* Scrollbar */
 
 * {

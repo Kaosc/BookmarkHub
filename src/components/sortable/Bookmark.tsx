@@ -49,6 +49,12 @@ function Bookmark({
 
 	const handleFormVisible = () => setFormVisible((prev) => !prev)
 
+	const handleNativeDragStart = (e: React.DragEvent<HTMLDivElement>) => {
+		// Block the browser's native image/text drag: it cancels the pointer
+		// events dnd-kit needs and makes dragging "not work" in modern Chrome.
+		e.preventDefault()
+	}
+
 	const redirect = () => {
 		if (url) {
 			try {
@@ -74,10 +80,11 @@ function Bookmark({
 			<div
 				ref={setNodeRef}
 				style={style}
+				onDragStart={handleNativeDragStart}
 				{...listeners}
 				{...attributes}
 				className={`
-					group relative flex flex-col items-center justify-center hover:dark:bg-zinc-900 hover:bg-[#cacaca] transition-all duration-500 ease-out animate-in fade-in-0 ${opacity} ${className} ${
+					group draggable relative flex flex-col items-center justify-center hover:dark:bg-zinc-900 hover:bg-[#cacaca] transition-all duration-500 ease-out animate-in fade-in-0 ${opacity} ${className} ${
 					isChecked ? "dark:bg-[#3a3a3a] bg-[#cfcfcf]" : ""
 				}
 				`}

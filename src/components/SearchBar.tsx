@@ -45,7 +45,7 @@ export default function SearchBar() {
 				</div>
 			)}
 			<input
-				className="ml-[50px] pb-[2px] mr-9 overflow-hidden dark:text-gray-300 text-[#242424] text-base outline-none bg-transparent"
+				className="ml-[15px] pb-[2px] pr-10 min-w-0 overflow-hidden dark:text-gray-300 text-[#242424] text-base outline-none bg-transparent"
 				ref={inputRef}
 				required
 				autoFocus={true}

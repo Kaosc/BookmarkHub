@@ -81,13 +81,13 @@ export default function SelectionNavbar({
 				</Text>
 			</div>
 
-			<div className="flex items-center justify-end">
+			<div className="flex items-center justify-end gap-1.5">
 				<button
 					onClick={handleSelectAllBookmarks}
 					className={buttonStyle}
 					title="Move Selected Bookmarks"
 				>
-					<MdSelectAll size={27} />
+					<MdSelectAll size={26} className="mt-0.4 mr-1" />
 				</button>
 
 				<button
@@ -95,7 +95,7 @@ export default function SelectionNavbar({
 					title="Delete Selected Bookmarks"
 				>
 					<MdDeleteForever
-						size={26}
+						size={25}
 						className="themed hover:opacity-50 transition-all ease-in-out duration-150 mr-1"
 					/>
 				</button>
@@ -105,7 +105,7 @@ export default function SelectionNavbar({
 					className={buttonStyle}
 					title="Move Selected Bookmarks"
 				>
-					<RiFolderTransferLine size={26} />
+					<RiFolderTransferLine size={25} />
 				</button>
 
 				<div className="w-[1px] h-[24px] mx-2 ml-3 bg-black dark:bg-white"></div>
@@ -115,7 +115,7 @@ export default function SelectionNavbar({
 					className={buttonStyle}
 					title="Move Selected Bookmarks"
 				>
-					<IoMdClose size={30} />
+					<IoMdClose size={29} />
 				</button>
 			</div>
 		</div>

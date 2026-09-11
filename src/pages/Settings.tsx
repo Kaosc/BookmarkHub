@@ -7,10 +7,10 @@ import { IoMdClose, IoMdSettings } from "react-icons/io"
 import { CiExport, CiImport } from "react-icons/ci"
 import { FaGlobeAmericas, FaStar } from "react-icons/fa"
 import { AiOutlineMail } from "react-icons/ai"
-import { PiArrowRight } from "react-icons/pi"
 import { TbMoonStars } from "react-icons/tb"
 import { BsGithub } from "react-icons/bs"
 import { BiSolidDonateHeart } from "react-icons/bi";
+import { FiChevronRight } from "react-icons/fi";
 
 import { setSettings, toggleSettings } from "../redux/features/settingsSlice"
 import { setBookmarkGroups } from "../redux/features/bookmarkSlice"
@@ -197,7 +197,7 @@ export default function Settings() {
 	)
 
 	const RightIcon = () => (
-		<PiArrowRight
+		<FiChevronRight
 			size={24}
 			className="mr-1 hover:opacity-50 animated themed"
 		/>

@@ -2,11 +2,10 @@ import { useState, useRef, useCallback } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { nanoid } from "nanoid"
 
-import { IoMdSettings } from "react-icons/io"
 import { IoAddCircleOutline } from "react-icons/io5"
-import { LuFolderCog, LuFolderPlus } from "react-icons/lu"
-import { BiBookmarkPlus, BiSelectMultiple } from "react-icons/bi"
-import { LiaFileImportSolid } from "react-icons/lia"
+import { LuFolderCog, LuFolderPlus, LuListChecks, LuSettings } from "react-icons/lu"
+import { BiBookmarkPlus } from "react-icons/bi"
+import { TbBrowserPlus } from "react-icons/tb"
 
 import { addBookmark } from "../redux/features/bookmarkSlice"
 import { toggleSettings } from "../redux/features/settingsSlice"
@@ -109,7 +108,7 @@ export default function Navbar() {
 				/>
 			)}
 			<div
-				className="z-30 sticky flex h-16 px-3 border-b-[1px]
+				className="z-[35] sticky flex h-16 px-3 border-b-[1px]
 				bg-gradient-to-r from-zinc-200 to-zinc-50 dark:from-[#0e0e0e] dark:to-zinc-950 
 				border-b-[#d8d8d8] dark:border-b-[#1b1b1b] shadow-xl shadow-[#a0a0a069] dark:shadow-[#00000069]"
 			>
@@ -133,14 +132,14 @@ export default function Navbar() {
 						</div>
 
 						{/* BUTTONS */}
-						<div className="flex w-2/5 items-center justify-evenly">
+						<div className="flex shrink-0 items-center gap-2 mr-2">
 							{/* GET ACTIVE TAB */}
 							<button
 								className={styles.button}
 								onClick={addActiveTabToBookmark}
 								title="Add Active Tab"
 							>
-								<LiaFileImportSolid
+								<TbBrowserPlus
 									size={25}
 									className="themed"
 								/>
@@ -167,7 +166,7 @@ export default function Navbar() {
 											className={styles.drowdownButton}
 										>
 											<BiBookmarkPlus
-												size={20}
+												size={19}
 												className="themed mr-2"
 											/>
 											<Text className="text-[12px]">{texts.addBookmark}</Text>
@@ -178,7 +177,7 @@ export default function Navbar() {
 											className={styles.drowdownButton}
 										>
 											<LuFolderPlus
-												size={19}
+												size={15}
 												className="themed mr-2"
 											/>
 											<Text className="text-[12px]">{texts.addGroup}</Text>
@@ -194,7 +193,7 @@ export default function Navbar() {
 								title="Edit Groups"
 							>
 								<LuFolderCog
-									size={25}
+									size={23}
 									className="themed"
 								/>
 							</button>
@@ -205,8 +204,8 @@ export default function Navbar() {
 								onClick={handleSelectionMode}
 								title="Select Multiple"
 							>
-								<BiSelectMultiple
-									size={24}
+								<LuListChecks
+									size={25}
 									className="themed"
 								/>
 							</button>
@@ -217,8 +216,8 @@ export default function Navbar() {
 								onClick={handleSettingsVisible}
 								title="Settings"
 							>
-								<IoMdSettings
-									size={24}
+								<LuSettings
+									size={23}
 									className="themed"
 								/>
 							</button>
