@@ -1,6 +1,6 @@
 import { useState, useMemo, memo } from "react"
-import { useDroppable } from "@dnd-kit/core"
-import { SortableContext, rectSortingStrategy, verticalListSortingStrategy } from "@dnd-kit/sortable"
+import { CollisionPriority } from "@dnd-kit/abstract"
+import { useDroppable } from "@dnd-kit/react"
 import { useSelector } from "react-redux"
 
 import BookmarkForm from "../form/BookmarkForm"
@@ -10,14 +10,20 @@ import Bookmark from "../sortable/Bookmark"
 import GroupHeader from "./GroupHeader"
 
 function GroupContainer({ bookmarkData, groupIndex }: { bookmarkData: BookmarkData; groupIndex: number }) {
-	const { selectionMode } = useSelector((state: RootState) => state.selection)
 	const { headlineView } = useSelector((state: RootState) => state.settings)
 	const isGroupDefault = useMemo(() => bookmarkData.id === "default", [bookmarkData.id])
 
 	const [bookmarkFormVisible, setBookmarkFormVisible] = useState(false)
 	const [groupFormVisible, setGroupFormVisible] = useState(false)
 
-	const { setNodeRef } = useDroppable({ id: bookmarkData.id })
+	// The group container acts as a drop target so bookmarks can also be
+	// moved to empty groups (or the empty space around them). Collision
+	// priority is Low so bookmark collisions always take precedence.
+	const { ref: setNodeRef } = useDroppable({
+		id: bookmarkData.id,
+		accept: "bookmark",
+		collisionPriority: CollisionPriority.Low,
+	})
 
 	const handleBookmarkFormVisible = () => setBookmarkFormVisible((prev) => !prev)
 	const handleGroupFormVisible = () => setGroupFormVisible((prev) => !prev)
@@ -58,44 +64,43 @@ function GroupContainer({ bookmarkData, groupIndex }: { bookmarkData: BookmarkDa
 				handleGroupFormVisible={handleGroupFormVisible}
 				isGroupDefault={isGroupDefault}
 			/>
-			<SortableContext
-				id={bookmarkData.id}
-				items={bookmarkData?.bookmarks}
-				strategy={headlineView ? verticalListSortingStrategy : rectSortingStrategy}
-				disabled={selectionMode}
-			>
+			{/* Sortables register themselves — no SortableContext needed */}
 				<div
 					ref={setNodeRef}
 					className={`px-1 ${bookmarkData.bookmarks.length > 0 ? "" : "min-h-[20px]"}`}
 				>
 					{headlineView ? (
 						<div className="flex flex-row items-start gap-2">
-							{headlineColumns.map((column, colIndex) => (
-								<div
-									key={colIndex}
-									className="flex flex-col items-start flex-1 min-w-0"
-								>
-									{column.map((bookmark) => (
-										<Bookmark
-											key={bookmark.id}
-											bookmark={bookmark}
-										/>
-									))}
-								</div>
-							))}
+							{headlineColumns.map((column, colIndex) => {
+								const columnOffset = colIndex === 0 ? 0 : headlineColumns[0].length
+								return (
+									<div
+										key={colIndex}
+										className="flex flex-col items-start flex-1 min-w-0"
+									>
+										{column.map((bookmark, bookmarkIndex) => (
+											<Bookmark
+												key={bookmark.id}
+												bookmark={bookmark}
+												index={columnOffset + bookmarkIndex}
+											/>
+										))}
+									</div>
+								)
+							})}
 						</div>
 					) : (
 						<div className="grid grid-cols-6">
-							{bookmarkData.bookmarks.map((bookmark) => (
+							{bookmarkData.bookmarks.map((bookmark, bookmarkIndex) => (
 								<Bookmark
 									key={bookmark.id}
 									bookmark={bookmark}
+									index={bookmarkIndex}
 								/>
 							))}
 						</div>
 					)}
 				</div>
-			</SortableContext>
 		</>
 	)
 }

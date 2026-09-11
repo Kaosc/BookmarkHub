@@ -2,9 +2,18 @@ import { createSlice } from "@reduxjs/toolkit"
 
 import { getBookmarks } from "../../utils/localStorage"
 import { InitialBookmarks } from "../../data/InitialBookmarks"
+import { nanoid } from "nanoid"
 
 const setInitialState = () => {
-	const initialState: BookmarkGroups = InitialBookmarks
+	const initialState: BookmarkGroups = InitialBookmarks.map((group: any) => {
+		return {
+			...group,
+			bookmarks: group.bookmarks.map((bookmark: any) => ({
+				...bookmark,
+				id: nanoid(),
+			})),
+		}
+	})
 
 	const localBookmarks = getBookmarks()
 
@@ -23,7 +32,7 @@ export const bookmarksSlice = createSlice({
 			state,
 			action: {
 				payload: Bookmark
-			}
+			},
 		) => {
 			const bookmark = action.payload
 
@@ -45,7 +54,7 @@ export const bookmarksSlice = createSlice({
 					bookmarkId: string
 					groupId: string
 				}
-			}
+			},
 		) => {
 			const { bookmarkId, groupId } = action.payload
 
@@ -67,7 +76,7 @@ export const bookmarksSlice = createSlice({
 					bookmark: Bookmark
 					prevGroupId?: string
 				}
-			}
+			},
 		) => {
 			const { prevGroupId, bookmark } = action.payload
 
@@ -146,7 +155,7 @@ export const bookmarksSlice = createSlice({
 			state,
 			action: {
 				payload: string[]
-			}
+			},
 		) => {
 			const selectedBookmarkIds = action.payload
 
@@ -164,7 +173,7 @@ export const bookmarksSlice = createSlice({
 					selectedBookmarks: Bookmark[]
 					toGroupId: string
 				}
-			}
+			},
 		) => {
 			const { selectedBookmarks, toGroupId } = action.payload
 			const selectedBookmarkIds = selectedBookmarks.map((b) => b.id)

@@ -1,22 +1,16 @@
-import { useState, useCallback, useRef } from "react"
+import { useCallback, useRef } from "react"
 import { useSelector, useDispatch } from "react-redux"
-import { useScrolling } from "react-use"
+import type { UniqueIdentifier } from "@dnd-kit/abstract"
 import {
-	DndContext,
+	DragDropProvider,
 	DragOverlay,
-	KeyboardSensor,
-	PointerSensor,
-	useSensor,
-	useSensors,
-	DragStartEvent,
 	DragEndEvent,
 	DragOverEvent,
-	TouchSensor,
-	pointerWithin,
-} from "@dnd-kit/core"
-import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
+} from "@dnd-kit/react"
+import { move } from "@dnd-kit/helpers"
 
-import { editGroup, setBookmarkGroups } from "../redux/features/bookmarkSlice"
+import { setBookmarkGroups } from "../redux/features/bookmarkSlice"
+import { makeSensorConfig } from "../utils/dnd"
 
 import GroupContainer from "../components/group/GroupContainer"
 import Bookmark from "../components/sortable/Bookmark"
@@ -26,165 +20,70 @@ export default function Home() {
 	const search = useSelector((state: RootState) => state.search)
 	const dispatch = useDispatch()
 
-	const [activeBookmark, setActiveBookmark] = useState<Bookmark>()
+	// Snapshot of the bookmark groups taken when a drag starts, used to
+	// revert the redux state when a drag is canceled (e.g. Escape).
+	const previousGroups = useRef<BookmarkGroups>([])
 
-	const scrollRef = useRef<HTMLDivElement>(null)
-	const scrolling = useScrolling(scrollRef)
-
-	const sensors = useSensors(
-		useSensor(PointerSensor, {
-			activationConstraint: {
-				delay: 100,
-				tolerance: 5,
-			},
-		}),
-		useSensor(KeyboardSensor, {
-			coordinateGetter: sortableKeyboardCoordinates,
-		}),
-		useSensor(TouchSensor, {
-			activationConstraint: {
-				delay: 100,
-				tolerance: 5,
-			},
-		}),
-	)
-
-	const handleDragStart = useCallback(
-		(event: DragStartEvent) => {
-			const { active } = event
-			const { id } = active
-
-			setActiveBookmark(
-				bookmarkGroups
-					.map((group) => group.bookmarks)
-					.flat()
-					.find((bookmark) => bookmark.id === id),
-			)
-		},
-		[bookmarkGroups],
-	)
+	const handleDragStart = useCallback(() => {
+		previousGroups.current = bookmarkGroups
+	}, [bookmarkGroups])
 
 	const handleDragOver = useCallback(
 		(event: DragOverEvent) => {
-			if (scrolling) return
-
-			const { active, over } = event
-
-			if (!active || !over || active.id === over.id) {
-				return
+			// Fully controlled ordering: the optimistic sorting plugin is
+			// disabled on bookmark sortables (it re-parents DOM nodes behind
+			// React's back, crashing on removeChild and duplicating items),
+			// so the redux state is the single source of truth and React
+			// renders the new order on every dragover.
+			const items: Record<UniqueIdentifier, Bookmark[]> = {}
+			for (const group of bookmarkGroups) {
+				items[group.id] = group.bookmarks
 			}
 
-			const activeBookmarkId = active.id
-			const activeBookmarkGroupId = active.data.current?.sortable.containerId || activeBookmarkId
+			const nextItems = move(items, event)
+			if (nextItems === items) return
 
-			const overBookmarkId = over?.id
-			const overBookmarkGroupId = over?.data.current?.sortable.containerId || overBookmarkId
-
-			if (!activeBookmarkId || !overBookmarkId || activeBookmarkGroupId === overBookmarkGroupId) {
-				return
-			}
-
-			const activeBookmarkGroup = bookmarkGroups.find((group) => group.id === activeBookmarkGroupId)
-			const overBookmarkGroup = bookmarkGroups.find((group) => group.id === overBookmarkGroupId)
-
-			if (!overBookmarkGroup || !activeBookmarkGroup) return
-
-			const activeBookmarkIndex = activeBookmarkGroup.bookmarks.findIndex((bookmark) => bookmark.id === activeBookmarkId)
-
-			if (activeBookmarkIndex === -1) {
-				return
-			}
-
-			const updatedActiveGroup = {
-				...activeBookmarkGroup,
-				bookmarks: [
-					...activeBookmarkGroup.bookmarks.slice(0, activeBookmarkIndex),
-					...activeBookmarkGroup.bookmarks.slice(activeBookmarkIndex + 1),
-				],
-			}
-
-			// change the groupId of the bookmark
-			const updatedBookmark = {
-				...activeBookmarkGroup.bookmarks[activeBookmarkIndex],
-				groupId: overBookmarkGroupId,
-			}
-
-			const updatedOverGroup = {
-				...overBookmarkGroup,
-				bookmarks: [...overBookmarkGroup.bookmarks, updatedBookmark],
-			}
-
-			if (activeBookmarkGroup.id !== overBookmarkGroup.id) {
-				dispatch(
-					setBookmarkGroups(
-						bookmarkGroups.map((group) => {
-							if (group.id === activeBookmarkGroupId) {
-								return updatedActiveGroup
-							} else if (group.id === overBookmarkGroupId) {
-								return updatedOverGroup
-							} else {
-								return group
-							}
-						}),
-					),
-				)
-			}
+			dispatch(
+				setBookmarkGroups(
+					bookmarkGroups.map((group) => {
+						const nextBookmarks = nextItems[group.id]
+						if (nextBookmarks === group.bookmarks) return group
+						return {
+							...group,
+							// keep the bookmark's groupId in sync when it changes groups
+							bookmarks: nextBookmarks.map((bookmark) =>
+								bookmark.groupId === group.id ? bookmark : { ...bookmark, groupId: group.id }
+							),
+						}
+					}),
+				),
+			)
 		},
-		[bookmarkGroups, dispatch, scrolling],
+		[bookmarkGroups, dispatch],
 	)
 
 	const handleDragEnd = useCallback(
 		(event: DragEndEvent) => {
-			if (scrolling) return
-
-			const { active, over } = event
-
-			if (!active) {
-				return
+			// Redux was already updated during the drag, so a canceled drag
+			// has to restore the snapshot taken in onDragStart.
+			if (event.canceled) {
+				dispatch(setBookmarkGroups(previousGroups.current))
 			}
-
-			const activeBookmarkIndex = active.data.current?.sortable.index
-
-			const overBookmarkIndex = over?.data.current?.sortable.index
-			const overBookmarkGroupId = over?.data.current?.sortable.containerId
-			const overBookmarkGroup = bookmarkGroups.find((group) => group.id === overBookmarkGroupId)
-
-			if (activeBookmarkIndex === undefined || overBookmarkIndex === undefined || activeBookmarkIndex === overBookmarkIndex) {
-				return
-			}
-
-			if (overBookmarkGroup) {
-				const newGroup = arrayMove(overBookmarkGroup.bookmarks, activeBookmarkIndex, overBookmarkIndex)
-				dispatch(
-					editGroup({
-						id: overBookmarkGroupId,
-						title: overBookmarkGroup.title,
-						bookmarks: newGroup,
-					}),
-				)
-			}
-
-			setActiveBookmark(undefined)
 		},
-		[bookmarkGroups, dispatch, scrolling],
+		[dispatch],
 	)
 
 	return (
-		<DndContext
-			sensors={sensors}
+		<DragDropProvider
+			sensors={makeSensorConfig(100)}
 			onDragStart={handleDragStart}
-			onDragEnd={handleDragEnd}
 			onDragOver={handleDragOver}
-			collisionDetection={pointerWithin}
+			onDragEnd={handleDragEnd}
 		>
 			<main
-				overflow-y-auto
-				scroll-auto
-				bg-gradient-to-r
 				className={`overflow-y-auto scroll-auto bg-gradient-to-r from-zinc-200 to-zinc-50 dark:from-[#0e0e0e] dark:to-zinc-950 ${
 					search && "hidden"
 				}`}
-				ref={scrollRef}
 			>
 				{bookmarkGroups.length === 1 && !bookmarkGroups[0].bookmarks.length ? (
 					<div className="flex items-center justify-center h-screen">
@@ -204,15 +103,20 @@ export default function Home() {
 					))
 				)}
 				<DragOverlay>
-					{activeBookmark ? (
-						<Bookmark
-							key={activeBookmark.id + "overlay"}
-							opacity="opacity-50"
-							bookmark={activeBookmark}
-						/>
-					) : null}
+					{(source) => {
+						const bookmark = bookmarkGroups
+							.flatMap((group) => group.bookmarks)
+							.find((bookmark) => bookmark.id === source.id)
+						return bookmark ? (
+							<Bookmark
+								key={bookmark.id + "overlay"}
+								opacity="opacity-50"
+								bookmark={bookmark}
+							/>
+						) : null
+					}}
 				</DragOverlay>
 			</main>
-		</DndContext>
+		</DragDropProvider>
 	)
 }

@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { arrayMove } from "@dnd-kit/sortable"
+import { arrayMove } from "@dnd-kit/helpers"
 
 import { AiFillEdit, AiOutlineArrowDown, AiOutlineArrowUp } from "react-icons/ai"
 import { IoIosAdd } from "react-icons/io"

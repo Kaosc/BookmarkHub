@@ -2,19 +2,17 @@ import React, { useCallback, useState, useMemo, useRef } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { nanoid } from "nanoid"
 
-import { SortableContext, rectSortingStrategy, sortableKeyboardCoordinates } from "@dnd-kit/sortable"
+import { CollisionPriority } from "@dnd-kit/abstract"
 import {
-	DndContext,
+	DragDropProvider,
 	DragEndEvent,
-	KeyboardSensor,
-	PointerSensor,
-	TouchSensor,
+	DragStartEvent,
 	useDroppable,
-	useSensor,
-	useSensors,
-} from "@dnd-kit/core"
+} from "@dnd-kit/react"
+import { move } from "@dnd-kit/helpers"
 
 import { addGroup, deleteGroup, editGroupTitle, setBookmarkGroups } from "../../redux/features/bookmarkSlice"
+import { makeSensorConfig } from "../../utils/dnd"
 
 import Dialog from "../Dialog"
 import FormButtons from "./FormButtons"
@@ -39,7 +37,14 @@ export default function GroupForm({
 	const [confirmFormVisible, setConfirmFormVisible] = useState(false)
 	const groupIdToDelete = useRef("")
 
-	const { setNodeRef } = useDroppable({ id: "groups" })
+	// The container acts as a drop target so groups can also be reordered by
+	// dropping them on the empty space of the list. Collision priority is Low
+	// so collisions with the group items themselves always take precedence.
+	const { ref: setNodeRef } = useDroppable({
+		id: "groups",
+		accept: "group",
+		collisionPriority: CollisionPriority.Low,
+	})
 
 	const formTitle = useMemo(() => {
 		if (editMode?.current && !selectionMode) return "Reorder & edit Groups"
@@ -115,56 +120,25 @@ export default function GroupForm({
 	}
 
 	/////////////////// DRAG & DROP ///////////////////////
+	// The legacy PointerSensor + TouchSensor + KeyboardSensor trio is now a
+	// single PointerSensor (keyboard sorting is built into sortables).
+	const sensors = makeSensorConfig(85)
 
-	const sensors = useSensors(
-		useSensor(PointerSensor, {
-			activationConstraint: {
-				delay: 85,
-				tolerance: 5,
-			},
-		}),
-		useSensor(KeyboardSensor, {
-			coordinateGetter: sortableKeyboardCoordinates,
-		}),
-		useSensor(TouchSensor, {
-			activationConstraint: {
-				delay: 85,
-				tolerance: 5,
-			},
-		})
-	)
-
-	const handleDragStart = (event: DragEndEvent) => {
-		const { active } = event
-		const { id } = active
-
-		setActiveGroup(bookmarkData.find((group) => group.id === id))
+	const handleDragStart = (event: DragStartEvent) => {
+		const { source } = event.operation
+		setActiveGroup(bookmarkData.find((group) => group.id === source?.id))
 	}
 
 	const handleDragEnd = (event: DragEndEvent) => {
 		setActiveGroup(undefined)
 
-		const { active, over } = event
+		// A canceled drag reverts the optimistic order automatically
+		if (event.canceled) return
 
-		const activeGroupId = active.id
-		const overGroupId = over?.id
-
-		if (!activeGroupId || !overGroupId || activeGroupId === overGroupId) {
-			return
+		const nextBookmarkGroups = move(bookmarkData, event)
+		if (nextBookmarkGroups !== bookmarkData) {
+			dispatch(setBookmarkGroups(nextBookmarkGroups))
 		}
-
-		const activeGroupIndex = bookmarkData.findIndex((group) => group.id === activeGroupId)
-		const overGroupIndex = bookmarkData.findIndex((group) => group.id === overGroupId)
-
-		if (activeGroupIndex === -1 || overGroupIndex === -1 || !activeGroup) {
-			return
-		}
-
-		const updatedBookmarkGroupsList = [...bookmarkData]
-		updatedBookmarkGroupsList.splice(activeGroupIndex, 1)
-		updatedBookmarkGroupsList.splice(overGroupIndex, 0, activeGroup)
-
-		dispatch(setBookmarkGroups(updatedBookmarkGroupsList))
 	}
 
 	return (
@@ -203,24 +177,22 @@ export default function GroupForm({
 						/>
 					</form>
 				) : (
-					<DndContext
+					<DragDropProvider
 						sensors={sensors}
 						onDragStart={handleDragStart}
 						onDragEnd={handleDragEnd}
 					>
-						<SortableContext
-							items={bookmarkData}
-							strategy={rectSortingStrategy}
-							disabled={isDragDisabled}
-						>
+						{/* Sortables register themselves — no SortableContext needed */}
 							<div
 								ref={setNodeRef}
 								className="overflow-y-auto scroll-auto max-h-96 px-3 py-1 rounded-xl"
 							>
-								{bookmarkData.map((group) => (
+								{bookmarkData.map((group, index) => (
 									<Group
 										key={group.id}
 										group={group}
+										index={index}
+										isDragDisabled={isDragDisabled}
 										activeGroup={activeGroup}
 										quitFrom={quitForm}
 										handleConfirmFormVisible={handleConfirmFormVisible}
@@ -233,8 +205,7 @@ export default function GroupForm({
 									</div>
 								)}
 							</div>
-						</SortableContext>
-					</DndContext>
+					</DragDropProvider>
 				)}
 			</Dialog>
 		</>

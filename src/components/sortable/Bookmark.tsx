@@ -1,7 +1,7 @@
 import { memo, useState, useMemo } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { useSortable } from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
+import { useSortable } from "@dnd-kit/react/sortable"
+import { OptimisticSortingPlugin } from "@dnd-kit/dom/sortable"
 import { LazyLoadImage } from "react-lazy-load-image-component"
 
 import { AiFillEdit } from "react-icons/ai"
@@ -15,10 +15,13 @@ import { notify } from "../../utils/notify"
 
 function Bookmark({
 	bookmark,
+	index = 0,
 	opacity = "opacity-100",
 	className,
 }: {
 	bookmark: Bookmark
+	// position of this bookmark within its group (used by the sortable)
+	index?: number
 	opacity?: string
 	className?: React.HTMLAttributes<HTMLDivElement>["className"]
 }) {
@@ -27,12 +30,29 @@ function Bookmark({
 	const { allowTwoLineTitle, showBookmarksTitle, headlineView, theme } = useSelector((state: RootState) => state.settings)
 	const { selectionMode, selectedBookmarks } = useSelector((state: RootState) => state.selection)
 
-	const { id, title, url, favicon } = bookmark
+	const { title, url, favicon } = bookmark
 	const [formVisible, setFormVisible] = useState(false)
 
-	const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: id })
-	const style = { transform: CSS.Transform.toString(transform), transition }
-
+	// Sortable item: it coordinates with the DragDropProvider automatically.
+	// The legacy `containerId` is replaced by the `group` option, and the
+	// library applies drag transforms internally (no manual CSS needed).
+	//
+	// The OptimisticSortingPlugin is disabled on purpose: it physically
+	// re-parents DOM nodes between group containers while dragging, which
+	// fights with React's ownership of the DOM and crashes with
+	// "Failed to execute 'removeChild'" when the groups re-render (it also
+	// duplicates bookmarks because it keeps operating on stale instances
+	// after React remounts the bookmark in the other group). Without it,
+	// the order is fully controlled by redux in Home's onDragOver instead.
+	const { ref: setNodeRef } = useSortable({
+		id: bookmark.id,
+		index,
+		group: bookmark.groupId,
+		type: "bookmark",
+		accept: "bookmark",
+		disabled: selectionMode,
+		plugins: (defaults) => defaults.filter((plugin) => plugin !== OptimisticSortingPlugin),
+	})
 	const isChecked = useMemo(() => selectedBookmarks.map((b) => b.id).includes(bookmark.id), [selectedBookmarks, bookmark])
 
 	const handleSelectBookmark = () => {
@@ -76,10 +96,7 @@ function Bookmark({
 			)}
 			<div
 				ref={setNodeRef}
-				style={style}
 				onDragStart={handleNativeDragStart}
-				{...listeners}
-				{...attributes}
 				className={`
 					group draggable relative items-center flex ${
 						headlineView
@@ -163,6 +180,7 @@ function Bookmark({
 export default memo(Bookmark, (prevProps, nextProps) => {
 	return (
 		prevProps.bookmark === nextProps.bookmark &&
+		prevProps.index === nextProps.index &&
 		prevProps.opacity === nextProps.opacity &&
 		prevProps.className === nextProps.className
 	)

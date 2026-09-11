@@ -1,7 +1,7 @@
 import React, { memo, useRef, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { useSortable } from "@dnd-kit/sortable"
-import { CSS } from "@dnd-kit/utilities"
+import { RestrictToVerticalAxis } from "@dnd-kit/abstract/modifiers"
+import { useSortable } from "@dnd-kit/react/sortable"
 
 import { editGroupTitle, moveSelectedBookmarks } from "../../redux/features/bookmarkSlice"
 
@@ -14,11 +14,16 @@ import { toggleSelectionMode } from "../../redux/features/selectionSlice"
 
 function Group({
 	group,
+	index,
+	isDragDisabled,
 	activeGroup,
 	handleConfirmFormVisible,
 	quitFrom,
 }: {
 	group: BookmarkData
+	// position of this group within the list of groups (used by the sortable)
+	index: number
+	isDragDisabled: boolean
 	activeGroup?: BookmarkData
 	handleConfirmFormVisible: (e?: React.MouseEvent<HTMLButtonElement>, groupId?: string) => void
 	quitFrom: (e: React.MouseEvent<HTMLButtonElement>) => void
@@ -33,16 +38,18 @@ function Group({
 	const inputRef = useRef<HTMLInputElement>(null)
 	const inputReset = useRef(false)
 
-	const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: group.id })
-	const style = {
-		transform: CSS.Transform.toString({
-			y: transform?.y ?? 0,
-			x: 0,
-			scaleX: transform?.scaleX ?? 1,
-			scaleY: transform?.scaleY ?? 1,
-		}),
-		transition,
-	}
+	// Sortable item: it coordinates with the DragDropProvider automatically.
+	// Groups reorder in a vertical list, so the drag feedback is restricted
+	// to the Y axis (replacing the legacy x-clamped transform hack).
+	const { ref: setNodeRef } = useSortable({
+		id: group.id,
+		index,
+		group: "groups",
+		type: "group",
+		accept: "group",
+		disabled: isDragDisabled,
+		modifiers: [RestrictToVerticalAxis],
+	})
 
 	const handleOnGroupDelete = (e: React.MouseEvent<HTMLButtonElement>) =>
 		handleConfirmFormVisible(e, group.id)
@@ -113,10 +120,7 @@ function Group({
 		return (
 			<div
 				ref={setNodeRef}
-				style={style}
 				onDragStart={handleNativeDragStart}
-				{...listeners}
-				{...attributes}
 				className={`
 					draggable flex items-center justify-start w-full p-1 my-2 ring-1 ring-zinc-500 rounded-md 
 					${activeGroup?.id === group.id && "bg-zinc-400 dark:bg-zinc-800 ring-[2px]"} 
@@ -209,6 +213,8 @@ function Group({
 export default memo(Group, (prevProps, nextProps) => {
 	return (
 		prevProps.group === nextProps.group &&
+		prevProps.index === nextProps.index &&
+		prevProps.isDragDisabled === nextProps.isDragDisabled &&
 		prevProps.activeGroup?.id === nextProps.activeGroup?.id
 	)
 })
